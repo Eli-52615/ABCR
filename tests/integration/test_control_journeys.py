@@ -40,8 +40,9 @@ from abcr.probe.contracts import ProbeRequest
 from abcr.probe.engine import FakeProbeEngine, run_probe
 from abcr.probe.notebook import ProbeNotebook
 from abcr.probe.promote import promote_probe
-from tests.explore.test_goal_persona import valid_goal
+from tests.explore.test_goal_persona import behavior_probe_goal
 from tests.explore.test_itempool_workflow import itempool_keys, sealed_bundle, sources
+from tests.control.release_fixture_support import add_bootstrap_payload
 
 SANDBOX_EXEC = "/usr/bin/sandbox-exec"
 HAS_SANDBOX = os.path.isfile(SANDBOX_EXEC) and os.access(SANDBOX_EXEC, os.X_OK)
@@ -69,7 +70,7 @@ def keypair(tmp_path, name):
 def journey_one_and_two(tmp_path):
     """1 目标书→确认→锚定→编译;2 探针→笔记本→人工提升。"""
     store = ControlStore(tmp_path / "control.db")
-    raw = valid_goal(); proposal_id = "PROP1"
+    raw = behavior_probe_goal(); proposal_id = "PROP1"
     store.save_proposal(proposal_id, raw.decode(), "owner")
     bundle_root = tmp_path / "bundles"
     receipt_private, receipt_public = keypair(tmp_path, "receipt")
@@ -87,9 +88,12 @@ def journey_one_and_two(tmp_path):
         private_key=receipt_private, public_key=receipt_public)
     envelope = workflow.confirm_and_compile(
         proposal_id, goal, actor_id="owner", research_commit="c" * 64,
-        goal_path="goals/g.yaml", receipt=receipt, bundle=bundle, protocol_ref="CONTROL-V1")
+        goal_path="goals/g.yaml", receipt=receipt, bundle=bundle, protocol_ref="CONTROL-V1",
+        deployment_id="fixture")
 
-    probe = run_probe(ProbeRequest("P1", goal.goal_hash, bundle, "p@v1", "careful",
+    from abcr.probe.contracts import ProbePersona
+    probe = run_probe(ProbeRequest("P1", goal.goal_hash, bundle,
+                                   (ProbePersona("p@v1", "careful"),),
                                    "increase", 1, "fixture"), FakeProbeEngine(),
                       trusted_dev_bundle_root=bundle_root,
                       bundle_sealer_public_key=sealer[1])
@@ -121,6 +125,7 @@ def journeys_one_to_four(tmp_path):
                            scores=scores, sidecars=sidecars, dev_bundle=bundle,
                            trusted_dev_bundle_root=bundle_root,
                            bundle_sealer_public_key=sealer[1],
+                           compile_envelope=envelope,
                            auditor_private_key=auditor_private, auditor_public_key=auditor_public)
     # 集成路径传入 compile envelope,把 goal 绑定从「结构可见」升级为「强制校验」:
     # 报告引用的证据集必须可证明地属于它声称的那个 goal(闭合 B4 的集成路径)。
@@ -210,6 +215,9 @@ def _candidate_tree(tmp_path, name, content):
     topology = root / "configs/control/service-topology-v1.json"
     topology.parent.mkdir(parents=True)
     topology.write_bytes((ROOT / "configs/control/service-topology-v1.json").read_bytes())
+    # Keep the journey production-shaped as the finite reviewed bootstrap
+    # contract grows; never weaken prepare_release merely for this fixture.
+    add_bootstrap_payload(root)
     return root, tree_hash(scan_tree(root))
 
 

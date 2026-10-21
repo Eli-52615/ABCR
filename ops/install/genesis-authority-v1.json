@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "authority_sha256": "40fd5fb21ff33d7da84648562c6dc12d68f15444dfea60379132af820510d0d1",
+  "ceremony": "abcr-human-root-genesis-v1",
+  "authority_path": "/Library/Application Support/ABCR-Trust/genesis-authority-v1.json",
+  "review_root": "/Library/Application Support/ABCR-Genesis/reviewed",
+  "completion_path": "/Library/Application Support/ABCR-Trust/genesis-completed-v1.json",
+  "human_required": true,
+  "root_required": true,
+  "one_time_only": true,
+  "ordinary_checkout_installable": false,
+  "pending_receipt_installable": false,
+  "required_statement_fields": [
+    "schema_version",
+    "ceremony",
+    "authority_sha256",
+    "policy_sha256",
+    "authority_id",
+    "human_approved",
+    "reviewed_commit",
+    "reviewed_release_path",
+    "release_id",
+    "release_manifest_sha256",
+    "source_tree_hash",
+    "broker_seal_nonce",
+    "expected_receipt_id",
+    "tcb"
+  ],
+  "finite_tcb_fields": [
+    "genesis_script",
+    "stable_selector",
+    "runtime_installer",
+    "launcher",
+    "python",
+    "broker_module",
+    "broker_payload_tree_hash"
+  ],
+  "ordered_phases": [
+    "verify-root-owned-human-authority",
+    "verify-reviewed-commit-and-release-manifest",
+    "verify-finite-bootstrap-tcb-bytes",
+    "stage-root-owned-release-with-pending-receipt",
+    "establish-selector-and-seal-broker-lkg",
+    "lkg-broker-confirms-same-release",
+    "remove-pending-marker",
+    "run-normal-receipt-gated-installer",
+    "write-one-time-completion-record"
+  ]
+}

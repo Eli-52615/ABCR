@@ -179,7 +179,8 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def score_steps(steps: list[dict], items_by_id: dict[str, dict] | None = None) -> list[dict]:
+def score_steps(steps: list[dict], items_by_id: dict[str, dict] | None = None,
+                *, arm_id: str | None = None) -> list[dict]:
     """对一批 step 记录逐条产指标行（契约 §2.5 scores schema）。
 
     family 取 step 记录 benchmark 字段（缺省 golden10，兼容 B1-6 调用）。
@@ -200,6 +201,8 @@ def score_steps(steps: list[dict], items_by_id: dict[str, dict] | None = None) -
             "trajectory_id": s.get("trajectory_id", ""),
             "step_id": s.get("step_id", 0),
             "condition": s.get("condition", ""),
+            "config_hash": s.get("config_hash", ""),
+            "arm_id": arm_id,
             "random_seed": s.get("random_seed", 0),
             "scorer_id": SCORER_ID,
             "scorer_version": SCORER_VERSION,
@@ -232,18 +235,38 @@ def _load_benchmark_items(family: str) -> dict[str, dict]:
     return {it.get("item_id", it.get("id")): it for it in items}
 
 
-def score_run(run_dir: Path) -> list[dict]:
+def score_run(run_dir: Path, *, selected_items: dict[str, dict] | None = None) -> list[dict]:
     """读 run 目录 steps.jsonl → 产 scores 行并追加写 scores.jsonl（幂等），返回新增行。
 
     幂等（AMENDMENT，B2-4）：同 scorer_id+version 已评过的 (item_id, random_seed, metric_name) 跳过。
     """
     run_dir = Path(run_dir)
     steps = _load_jsonl(run_dir / "steps.jsonl")
-    families = {s.get("benchmark", "golden10") for s in steps}
-    items_by_id: dict[str, dict] = {}
-    for fam in families:
-        items_by_id.update(_load_benchmark_items(fam))
-    rows = score_steps(steps, items_by_id)
+    if selected_items is not None:
+        # Evidence dispatch supplies the exact verified DevBundle rows.  Never
+        # reopen the full benchmark merely to score a selected dev item.
+        items_by_id = dict(selected_items)
+        observed = {s["item_id"] for s in steps}
+        if not observed.issubset(items_by_id):
+            raise ValueError("steps item 不在 dispatch 提供的 DevBundle selected_items 中")
+    else:
+        families = {s.get("benchmark", "golden10") for s in steps}
+        items_by_id: dict[str, dict] = {}
+        for fam in families:
+            items_by_id.update(_load_benchmark_items(fam))
+    arm_id: str | None = None
+    manifest_path = run_dir / "manifest.json"
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        config = manifest.get("config")
+        if isinstance(config, dict) and "dev_bundle_ref" in config:
+            arm_id = config.get("arm_id")
+            expected_hash = manifest.get("config_hash")
+            if (not isinstance(arm_id, str) or not arm_id
+                    or not isinstance(expected_hash, str) or not expected_hash
+                    or any(step.get("config_hash") != expected_hash for step in steps)):
+                raise ValueError("evidence scorer 缺不可歧义 arm/config binding")
+    rows = score_steps(steps, items_by_id, arm_id=arm_id)
 
     out = run_dir / "scores.jsonl"
     seen: set[tuple] = set()

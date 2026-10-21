@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "template_id": "task_expansion_zh_v1",
+  "template_version": "1.0.0",
+  "control_role": "task_expansion_bracket",
+  "manipulation_profile_id": "manipulation-check-3l-v1",
+  "required_slots": [
+    "task_expansion"
+  ],
+  "max_sequence_units": 96,
+  "max_search_states": 65536,
+  "max_hedging_hits": 0,
+  "max_self_check_hits": 2,
+  "forbidden_terms": [
+    "人格",
+    "性格",
+    "气质",
+    "情绪",
+    "情感",
+    "理论",
+    "乐观",
+    "悲观",
+    "persona",
+    "personality",
+    "emotion",
+    "affect",
+    "theory"
+  ],
+  "fragments": [
+    {
+      "source_id": "tx-required-scope-v1",
+      "slot": "task_expansion",
+      "kind": "task_expansion",
+      "text": "请逐项完成以下任务要求。",
+      "repeatable": false
+    },
+    {
+      "source_id": "tx-format-v1",
+      "slot": "task_expansion",
+      "kind": "task_expansion",
+      "text": "请核对输出格式。",
+      "repeatable": false
+    },
+    {
+      "source_id": "tx-constraints-v1",
+      "slot": "task_expansion",
+      "kind": "task_expansion",
+      "text": "请逐条核对约束。",
+      "repeatable": false
+    },
+    {
+      "source_id": "tx-completeness-v1",
+      "slot": "task_expansion",
+      "kind": "self_check",
+      "text": "完成后检查是否遗漏要求。",
+      "repeatable": false
+    },
+    {
+      "source_id": "tx-answer-v1",
+      "slot": "task_expansion",
+      "kind": "task_expansion",
+      "text": "只提交符合要求的答案。",
+      "repeatable": false
+    },
+    {
+      "source_id": "filler-space-v1",
+      "slot": "filler",
+      "kind": "filler",
+      "text": " ",
+      "repeatable": true
+    },
+    {
+      "source_id": "filler-newline-v1",
+      "slot": "filler",
+      "kind": "filler",
+      "text": "\n",
+      "repeatable": true
+    },
+    {
+      "source_id": "filler-stop-v1",
+      "slot": "filler",
+      "kind": "filler",
+      "text": "。",
+      "repeatable": true
+    },
+    {
+      "source_id": "filler-separator-v1",
+      "slot": "filler",
+      "kind": "filler",
+      "text": "；",
+      "repeatable": true
+    }
+  ]
+}

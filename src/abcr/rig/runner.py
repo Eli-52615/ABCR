@@ -20,10 +20,14 @@ from typing import Optional
 from abcr.common.constants import CONDITIONS, PROTOCOL_REF
 from abcr.common.evidence_floor import require_substantive
 from abcr.common.ledger_ref import append_record
+from abcr.control.contracts import ContractError
 from abcr.ops import runstate
-from abcr.ops.dispatch import _code_tree_hash, _git_clean, config_hash
+from abcr.ops.dispatch import (_append_prompt_sidecar_once, _code_tree_hash,
+                               _git_clean, config_hash)
 from abcr.ops.heartbeat import Heartbeat
 from abcr.rig import scorer
+from abcr.rig.models import (TOKENIZER_FINGERPRINT_SCHEMA,
+                             tokenizer_identity_sha256)
 
 RUNS_ROOT_DEFAULT = Path("data/runs")
 
@@ -35,7 +39,7 @@ def _runs_root() -> Path:
 
 # method 映射（condition → step.method / 干预臂类型）
 _METHOD = {
-    "vanilla": None, "persona_text": "prompt",
+    "vanilla": None, "persona_text": "prompt", "length_instruct": "prompt",
     "inject": "residual_inject", "ablate": "residual_ablate",
     "inject_random": "residual_inject", "ablate_random": "residual_ablate",
 }
@@ -128,17 +132,24 @@ def write_manifest(run_dir: Path, run_id: str, cfg: dict, chash: str, info,
                    batch_id: Optional[str] = None) -> None:
     """22 键 manifest（AMENDMENT-31；真实 run 版）。batch_id 显式传入优先（dispatch 驱动时不改 cfg
     以免 config_hash 漂移）；未传则回落 cfg.get("batch_id")（runner 独立跑）。"""
+    release = cfg.get("release_pin") or {}
     manifest = {
         "run_id": run_id, "config": cfg, "config_hash": chash,
         "git_commit": git_commit, "git_clean": _git_clean(), "code_tree_hash": _code_tree_hash(),
         "model_id": info.model_id, "model_revision": info.revision,
         "chat_template_hash": info.chat_template_hash, "split_hash": split_hash,
+        "tokenizer_sha256": getattr(info, "tokenizer_sha256", None),
+        "tokenizer_fingerprint_schema": getattr(
+            info, "tokenizer_fingerprint_schema", None),
         "engine": info.engine, "engine_version": info.engine_version,
         "torch_version": info.torch_version, "python_version": platform.python_version(),
         "env_lock_ref": "requirements-mac.txt", "seeds": seeds,
         "started_at": _now() if finished_at is None else None, "finished_at": finished_at,
         "status": status, "non_citable": non_citable,
         "protocol_ref": PROTOCOL_REF, "batch_id": batch_id if batch_id is not None else cfg.get("batch_id", ""),
+        "release_id": release.get("release_id"),
+        "release_tree_hash": release.get("release_tree_hash"),
+        "release_lock_hash": release.get("release_lock_hash"),
     }
     p = run_dir / "manifest.json"
     if p.exists():
@@ -167,6 +178,132 @@ def render_prompt(tokenizer, item_prompt: str, system_prompt: Optional[str]) -> 
         messages.append({"role": "system", "content": system_prompt})
     messages.append({"role": "user", "content": item_prompt})
     return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+
+def _token_ids(tokenizer, text: str) -> list[int]:
+    encode = getattr(tokenizer, "encode", None)
+    if callable(encode):
+        try:
+            ids = encode(text, add_special_tokens=False)
+        except TypeError:
+            ids = encode(text)
+    elif callable(tokenizer):
+        encoded = tokenizer(text, add_special_tokens=False)
+        ids = encoded["input_ids"]
+    else:
+        raise ContractError("tokenizer_encode_unavailable", "tokenizer 不支持精确 token 复算")
+    if ids and isinstance(ids[0], list):
+        ids = ids[0]
+    return list(ids)
+
+
+def _verify_inline_prompt(cfg: dict, tokenizer, system_prompt: Optional[str]) -> None:
+    condition = cfg.get("condition")
+    if condition not in {"persona_text", "length_instruct"}:
+        return
+    if system_prompt is None:
+        raise ContractError("inline_prompt_missing", f"{condition} 缺 inline prompt_text")
+    if "prompt_text" not in cfg:  # frozen legacy trait-artifact fixture only
+        return
+    if cfg.get("prompt_sha256") != hashlib.sha256(system_prompt.encode("utf-8")).hexdigest():
+        raise ContractError("inline_prompt_hash_mismatch", "inline prompt_text 与 prompt_sha256 不一致")
+    expected_count = cfg.get("prompt_token_count")
+    if (isinstance(expected_count, bool) or not isinstance(expected_count, int)
+            or expected_count < 1 or len(_token_ids(tokenizer, system_prompt)) != expected_count):
+        raise ContractError("inline_prompt_token_mismatch", "inline prompt token 数与冻结值不一致")
+
+
+def _verify_runtime_evidence_binding(cfg: dict, tokenizer, info) -> None:
+    """Recheck profile facts against the *actual* loaded tokenizer/model.
+
+    A count match is not an identity check.  For every compiled evidence run (and
+    unconditionally for a ③L arm), this gate remeasures the fast-tokenizer backend
+    and requires the RunConfig, evidence block, ModelInfo and ③L receipt to agree
+    on both fingerprint schema and digest before the first generation.
+    """
+    evidence_run = "dev_bundle_ref" in cfg
+    exact_length_run = cfg.get("condition") == "length_instruct"
+    if not evidence_run and not exact_length_run:
+        return
+    evidence = cfg.get("evidence_inputs")
+    release = cfg.get("release_pin")
+    if not isinstance(evidence, dict) or not isinstance(release, dict):
+        raise ContractError("runtime_evidence_binding_missing", "证据 runner 缺 evidence/release pin")
+    actual_tokenizer = tokenizer_identity_sha256(tokenizer)
+    if actual_tokenizer is None:
+        raise ContractError(
+            "runtime_tokenizer_identity_unavailable",
+            "实际 tokenizer 无完整可序列化 backend；③L/evidence 资格 fail-closed",
+        )
+    info_tokenizer = getattr(info, "tokenizer_sha256", None)
+    info_schema = getattr(info, "tokenizer_fingerprint_schema", None)
+    declared_hashes = {
+        "RunConfig.tokenizer_sha256": cfg.get("tokenizer_sha256"),
+        "evidence_inputs.tokenizer_sha256": evidence.get("tokenizer_sha256"),
+        "ModelInfo.tokenizer_sha256": info_tokenizer,
+    }
+    declared_schemas = {
+        "RunConfig.tokenizer_fingerprint_schema": cfg.get("tokenizer_fingerprint_schema"),
+        "evidence_inputs.tokenizer_fingerprint_schema": evidence.get(
+            "tokenizer_fingerprint_schema"),
+        "ModelInfo.tokenizer_fingerprint_schema": info_schema,
+    }
+    if exact_length_run:
+        receipt = cfg.get("length_control_receipt")
+        if not isinstance(receipt, dict):
+            raise ContractError("runtime_tokenizer_binding_missing",
+                                "③L RunConfig 缺冻结 length_control_receipt")
+        declared_hashes["length_control_receipt.tokenizer_sha256"] = receipt.get(
+            "tokenizer_sha256")
+    if any(value != actual_tokenizer for value in declared_hashes.values()):
+        raise ContractError(
+            "runtime_tokenizer_binding_mismatch",
+            "RunConfig/profile/ModelInfo 与实际 tokenizer fingerprint 不一致",
+            {"actual": actual_tokenizer,
+             "mismatched_fields": sorted(name for name, value in declared_hashes.items()
+                                         if value != actual_tokenizer)},
+        )
+    if any(value != TOKENIZER_FINGERPRINT_SCHEMA for value in declared_schemas.values()):
+        raise ContractError(
+            "runtime_tokenizer_schema_mismatch",
+            "RunConfig/profile/ModelInfo tokenizer fingerprint schema 不一致",
+            {"expected": TOKENIZER_FINGERPRINT_SCHEMA,
+             "mismatched_fields": sorted(name for name, value in declared_schemas.items()
+                                         if value != TOKENIZER_FINGERPRINT_SCHEMA)},
+        )
+    observed = {"model_id": info.model_id, "model_revision": info.revision,
+                "chat_template_sha256": info.chat_template_hash,
+                "scorer_id": scorer.SCORER_ID, "scorer_version": scorer.SCORER_VERSION}
+    for field, value in observed.items():
+        if evidence.get(field) != value:
+            raise ContractError("runtime_evidence_binding_mismatch",
+                                f"runner 重算 {field} 与批准配置不一致")
+    for field in ("release_id", "release_tree_hash", "release_lock_hash"):
+        if release.get(field) != evidence.get(field):
+            raise ContractError("release_pin_mismatch", f"runner release {field} 不一致")
+    if os.environ.get("ABCR_SERVICE_LABEL") and os.environ.get("ABCR_RELEASE_ID") != release.get("release_id"):
+        raise ContractError("active_release_mismatch", "runner active release 与批准 release 不一致")
+
+
+def _verify_final_rendered_prompt(cfg: dict, tokenizer, item_id: str,
+                                  rendered_prompt: str) -> int | None:
+    """Second exact-token gate after the chat template has serialized messages."""
+    expected = cfg.get("rendered_prompt_token_counts")
+    if cfg.get("condition") != "length_instruct" and not isinstance(expected, dict):
+        return None
+    count = len(_token_ids(tokenizer, rendered_prompt))
+    if cfg.get("condition") == "length_instruct":
+        if (not isinstance(expected, dict) or set(expected) != set(cfg.get("item_ids", []))
+                or isinstance(expected.get(item_id), bool)
+                or not isinstance(expected.get(item_id), int)):
+            raise ContractError("rendered_prompt_token_plan_missing",
+                                "length_instruct 必须精确绑定每个 item 的最终序列化 token 数")
+        if count != expected[item_id]:
+            raise ContractError("rendered_prompt_token_mismatch",
+                                "最终序列化 prompt token 数与冻结 ③L 计划不一致")
+    elif isinstance(expected, dict) and item_id in expected and count != expected[item_id]:
+        raise ContractError("rendered_prompt_token_mismatch", "最终序列化 prompt token 数不一致")
+    return count
 
 
 def generate_once(model, tokenizer, rendered_prompt: str, temperature: float = 0.0,
@@ -218,7 +355,14 @@ def build_hook_spec(cfg: dict, save_dir: Optional[Path] = None) -> Optional[dict
 
 
 def build_system_prompt(cfg: dict, trait_artifacts: Optional[dict]) -> Optional[str]:
-    if cfg.get("condition") == "persona_text":
+    condition = cfg.get("condition")
+    if condition in {"persona_text", "length_instruct"}:
+        inline = cfg.get("prompt_text")
+        if isinstance(inline, str) and inline:
+            return inline
+        if condition == "length_instruct" or "dev_bundle_ref" in cfg:
+            raise ContractError("inline_prompt_missing", f"{condition} 必须使用批准信封内联 prompt_text")
+    if condition == "persona_text":
         from abcr.rig.interventions.prompt_persona import from_config
         trait = (cfg.get("intervention") or {}).get("trait", "")
         artifact = (trait_artifacts or {}).get(trait)
@@ -261,6 +405,11 @@ def split_hash_for(cfg: dict) -> str:
     """split_hash 从【实际 assignments 复算】，不采信文件自述的 split_hash 字段（根因③：验船师不问运动员）。
     若文件既声明 split_hash 又与复算不符 → 判为被篡改，fail-closed 拒跑（新跑硬门；历史批仍存旧值，
     本函数只作用于新跑）。golden10 无 split 文件，仍记 "fixture"（不改历史语义）。"""
+    if "dev_bundle_ref" in cfg:
+        source_hash = (cfg.get("evidence_inputs") or {}).get("source_hash")
+        if not isinstance(source_hash, str) or len(source_hash) != 64:
+            raise ContractError("split_hash_unbound", "证据 runner 缺 DevBundle source/split hash")
+        return source_hash
     family = cfg.get("benchmark", {}).get("family", "golden10")
     if family == "golden10":
         return "fixture"   # golden10 无 split 文件（AMENDMENT-31）
@@ -333,7 +482,9 @@ def run_config(config_path: str | Path, dev: bool = False, temp0_once: bool = Fa
                                 text=True).stdout.strip() or "unknown"
 
     model, tok, info = models.load_model(cfg)
+    _verify_runtime_evidence_binding(cfg, tok, info)
     system_prompt = build_system_prompt(cfg, trait_artifacts)
+    _verify_inline_prompt(cfg, tok, system_prompt)
     hook_spec = build_hook_spec(cfg, save_dir=run_dir / "activations")
 
     item_seed_ids = [f"{it['item_id']}:{s}" for it in items for s in seeds]
@@ -354,6 +505,16 @@ def run_config(config_path: str | Path, dev: bool = False, temp0_once: bool = Fa
                 continue
             torch.manual_seed(seed)
             rendered = render_prompt(tok, it["prompt"], system_prompt)
+            rendered_tokens = _verify_final_rendered_prompt(cfg, tok, it["item_id"], rendered)
+            prompt_hash = hashlib.sha256(rendered.encode("utf-8")).hexdigest()
+            _append_prompt_sidecar_once(run_dir, {
+                "run_id": run_id, "item_id": it["item_id"], "seed": seed, "random_seed": seed,
+                "config_hash": chash, "arm_id": cfg.get("arm_id"),
+                "condition": cfg.get("condition", "vanilla"), "prompt_text": rendered,
+                "prompt_hash": prompt_hash,
+                "system_prompt_hash": hashlib.sha256((system_prompt or "").encode("utf-8")).hexdigest(),
+                "template_hash": info.chat_template_hash, "token_count": rendered_tokens,
+            })
             import time
             t0 = time.time()
             text, n_in, n_out, stop = generate_once(
@@ -373,6 +534,8 @@ def run_config(config_path: str | Path, dev: bool = False, temp0_once: bool = Fa
                               git_commit, split_hash=sh, latency_ms=latency,
                               input_tokens=n_in, output_tokens=n_out, stop_reason=stop,
                               activation_summary=act_summary)
+            if step["prompt_hash"] != prompt_hash:
+                raise ContractError("prompt_sidecar_hash_mismatch", "step 与 prompt sidecar hash 不一致")
             append_record(steps_path, step)
             runstate.mark_item_done(run_id, f"{it['item_id']}:{seed}")
             hb.tick()
@@ -404,7 +567,9 @@ def run_items(pending_items, cfg: dict, seed: int, run_id: str, chash: str,
     run_dir = Path(run_dir)
     (run_dir / "activations").mkdir(parents=True, exist_ok=True)
     model, tok, info = models.load_model(cfg)          # ← torch 面（mock 点1）
+    _verify_runtime_evidence_binding(cfg, tok, info)
     system_prompt = build_system_prompt(cfg, None)
+    _verify_inline_prompt(cfg, tok, system_prompt)
     hook_spec = build_hook_spec(cfg, save_dir=run_dir / "activations")
     sh = split_hash_for(cfg)
     temperature = float(cfg.get("decoding", {}).get("temperature", 0.0))
@@ -414,12 +579,24 @@ def run_items(pending_items, cfg: dict, seed: int, run_id: str, chash: str,
                    status="running", finished_at=None, non_citable=True, batch_id=batch_id)
     for item_id in list(pending_items):
         rendered = render_prompt(tok, prompts.get(item_id, ""), system_prompt)
+        rendered_tokens = _verify_final_rendered_prompt(cfg, tok, item_id, rendered)
+        prompt_hash = hashlib.sha256(rendered.encode("utf-8")).hexdigest()
+        _append_prompt_sidecar_once(run_dir, {
+            "run_id": run_id, "item_id": item_id, "seed": seed, "random_seed": seed,
+            "config_hash": chash, "arm_id": cfg.get("arm_id"),
+            "condition": cfg.get("condition", "vanilla"), "prompt_text": rendered,
+            "prompt_hash": prompt_hash,
+            "system_prompt_hash": hashlib.sha256((system_prompt or "").encode("utf-8")).hexdigest(),
+            "template_hash": info.chat_template_hash, "token_count": rendered_tokens,
+        })
         text, n_in, n_out, stop = generate_once(         # ← torch 面（mock 点2）
             model, tok, rendered, temperature=temperature,
             max_new_tokens=max_new, hook_spec=hook_spec)
         step = build_step(run_id, item_id, text, cfg, seed, chash, rendered, info, git_commit,
                           split_hash=sh, latency_ms=0, input_tokens=n_in, output_tokens=n_out,
                           stop_reason=stop)
+        if step["prompt_hash"] != prompt_hash:
+            raise ContractError("prompt_sidecar_hash_mismatch", "step 与 prompt sidecar hash 不一致")
         append_step(item_id, step)
         mark_done(item_id)
     write_manifest(run_dir, run_id, cfg, chash, info, [seed], sh, git_commit,

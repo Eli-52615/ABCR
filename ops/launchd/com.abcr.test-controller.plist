@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>Label</key><string>com.abcr.test-controller</string>
-<key>ProgramArguments</key><array><string>/usr/local/libexec/abcr-launch</string><string>com.abcr.test-controller</string></array>
+<key>ProgramArguments</key><array><string>/usr/local/libexec/abcr-bootstrap-selector</string><string>test-controller</string></array>
 <key>QueueDirectories</key><array><string>/Library/Application Support/ABCR-Work/test/ready</string></array>
+<key>WorkingDirectory</key><string>/var/empty</string><key>Umask</key><integer>23</integer>
+<key>EnvironmentVariables</key><dict><key>PATH</key><string>/usr/bin:/bin</string><key>PYTHONDONTWRITEBYTECODE</key><string>1</string><key>PYTHONNOUSERSITE</key><string>1</string></dict>
 </dict></plist>

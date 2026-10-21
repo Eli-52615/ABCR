@@ -1,15 +1,63 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"abcr://dataset-manifest-v1",
-  "type":"object","additionalProperties":false,
-  "required":["schema_version","dataset_sha256","source_commit","source_path","source_sha256","item_count","split_counts"],
-  "properties":{
-    "schema_version":{"const":1},
-    "dataset_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
-    "source_commit":{"type":"string","pattern":"^[0-9a-f]{40,64}$"},
-    "source_path":{"type":"string","minLength":1},
-    "source_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
-    "item_count":{"type":"integer","minimum":1},
-    "split_counts":{"type":"object","additionalProperties":false,"required":["dev","cal","holdout"],"properties":{"dev":{"type":"integer","minimum":0},"cal":{"type":"integer","minimum":0},"holdout":{"type":"integer","minimum":0}}}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "abcr://dataset-manifest-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "dataset_sha256", "dataset_family", "source_commit",
+    "sources", "source_sha256", "item_count", "split_counts", "split_hash",
+    "files", "access_policy"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "dataset_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dataset_family": {"const": "ifeval_zh_v1"},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sources": {
+      "type": "array", "minItems": 2, "maxItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["source_path", "staged_name", "size", "sha256"],
+        "properties": {
+          "source_path": {"type": "string", "minLength": 1},
+          "staged_name": {"enum": ["benchmark.json", "split-source.json"]},
+          "size": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "item_count": {"const": 250},
+    "split_counts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dev", "calibration", "holdout"],
+      "properties": {
+        "dev": {"const": 42}, "calibration": {"const": 91},
+        "holdout": {"const": 117}
+      }
+    },
+    "split_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "files": {
+      "type": "array", "minItems": 2, "maxItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "size", "sha256"],
+        "properties": {
+          "path": {"enum": ["items.json", "split.json"]},
+          "size": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "access_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["owner", "group", "directory_mode", "file_mode", "readers", "must_deny"],
+      "properties": {
+        "owner": {"const": "root"}, "group": {"const": "abcr-dataset-read"},
+        "directory_mode": {"const": "0550"}, "file_mode": {"const": "0440"},
+        "readers": {"type": "array", "items": {"type": "string"}},
+        "must_deny": {"type": "array", "items": {"type": "string"}}
+      }
+    }
   }
 }

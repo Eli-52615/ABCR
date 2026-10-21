@@ -23,6 +23,11 @@ src/abcr.egg-info/
 /cloud-results/
 /cloud-results.tar.gz
 
+# ---- 最小快道（lab/）：代码入 git，运行时产物与本地封印密钥不入 ----
+# lab/fastlane/*.py 是源交付物，必须跟踪；lab/runs/ 是本机实验数据 + 自建
+# 封印密钥（见下条密钥政策），一律不入 git。
+/lab/runs/
+
 # ---- 密钥政策：真实密钥永不入 git；唯一豁免 fixtures/test_approval.key（AMENDMENT-34 测试专用确定性密钥）----
 /.env
 state/approval.key

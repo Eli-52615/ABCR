@@ -2,7 +2,7 @@
   "schema_version": 1,
   "default": {"risk": "human_required", "auto_release_eligible": false},
   "paths": {
-    "src/abcr/control/cards.py": {"risk": "normal", "auto_release_eligible": true, "required_external_oracle_ids": ["status-card-v1"]},
-    "src/abcr/control/doc_mirror.py": {"risk": "guarded", "auto_release_eligible": true, "required_external_oracle_ids": ["doc-marker-v1"]}
+    "src/abcr/control/cards.py": {"risk": "human_required", "auto_release_eligible": false, "required_external_oracle_ids": ["status-card-v1"]},
+    "src/abcr/control/doc_mirror.py": {"risk": "human_required", "auto_release_eligible": false, "required_external_oracle_ids": ["doc-marker-v1"]}
   }
 }

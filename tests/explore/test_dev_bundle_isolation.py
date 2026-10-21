@@ -22,7 +22,7 @@ from abcr.control.contracts import ContractError, canonical_json, sha256
 from abcr.control.ed25519 import generate_keypair
 from abcr.explore.item_pool import (DevBundleRef, SelectionRequest, build_dev_bundle,
                                     iter_bundle_items, verify_dev_bundle)
-from abcr.probe.contracts import ProbeRequest
+from abcr.probe.contracts import ProbePersona, ProbeRequest
 from abcr.probe.engine import FakeProbeEngine, run_probe
 from tests.explore.test_itempool_workflow import itempool_keys, sealed_bundle, sources
 
@@ -65,7 +65,9 @@ HOLDOUT_ITEMS = [{"item_id": "h1", "prompt": "secret hold"},
 
 
 def _probe_request(ref: DevBundleRef) -> ProbeRequest:
-    return ProbeRequest("P1", "a" * 64, ref, "p@v1", "careful", "increase", 1, "fixture")
+    return ProbeRequest("P1", "a" * 64, ref,
+                        (ProbePersona("p@v1", "careful"),),
+                        "increase", 1, "fixture")
 
 
 # --- 复审攻破的那个攻击,原样固化(本轮修复的靶心)----------------------------------

@@ -38,6 +38,7 @@ def run_items(
     item_ids: list[str],
     emit_step: Callable[[str, str], None],
     mark_done: Callable[[str], None],
+    output_for_item: Callable[[str], str] | None = None,
 ) -> None:
     """逐 item 执行。emit_step(item_id, output_text) 写 steps.jsonl（由调用方 dispatch 注入，
     含 48 字段组装）；mark_done(item_id) 落 runstate 断点。
@@ -60,7 +61,10 @@ def run_items(
             while True:                      # 停摆：进程活着，工作流死了
                 time.sleep(60)
         time.sleep(ITEM_SECONDS)
-        out = generate(item_id)
+        # Sealed DevBundle fixtures must not reopen golden10.  The caller may
+        # inject a deterministic non-citable output function while retaining
+        # every frozen crash/hang/skip/resume knob in this loop.
+        out = output_for_item(item_id) if output_for_item is not None else generate(item_id)
         if not skip_ledger:
             emit_step(item_id, out)
         if exit_wo_done:

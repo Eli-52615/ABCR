@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
+import pytest
+
 from abcr.audit.evidence import audit_evidence
 from abcr.control.ed25519 import generate_keypair
+from abcr.control.contracts import ContractError, sha256
 from abcr.control.cost_eta import estimate
 from abcr.control.doc_mirror import BEGIN, END, patch_marked_block
 from abcr.control.readmodel import build_snapshot
@@ -39,17 +42,35 @@ def test_exact_evidence_set_controls_citable(tmp_path):
               "prompt_hash": "p", "output_text": "x"} for i, s, c in keys]
     scores = [{"item_id": i, "random_seed": s, "condition": c} for i, s, c in keys]
     sidecars = [{"item_id": i, "random_seed": s, "condition": c} for i, s, c in keys]
-    result = audit_evidence(batch_id="b", item_ids=(item_id,), seeds=(1,),
+    core = {"goal_id": "G-fixture", "goal_hash": "a" * 64,
+            "goal_receipt_id": "receipt-fixture", "research_commit": "c" * 64,
+            "deployment_id": "fixture", "protocol_ref": "fixture-v1",
+            "item_ids": [item_id], "seeds": [1],
+            "arms": [{"id": "vanilla"}, {"id": "persona"}],
+            "dev_bundle_id": bundle.bundle_id}
+    envelope = dict(core, batch_id="EXP-" + sha256(core)[:20])
+    result = audit_evidence(batch_id=envelope["batch_id"], item_ids=(item_id,), seeds=(1,),
                             conditions=("vanilla", "persona"), steps=steps, scores=scores,
                             sidecars=sidecars, dev_bundle=bundle,
                             trusted_dev_bundle_root=tmp_path / "bundles",
                             bundle_sealer_public_key=sealer[1],
+                            compile_envelope=envelope,
                             auditor_private_key=auditor_key, auditor_public_key=auditor_pub)
     assert result.verdict == "PASS"
-    bad = audit_evidence(batch_id="b", item_ids=(item_id,), seeds=(1,),
+    bad = audit_evidence(batch_id=envelope["batch_id"], item_ids=(item_id,), seeds=(1,),
                          conditions=("vanilla", "persona"), steps=steps + [steps[0]], scores=scores,
                          sidecars=sidecars, dev_bundle=bundle,
                          trusted_dev_bundle_root=tmp_path / "bundles",
                          bundle_sealer_public_key=sealer[1],
+                         compile_envelope=envelope,
                          auditor_private_key=auditor_key, auditor_public_key=auditor_pub)
     assert bad.verdict == "FAIL" and "steps_duplicate_key" in bad.defects
+
+    with pytest.raises(ContractError) as excinfo:
+        audit_evidence(batch_id=envelope["batch_id"], item_ids=(item_id,), seeds=(1,),
+                       conditions=("vanilla", "persona"), steps=steps, scores=scores,
+                       sidecars=sidecars, dev_bundle=bundle,
+                       trusted_dev_bundle_root=tmp_path / "bundles",
+                       bundle_sealer_public_key=sealer[1],
+                       auditor_private_key=auditor_key, auditor_public_key=auditor_pub)
+    assert excinfo.value.code == "compile_envelope_required"

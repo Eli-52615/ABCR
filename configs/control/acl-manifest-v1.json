@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "authority_sha256": "40fd5fb21ff33d7da84648562c6dc12d68f15444dfea60379132af820510d0d1",
+  "path_ownership_contract": "configs/control/path-ownership-v1.json",
+  "installation_policy": {
+    "default": "deny",
+    "incremental_only": true,
+    "never_make_home_world_readable": true,
+    "named_parent_acl_permission": "search",
+    "live_mutation_requires": [
+      "root",
+      "reviewed_manifest_hash",
+      "all_principals_present",
+      "preflight_pass",
+      "post_install_positive_and_negative_probes"
+    ]
+  },
+  "work_stage_registry": "configs/control/work-stages-v1.json",
+  "positive_probes": [
+    "human_can_read_human_config",
+    "operator_can_write_control",
+    "panel_can_read_public_snapshot_only",
+    "probe_can_read_dev_bundle_and_write_lab",
+    "itempool_and_auditor_can_read_dataset",
+    "stage_consumer_can_claim_own_stage",
+    "builder_can_read_operator_exported_mission_input",
+    "verifier_can_read_test_result",
+    "activator_can_read_attestation_and_canary"
+  ],
+  "negative_probes": [
+    "candidate_cannot_read_test_results",
+    "operator_cannot_read_private_key",
+    "probe_cannot_read_dataset",
+    "builder_cannot_read_evidence",
+    "builder_cannot_write_operator_exported_mission_input",
+    "builder_codex_child_cannot_read_release_root",
+    "panel_cannot_write_control",
+    "consumer_cannot_cross_stage",
+    "service_cannot_list_home"
+  ]
+}

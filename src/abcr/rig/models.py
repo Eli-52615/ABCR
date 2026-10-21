@@ -9,6 +9,7 @@ Mac 结果一律 non-citable（MPS 数值怪癖）；正式证据要云 CUDA bf1
 from __future__ import annotations
 
 import hashlib
+import importlib.metadata
 import json
 import os
 from dataclasses import dataclass
@@ -31,6 +32,20 @@ TEMPLATE_SAMPLES = [
 
 SAMPLES_PATH = Path("data/benchmarks/chat_template_samples.json")
 
+# ``tokenizer_sha256`` is not a caller-assigned label.  It is the digest of this
+# exact, versioned measurement performed against the tokenizer object loaded by
+# the frozen runtime.  A profile produced by another algorithm is therefore not
+# silently comparable with this one.
+TOKENIZER_FINGERPRINT_SCHEMA = "abcr.transformers-tokenizer-fingerprint.v1"
+_TOKENIZER_PROBES = (
+    "",
+    "a",
+    " leading space",
+    "人格实验：保持精确。",
+    "line one\nline two",
+    "<|im_start|>user\nprobe<|im_end|>",
+)
+
 
 @dataclass
 class ModelInfo:
@@ -42,11 +57,109 @@ class ModelInfo:
     engine: str = "transformers"
     engine_version: str = ""
     torch_version: Optional[str] = None
+    tokenizer_sha256: Optional[str] = None
+    tokenizer_fingerprint_schema: Optional[str] = None
 
 
 def chat_template_hash(template: str) -> str:
     """sha256(tokenizer.chat_template.encode())——写入 manifest 与 step 记录。"""
     return hashlib.sha256(template.encode()).hexdigest()
+
+
+def _plain_special_tokens(value: Any) -> Any:
+    """Convert the public special-token map to deterministic JSON values.
+
+    Hugging Face normally exposes strings/lists here.  ``AddedToken`` values are
+    accepted explicitly, but arbitrary object ``repr`` is never hashed because it
+    can contain an address or mutable implementation detail.
+    """
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, (list, tuple)):
+        return [_plain_special_tokens(item) for item in value]
+    if isinstance(value, dict):
+        if not all(isinstance(key, str) for key in value):
+            raise ValueError("tokenizer special_tokens_map key is not a string")
+        return {key: _plain_special_tokens(item) for key, item in value.items()}
+    content = getattr(value, "content", None)
+    if isinstance(content, str):
+        return {
+            "content": content,
+            "single_word": bool(getattr(value, "single_word", False)),
+            "lstrip": bool(getattr(value, "lstrip", False)),
+            "rstrip": bool(getattr(value, "rstrip", False)),
+            "normalized": bool(getattr(value, "normalized", False)),
+            "special": bool(getattr(value, "special", False)),
+        }
+    raise ValueError("tokenizer special_tokens_map contains an unsupported object")
+
+
+def _package_version(name: str) -> str:
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return "unavailable"
+
+
+def tokenizer_identity_sha256(tokenizer: Any) -> Optional[str]:
+    """Measure the exact-token tokenizer identity used by the running process.
+
+    Production exact-token qualification is intentionally limited to a fast
+    tokenizer whose complete Rust backend can be serialized.  Vocabulary-only or
+    class-name fingerprints are insufficient: normalizer/pre-tokenizer/decoder
+    drift can change tokenization without changing a vocabulary.  Slow or opaque
+    tokenizers return ``None`` so ③L remains fail-closed.
+
+    The backend bytes are supplemented by wrapper class, frozen library versions,
+    special-token roles, and several no-special-token encodings.  Consequently a
+    different tokenizer is rejected even when it happens to return the same count
+    for every item in a particular experiment.
+    """
+    backend = getattr(tokenizer, "backend_tokenizer", None)
+    serialize = getattr(backend, "to_str", None)
+    if not callable(serialize):
+        return None
+    try:
+        backend_text = serialize()
+    except Exception:
+        return None
+    if not isinstance(backend_text, str) or not backend_text:
+        return None
+    encode = getattr(tokenizer, "encode", None)
+    if not callable(encode):
+        return None
+    probe_ids: dict[str, list[int]] = {}
+    try:
+        for probe in _TOKENIZER_PROBES:
+            try:
+                ids = encode(probe, add_special_tokens=False)
+            except TypeError:
+                # An opaque wrapper that cannot prove special tokens were disabled
+                # is not qualified for exact-token evidence.
+                return None
+            if (not isinstance(ids, (list, tuple))
+                    or any(isinstance(item, bool) or not isinstance(item, int)
+                           for item in ids)):
+                return None
+            probe_ids[probe] = list(ids)
+        specials = _plain_special_tokens(
+            getattr(tokenizer, "special_tokens_map", {}) or {})
+    except (TypeError, ValueError):
+        return None
+    cls = type(tokenizer)
+    payload = {
+        "schema": TOKENIZER_FINGERPRINT_SCHEMA,
+        "implementation": f"{cls.__module__}.{cls.__qualname__}",
+        "transformers_version": _package_version("transformers"),
+        "tokenizers_version": _package_version("tokenizers"),
+        "backend_sha256": hashlib.sha256(backend_text.encode("utf-8")).hexdigest(),
+        "backend_utf8_bytes": len(backend_text.encode("utf-8")),
+        "special_tokens_map": specials,
+        "encode_without_special_tokens": probe_ids,
+    }
+    raw = json.dumps(payload, ensure_ascii=False, sort_keys=True,
+                     separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def render_samples(tokenizer) -> list[dict]:
@@ -151,10 +264,13 @@ def load_model_by_id(model_id: str, revision: Optional[str], device: Optional[st
     model.eval()
 
     ct_hash = chat_template_hash(tokenizer.chat_template) if tokenizer.chat_template else ""
+    tokenizer_hash = tokenizer_identity_sha256(tokenizer)
     info = ModelInfo(model_id=model_id, revision=recorded_revision or "local",
                      chat_template_hash=ct_hash, dtype=dtype, device=device,
                      engine="transformers", engine_version=transformers.__version__,
-                     torch_version=torch.__version__)
+                     torch_version=torch.__version__, tokenizer_sha256=tokenizer_hash,
+                     tokenizer_fingerprint_schema=(TOKENIZER_FINGERPRINT_SCHEMA
+                                                   if tokenizer_hash is not None else None))
     return model, tokenizer, info
 
 

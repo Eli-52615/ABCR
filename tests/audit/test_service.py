@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 from abcr.audit.service import AuditServiceConfig, AuditServiceError, doctor, load_config, run
+from abcr.control.contracts import sha256
 from abcr.control.ed25519 import generate_keypair
 from abcr.control.work_spool import WorkSpool
 from abcr.explore.item_pool import SelectionRequest, build_dev_bundle
@@ -37,8 +38,19 @@ def _payload(bundle):
     keys = [(bundle.item_ids[0], 1, "vanilla"), (bundle.item_ids[0], 1, "persona")]
     rows = [{"item_id": item, "random_seed": seed, "condition": condition}
             for item, seed, condition in keys]
+    envelope_core = {
+        "goal_id": "goal-audit-fixture", "goal_hash": "a" * 64,
+        "goal_receipt_id": "receipt-audit-fixture", "research_commit": "b" * 40,
+        "deployment_id": "fixture", "protocol_ref": "protocol-fixture",
+        "item_ids": list(bundle.item_ids), "seeds": [1],
+        "arms": [{"id": "vanilla"}, {"id": "persona"}],
+        "dev_bundle_id": bundle.bundle_id,
+    }
+    compile_envelope = {
+        **envelope_core, "batch_id": "EXP-" + sha256(envelope_core)[:20]}
     return {
-        "batch_id": "batch-1", "item_ids": list(bundle.item_ids), "seeds": [1],
+        "batch_id": compile_envelope["batch_id"],
+        "item_ids": list(bundle.item_ids), "seeds": [1],
         "conditions": ["vanilla", "persona"],
         "steps": [{**row, "prompt_hash": "prompt", "output_text": "answer"}
                   for row in rows],
@@ -47,6 +59,7 @@ def _payload(bundle):
                        "manifest_hash": bundle.manifest_hash,
                        "item_ids": list(bundle.item_ids),
                        "source_hash": bundle.source_hash},
+        "compile_envelope": compile_envelope,
     }
 
 

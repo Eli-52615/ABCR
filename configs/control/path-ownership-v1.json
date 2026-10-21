@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "authority_sha256": "40fd5fb21ff33d7da84648562c6dc12d68f15444dfea60379132af820510d0d1",
+  "policy": {
+    "default": "deny",
+    "symlinks": "forbid",
+    "hardlinks": "single_link_regular_files_only",
+    "mount_crossing": "forbid_within_sealed_tree",
+    "parent_traversal": "named_acl_search_only",
+    "production_mutation": "root_installer_only"
+  },
+  "principals": [
+    "abcr-human",
+    "abcr-operator",
+    "abcr-probe",
+    "abcr-itempool",
+    "abcr-auditor",
+    "abcr-builder",
+    "abcr-candidate",
+    "abcr-verifier",
+    "abcr-canary",
+    "abcr-activator",
+    "abcr-panel"
+  ],
+  "roots": [
+    {
+      "path": "/Users/abcr-human/Library/Application Support/ABCR-Human",
+      "owner": "abcr-human",
+      "group": "abcr-human",
+      "directory_mode": "0700",
+      "writers": ["abcr-human"],
+      "readers": ["abcr-human"],
+      "must_deny": ["abcr-operator", "abcr-panel", "superagent"]
+    },
+    {
+      "path": "/Users/superagent/Library/Application Support/ABCR-Control",
+      "owner": "abcr-operator",
+      "group": "abcr-panel-read",
+      "directory_mode": "0750",
+      "writers": ["abcr-operator"],
+      "readers": ["abcr-operator", "abcr-panel"],
+      "reader_scope": {"abcr-panel": ["public-snapshot.json"]},
+      "must_deny": ["abcr-human", "abcr-builder", "abcr-candidate"]
+    },
+    {
+      "path": "/Users/superagent/Library/Application Support/ABCR-Evidence",
+      "owner": "abcr-operator",
+      "group": "abcr-auditor-read",
+      "directory_mode": "0750",
+      "writers": ["abcr-operator"],
+      "readers": ["abcr-operator", "abcr-auditor"],
+      "must_deny": ["abcr-panel", "abcr-probe", "abcr-builder", "abcr-candidate"]
+    },
+    {
+      "path": "/Users/superagent/Library/Application Support/ABCR-Research",
+      "owner": "abcr-operator",
+      "group": "abcr-research-read",
+      "directory_mode": "0750",
+      "writers": ["abcr-operator"],
+      "readers": ["abcr-operator", "abcr-auditor"],
+      "must_deny": ["abcr-probe", "abcr-builder", "abcr-candidate"]
+    },
+    {
+      "path": "/Users/abcr-probe/Library/Application Support/ABCR-Lab",
+      "owner": "abcr-probe",
+      "group": "abcr-lab-read",
+      "directory_mode": "0750",
+      "writers": ["abcr-probe"],
+      "readers": ["abcr-probe", "abcr-operator", "abcr-auditor"],
+      "must_deny": ["abcr-panel", "abcr-builder", "abcr-candidate"]
+    },
+    {
+      "path": "/Library/Application Support/ABCR-DevBundles",
+      "owner": "root",
+      "group": "abcr-devread",
+      "directory_mode": "0750",
+      "file_mode": "0440",
+      "writers": ["root"],
+      "readers": ["abcr-itempool", "abcr-operator", "abcr-probe", "abcr-auditor"],
+      "must_deny": ["abcr-builder", "abcr-candidate", "abcr-panel"]
+    },
+    {
+      "path": "/Library/Application Support/ABCR-Datasets",
+      "owner": "root",
+      "group": "abcr-dataset-read",
+      "directory_mode": "0550",
+      "file_mode": "0440",
+      "writers": ["root"],
+      "readers": ["abcr-itempool", "abcr-auditor"],
+      "must_deny": ["abcr-operator", "abcr-probe", "abcr-builder", "abcr-candidate", "abcr-panel"]
+    },
+    {
+      "path": "/Library/Application Support/ABCR-Work",
+      "owner": "root",
+      "group": "wheel",
+      "directory_mode": "0755",
+      "stages_from": "configs/control/work-stages-v1.json",
+      "mutation": "broker_only",
+      "must_deny_cross_stage": true
+    },
+    {
+      "path": "/Library/Application Support/ABCR-Trust",
+      "owner": "root",
+      "group": "wheel",
+      "directory_mode": "0555",
+      "file_mode": "0444",
+      "writers": ["root"],
+      "readers": ["all_abcr_principals"]
+    },
+    {
+      "path": "/Library/Application Support/ABCR-Bootstrap",
+      "owner": "root",
+      "group": "wheel",
+      "directory_mode": "0755",
+      "children": {
+        "config": {"owner": "root", "group": "wheel", "mode": "0755", "file_mode": "0440", "file_group": "target_service"},
+        "keys": {"owner": "root", "group": "wheel", "mode": "0700"},
+        "seal-broker": {"owner": "root", "group": "wheel", "mode": "0700"},
+        "components": {"owner": "root", "group": "wheel", "mode": "0755", "slots": ["slot-a", "slot-b"], "pointers": ["active-slot.json", "last-known-good.json"]},
+        "staging": {"owner": "root", "group": "wheel", "mode": "0700", "per_operation_owner": true}
+      },
+      "production_install": "sealed_release_receipt_only"
+    },
+    {
+      "path": "/Library/Application Support/ABCR-Bridge",
+      "owner": "root",
+      "group": "wheel",
+      "directory_mode": "0755",
+      "children": {
+        "operator-to-human": {"owner": "abcr-operator", "group": "abcr-human", "mode": "0750"},
+        "human-to-operator": {"owner": "abcr-human", "group": "abcr-operator", "mode": "0750"},
+        "operator-status": {"owner": "abcr-operator", "group": "abcr-human", "mode": "0750"}
+      }
+    },
+    {
+      "path": "/Library/Application Support/ABCR-Attest",
+      "owner": "root",
+      "group": "wheel",
+      "directory_mode": "0755",
+      "children": {
+        "test-results": {"owner": "root", "group": "abcr-verifier", "mode": "0750", "sealed_tree_mode": "0550"},
+        "attestations": {"owner": "root", "group": "abcr-activator", "mode": "0750", "sealed_tree_mode": "0550"},
+        "audit-results": {"owner": "root", "group": "abcr-operator", "mode": "0750", "sealed_tree_mode": "0550"},
+        "canary-results": {"owner": "root", "group": "abcr-activator", "mode": "0750", "sealed_tree_mode": "0550"},
+        "release-receipts": {"owner": "root", "group": "abcr-release-read", "mode": "0750", "file_mode": "0440"},
+        "generic-attestations": {"owner": "root", "group": "abcr-release-read", "mode": "0750", "sealed_tree_mode": "0550"}
+      }
+    },
+    {
+      "path": "/Library/Application Support/ABCR-ApprovalBundles",
+      "owner": "root",
+      "group": "abcr-human",
+      "directory_mode": "0550",
+      "sealed_tree_mode": "0550",
+      "writers": ["root"],
+      "readers": ["abcr-human"]
+    },
+    {
+      "path": "/Users/superagent/.abcr/releases",
+      "owner": "root",
+      "group": "abcr-release-read",
+      "directory_mode": "0750",
+      "sealed_tree_mode": "0550",
+      "writers": ["root"],
+      "readers": [
+        "root", "abcr-human", "abcr-operator", "abcr-probe", "abcr-itempool",
+        "abcr-auditor", "abcr-builder", "abcr-verifier", "abcr-canary",
+        "abcr-activator", "abcr-panel"
+      ],
+      "reader_scope": "immutable code/runtime/receipt bytes after release scientific-data exclusion; no dataset, key, evidence or mutable research roots",
+      "untrusted_child_boundary": {
+        "mission_codex": "Seatbelt must deny RELEASE_ROOT and expose only the operator-exported mission input, candidate tree, qualified adapter runtime and tmp",
+        "abcr-candidate": "runs only from the controller copy and must not traverse RELEASE_ROOT"
+      },
+      "must_deny": ["abcr-candidate"]
+    },
+    {
+      "path": "/Users/superagent/.abcr-build",
+      "owner": "root",
+      "group": "wheel",
+      "directory_mode": "0711",
+      "children": {
+        "candidates": {"owner": "abcr-builder", "group": "abcr-builder", "mode": "0700", "mutation": "builder_then_broker_seal"},
+        "candidate-runs": {"owner": "root", "group": "wheel", "mode": "0711", "mutation": "root_test_controller_only"},
+        "mission-inputs": {
+          "owner": "abcr-operator", "group": "abcr-builder-input", "mode": "0750",
+          "sealed_directory_mode": "0550", "file_mode": "0440",
+          "writers": ["abcr-operator"], "readers": ["abcr-operator", "abcr-builder"],
+          "must_deny": ["abcr-candidate", "abcr-verifier", "abcr-panel"]
+        }
+      },
+      "phase_acl_required": true,
+      "canonical_git_must_be_unreachable": true
+    },
+    {
+      "path": "/var/run/abcr-seal-broker.sock",
+      "owner": "root",
+      "group": "abcr-broker-clients",
+      "mode": "0660",
+      "type": "unix_socket",
+      "creator": "launchd",
+      "peer_credentials_required": true
+    }
+  ],
+  "parent_traverse_roots": [
+    "/Users/superagent",
+    "/Users/superagent/Library",
+    "/Users/superagent/Library/Application Support",
+    "/Users/superagent/.abcr",
+    "/Users/superagent/.abcr-build"
+  ],
+  "negative_probes": [
+    "candidate_cannot_read_test_results",
+    "candidate_cannot_write_source_or_result_spool",
+    "operator_cannot_read_human_private_key",
+    "probe_cannot_read_dataset",
+    "builder_cannot_read_evidence_or_attest",
+    "builder_reads_only_operator_exported_mission_input",
+    "builder_codex_child_cannot_read_release_root",
+    "panel_cannot_read_control_db_or_write_snapshot",
+    "cross_stage_work_access_denied",
+    "service_cannot_list_superagent_home"
+  ]
+}

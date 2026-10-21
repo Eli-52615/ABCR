@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "templates": {
-    "behavior_probe": {"status": "ready", "min_arms": 2},
-    "persona_control": {"status": "ready", "min_arms": 2},
-    "component_ablation": {"status": "ready", "min_arms": 3},
-    "dose_response": {"status": "ready", "min_arms": 3},
-    "robustness": {"status": "ready", "min_arms": 2},
-    "persona_task_match": {"status": "ready", "min_arms": 2},
-    "light_agentic": {"status": "ready", "min_arms": 2},
-    "internal_mediation": {"status": "ready", "min_arms": 3},
-    "confirmation": {"status": "ready", "min_arms": 2}
+    "behavior_probe": {"status": "ready", "min_arms": 2, "length_control_policy": "optional"},
+    "persona_control": {"status": "ready", "min_arms": 2, "length_control_policy": "required"},
+    "component_ablation": {"status": "ready", "min_arms": 3, "length_control_policy": "required"},
+    "dose_response": {"status": "ready", "min_arms": 3, "length_control_policy": "required"},
+    "robustness": {"status": "ready", "min_arms": 2, "length_control_policy": "optional"},
+    "persona_task_match": {"status": "ready", "min_arms": 2, "length_control_policy": "optional"},
+    "light_agentic": {"status": "unavailable", "min_arms": 2, "length_control_policy": "optional", "reason": "reviewed agent runtime is not implemented"},
+    "internal_mediation": {"status": "unavailable", "min_arms": 3, "length_control_policy": "optional", "reason": "reviewed mediation instrumentation is not implemented"},
+    "confirmation": {"status": "unavailable", "min_arms": 2, "length_control_policy": "optional", "reason": "confirmatory holdout and cloud evidence gate are not implemented"}
   }
 }

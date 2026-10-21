@@ -27,12 +27,22 @@ from abcr.explore.compiler import (
 )
 from abcr.explore.item_pool import SelectionRequest, build_dev_bundle
 from abcr.explore.rounds import build_round_report, next_goal_draft
+from tests.explore.test_goal_persona import behavior_probe_goal
 from tests.explore.test_itempool_workflow import (itempool_keys, registry, sealed_bundle,
-                                                  sources, valid_goal)
+                                                  sources)
 from abcr.explore.goal import validate_goal
 
 FAKE = "0" * 64
 BATCH = "EXP-victim"
+
+
+def fixture_compile_envelope(bundle, item_ids, seeds, conditions, *, goal_id="G1"):
+    core = {"goal_id": goal_id, "goal_hash": "a" * 64, "goal_receipt_id": "receipt-fixture",
+            "research_commit": "c" * 64, "deployment_id": "fixture",
+            "protocol_ref": "fixture-v1", "item_ids": list(item_ids), "seeds": list(seeds),
+            "arms": [{"id": condition} for condition in conditions],
+            "dev_bundle_id": bundle.bundle_id}
+    return dict(core, batch_id="EXP-" + sha256(core)[:20])
 
 
 # --------------------------------------------------------------------------
@@ -68,11 +78,13 @@ def genuine_audit(tmp_path, auditor_keys):
     steps = [{"item_id": i, "random_seed": s, "condition": c,
               "prompt_hash": "p", "output_text": "x"} for i, s, c in keys]
     rows = [{"item_id": i, "random_seed": s, "condition": c} for i, s, c in keys]
-    return audit_evidence(batch_id=BATCH, item_ids=(item_id,), seeds=(1,),
+    envelope = fixture_compile_envelope(bundle, (item_id,), (1,), ("vanilla", "persona"))
+    return audit_evidence(batch_id=envelope["batch_id"], item_ids=(item_id,), seeds=(1,),
                           conditions=("vanilla", "persona"), steps=steps, scores=rows,
                           sidecars=rows, dev_bundle=bundle,
                           trusted_dev_bundle_root=tmp_path / "bundles",
                           bundle_sealer_public_key=sealer[1],
+                          compile_envelope=envelope,
                           auditor_private_key=private, auditor_public_key=public)
 
 
@@ -153,11 +165,13 @@ def test_genuine_fail_verdict_is_quarantined(tmp_path, auditor_keys):
     steps = [{"item_id": i, "random_seed": s, "condition": c,
               "prompt_hash": "p", "output_text": "x"} for i, s, c in keys]
     rows = [{"item_id": i, "random_seed": s, "condition": c} for i, s, c in keys]
-    audit = audit_evidence(batch_id=BATCH, item_ids=(item_id,), seeds=(1,),
+    envelope = fixture_compile_envelope(bundle, (item_id,), (1,), ("vanilla", "persona"))
+    audit = audit_evidence(batch_id=envelope["batch_id"], item_ids=(item_id,), seeds=(1,),
                            conditions=("vanilla", "persona"), steps=steps + [steps[0]],
                            scores=rows, sidecars=rows, dev_bundle=bundle,
                            trusted_dev_bundle_root=tmp_path / "bundles",
                            bundle_sealer_public_key=sealer[1],
+                           compile_envelope=envelope,
                            auditor_private_key=private, auditor_public_key=public)
     assert audit.verdict == "FAIL"
     result = report(audit, public)
@@ -246,11 +260,12 @@ def test_auditor_cannot_issue_unsigned_attestation(tmp_path):
     bundle = sealed_bundle(SelectionRequest("s", "a" * 64, 1, 1),
                            dataset_path=dataset, split_path=split,
                            output_root=tmp_path / "bundles", keys=sealer)
+    envelope = fixture_compile_envelope(bundle, bundle.item_ids, (1,), ("vanilla",))
     with pytest.raises(ContractError) as excinfo:
-        audit_evidence(batch_id=BATCH, item_ids=bundle.item_ids, seeds=(1,),
+        audit_evidence(batch_id=envelope["batch_id"], item_ids=bundle.item_ids, seeds=(1,),
                        conditions=("vanilla",), steps=[], scores=[], sidecars=[],
                        dev_bundle=bundle, trusted_dev_bundle_root=tmp_path / "bundles",
-                       bundle_sealer_public_key=sealer[1])
+                       bundle_sealer_public_key=sealer[1], compile_envelope=envelope)
     assert excinfo.value.code == "auditor_key_missing"
 
 
@@ -271,10 +286,11 @@ def test_batch_id_binding_preserved(genuine_audit, auditor_keys):
 
 @pytest.fixture
 def candidate(tmp_path):
-    goal = validate_goal(valid_goal()).goal
+    goal = validate_goal(behavior_probe_goal()).goal
     assert goal
     return goal, prepare_goal_anchor(goal, research_commit="c" * 64,
-                                     relative_path="goals/g.yaml", confirmed_by="owner")
+                                     relative_path="goals/g.yaml", confirmed_by="owner",
+                                     deployment_id="fixture", protocol_ref="W1-V1")
 
 
 def test_forged_frozen_receipt_rejected(candidate, auditor_keys):
@@ -341,19 +357,20 @@ def compiled_audit(tmp_path, auditor_keys):
     sealer = itempool_keys(tmp_path)
     rpriv, rpub = tmp_path / "r.key", tmp_path / "r.pub"
     generate_keypair(rpriv, rpub)
-    goal = validate_goal(valid_goal()).goal
+    goal = validate_goal(behavior_probe_goal()).goal
     assert goal
     bundle = sealed_bundle(SelectionRequest("S", goal.goal_hash, goal.item_count, goal.seeds[0]),
                            dataset_path=dataset, split_path=split,
                            output_root=tmp_path / "bundles", keys=sealer)
     cand = prepare_goal_anchor(goal, research_commit="c" * 64, relative_path="goals/g.yaml",
-                               confirmed_by="owner")
+                               confirmed_by="owner", deployment_id="fixture",
+                               protocol_ref="W1-V1")
     receipt = sign_frozen_receipt(ArtifactFrozenReceipt("R1", goal.goal_hash, "c" * 64, "now"),
                                   private_key=rpriv, public_key=rpub)
     anchor = freeze_goal(cand, receipt, receipt_public_key=rpub)
     compiled = compile_goal(goal, anchor, bundle, registry(), protocol_ref="W1-V1",
                             trusted_dev_bundle_root=tmp_path / "bundles",
-                            bundle_sealer_public_key=sealer[1])
+                            bundle_sealer_public_key=sealer[1], deployment_id="fixture")
     env = compiled.envelope
     keys = [(i, s, a["id"]) for i in env["item_ids"] for s in env["seeds"] for a in env["arms"]]
     steps = [{"item_id": i, "random_seed": s, "condition": c, "prompt_hash": "p",
@@ -364,6 +381,7 @@ def compiled_audit(tmp_path, auditor_keys):
                            steps=steps, scores=rows, sidecars=rows, dev_bundle=bundle,
                            trusted_dev_bundle_root=tmp_path / "bundles",
                            bundle_sealer_public_key=sealer[1],
+                           compile_envelope=env,
                            auditor_private_key=apriv, auditor_public_key=apub)
     return audit, env, apub
 
@@ -446,9 +464,10 @@ def test_narrative_is_structurally_unauthenticated(genuine_audit, auditor_keys):
     assert r.narrative_authenticated is False
     assert set(r.attested_evidence) == {
         "batch_id", "expected_keys_hash", "steps_hash", "scores_hash", "sidecars_hash",
-        "verdict", "defects", "created_at", "attestation_hash"}
-    # 叙事字段与 goal_id 关联都不在被认证表面里。
-    for leaked in ("observations", "interpretations", "limitations", "goal_id", "suggestions"):
+        "verdict", "defects", "created_at", "attestation_hash", "goal_id",
+        "compile_envelope_sha256"}
+    # goal_id/envelope 绑定在认证面内；可自由措辞的叙事仍不在。
+    for leaked in ("observations", "interpretations", "limitations", "suggestions"):
         assert leaked not in r.attested_evidence
 
 
@@ -469,16 +488,11 @@ def test_empty_narrative_null_effect_still_citable(genuine_audit, auditor_keys):
     assert r.citable is True and r.status == "reported"
 
 
-def test_without_binding_goal_association_marked_unverified(genuine_audit, auditor_keys):
-    """残余边界如实标注:未提供 compile envelope 时 goal 关联未经认证。
-
-    这是本次修复在 rounds.py 内可达的诚实边界 —— 让 goal 绑定**强制**(缺证明即
-    不可引用)需要让 compile envelope 贯穿所有调用点(audit/evidence.py 的
-    attestation core 不含 goal_id),属跨文件协调。此路径下绝不静默背书。
-    """
+def test_signed_attestation_carries_binding_when_argument_omitted(genuine_audit, auditor_keys):
+    """调用方不另传 envelope 时只可使用 auditor 随证明携带的同一份已签摘要信封。"""
     _, public = auditor_keys
-    r = report(genuine_audit, public)  # 无 compile_envelope
-    assert r.goal_binding_verified is False
+    r = report(genuine_audit, public)
+    assert r.goal_binding_verified is True
     assert r.narrative_authenticated is False
 
 

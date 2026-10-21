@@ -14,6 +14,7 @@ from abcr.control.release import activate_release, prepare_release, stage_releas
 from abcr.control.seal_broker import SealBroker
 from abcr.control.verifier import VerificationAttestation
 from abcr.control.worktree import export_plain_tree, reconstruct_diff, scan_tree, tree_hash
+from tests.control.release_fixture_support import add_bootstrap_payload
 
 SANDBOXED = "sandbox-exec:" + "e" * 64
 ROOT = Path(__file__).resolve().parents[2]
@@ -33,6 +34,7 @@ def add_release_material(path):
     topology = path / "configs/control/service-topology-v1.json"
     topology.parent.mkdir(parents=True)
     topology.write_bytes((ROOT / "configs/control/service-topology-v1.json").read_bytes())
+    add_bootstrap_payload(path)
 
 
 def identity(tmp_path) -> SigningIdentity:

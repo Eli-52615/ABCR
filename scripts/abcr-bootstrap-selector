@@ -1,0 +1,328 @@
+#!/usr/bin/env python3
+"""Minimal dual-slot selector for the three root bootstrap TCB components.
+
+The selector is the deliberately tiny, stable outer bootstrap.  Slot records
+only point at bytes inside a broker-sealed release.  A candidate slot must pass
+byte validation and the component's frozen ``--doctor`` before it becomes the
+last-known-good slot.  A failed candidate is rolled back without calling the
+candidate seal broker.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import stat
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+from pathlib import PurePosixPath
+from typing import Any, Callable
+
+EX_CONFIG = 78
+DEFAULT_COMPONENT_ROOT = Path("/Library/Application Support/ABCR-Bootstrap/components")
+DEFAULT_RELEASE_ROOT = Path("/Users/superagent/.abcr/releases")
+DEFAULT_RECEIPT_ROOT = Path("/Library/Application Support/ABCR-Attest/release-receipts")
+COMPONENTS = {
+    "launcher": {"target": "scripts/abcr-launch", "module": None},
+    "seal-broker": {"module": "abcr.control.seal_broker"},
+    "test-controller": {"module": "abcr.control.test_controller"},
+}
+
+
+class SelectorBlocked(RuntimeError):
+    pass
+
+
+def _canonical(value: Any) -> bytes:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+                      allow_nan=False).encode("utf-8")
+
+
+def _digest(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _safe_relpath(value: Any) -> str:
+    if not isinstance(value, str) or not value or "\\" in value:
+        raise SelectorBlocked("invalid slot relative path")
+    pure = PurePosixPath(value)
+    if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):
+        raise SelectorBlocked("invalid slot relative path")
+    return pure.as_posix()
+
+
+def _unique(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise SelectorBlocked("duplicate JSON key")
+        result[key] = value
+    return result
+
+
+def _secure_dir(path: Path, owner_uid: int) -> None:
+    info = path.lstat()
+    if (not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode)
+            or info.st_uid != owner_uid or stat.S_IMODE(info.st_mode) & 0o022):
+        raise SelectorBlocked("unsafe bootstrap directory")
+
+
+def _read_regular(path: Path, owner_uid: int, *, executable: bool = False,
+                  max_bytes: int = 8 * 1024 * 1024) -> bytes:
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(path, flags)
+    try:
+        before = os.fstat(fd)
+        mode = stat.S_IMODE(before.st_mode)
+        if (not stat.S_ISREG(before.st_mode) or before.st_nlink != 1
+                or before.st_uid != owner_uid or mode & 0o022
+                or (executable and not mode & 0o111) or before.st_size > max_bytes):
+            raise SelectorBlocked("unsafe bootstrap file")
+        chunks: list[bytes] = []
+        remaining = before.st_size + 1
+        while remaining:
+            chunk = os.read(fd, min(1024 * 1024, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        raw = b"".join(chunks)
+        after = os.fstat(fd)
+        identity = lambda item: (item.st_dev, item.st_ino, item.st_size, item.st_nlink,
+                                 item.st_uid, stat.S_IMODE(item.st_mode))
+        if len(raw) != before.st_size or identity(before) != identity(after):
+            raise SelectorBlocked("bootstrap file changed while reading")
+        return raw
+    finally:
+        os.close(fd)
+
+
+def _read_json(path: Path, owner_uid: int, *,
+               max_bytes: int = 8 * 1024 * 1024) -> dict[str, Any]:
+    try:
+        value = json.loads(_read_regular(path, owner_uid, max_bytes=max_bytes).decode("utf-8"),
+                           object_pairs_hook=_unique,
+                           parse_constant=lambda value: (_ for _ in ()).throw(ValueError(value)))
+    except (UnicodeDecodeError, ValueError, json.JSONDecodeError) as exc:
+        raise SelectorBlocked("invalid bootstrap JSON") from exc
+    if not isinstance(value, dict):
+        raise SelectorBlocked("bootstrap JSON must be an object")
+    return value
+
+
+def _pointer(component: str, path: Path, owner_uid: int) -> dict[str, Any]:
+    value = _read_json(path, owner_uid)
+    if (set(value) != {"schema_version", "component", "slot", "generation", "probation"}
+            or value["schema_version"] != 1 or value["component"] != component
+            or value["slot"] not in {"slot-a", "slot-b"}
+            or type(value["generation"]) is not int or value["generation"] < 1
+            or type(value["probation"]) is not bool):
+        raise SelectorBlocked("invalid slot pointer")
+    return value
+
+
+def _slot(component: str, pointer: dict[str, Any], *, component_root: Path,
+          release_root: Path, receipt_root: Path, owner_uid: int
+          ) -> tuple[list[str], dict[str, str]]:
+    component_dir = component_root / component
+    _secure_dir(component_dir, owner_uid)
+    slot_dir = component_dir / pointer["slot"]
+    _secure_dir(slot_dir, owner_uid)
+    record = _read_json(slot_dir / "slot.json", owner_uid)
+    required = {"schema_version", "component", "generation", "release_id", "receipt_id",
+                "target_relpath", "target_sha256", "python_relpath", "python_sha256",
+                "module", "payload_tree_hash"}
+    spec = COMPONENTS[component]
+    if (set(record) != required or record["schema_version"] != 1
+            or record["component"] != component
+            or record["generation"] != pointer["generation"]
+            or record["module"] != spec["module"]):
+        raise SelectorBlocked("slot record does not bind the pointer")
+    release_id, receipt_id = record["release_id"], record["receipt_id"]
+    if (not isinstance(release_id, str) or not release_id.startswith("REL-")
+            or len(release_id) != 68 or any(ch not in "0123456789abcdef" for ch in release_id[4:])
+            or not isinstance(receipt_id, str) or len(receipt_id) != 64
+            or any(ch not in "0123456789abcdef" for ch in receipt_id)):
+        raise SelectorBlocked("invalid slot release identity")
+    release = release_root / release_id
+    _secure_dir(release_root, owner_uid); _secure_dir(release, owner_uid)
+    receipt = _read_json(receipt_root / f"{receipt_id}.json", owner_uid)
+    core = {"operation": receipt.get("operation"), "nonce": receipt.get("nonce"),
+            "tree_hash": receipt.get("tree_hash"), "object_id": receipt.get("object_id")}
+    if (_digest(_canonical(core)) != receipt_id or receipt.get("receipt_id") != receipt_id
+            or core["operation"] != "seal_release" or core["object_id"] != release_id
+            or receipt.get("sealed_path") != str(release)):
+        raise SelectorBlocked("slot release receipt mismatch")
+    # 同上:manifest 约 23 MiB,默认 8 MiB 上限会让三个组件都选不出 slot。
+    manifest = _read_json(release / "release-manifest.json", owner_uid,
+                          max_bytes=128 * 1024 * 1024)
+    if manifest.get("release_id") != release_id:
+        raise SelectorBlocked("slot release manifest mismatch")
+    if component == "launcher":
+        if (record["target_relpath"] != COMPONENTS["launcher"]["target"]
+                or record["python_relpath"] is not None
+                or record["python_sha256"] is not None
+                or record["payload_tree_hash"] is not None):
+            raise SelectorBlocked("launcher slot record is not frozen")
+    else:
+        payloads = manifest.get("service_payloads")
+        payload = payloads.get(record["module"]) if isinstance(payloads, dict) else None
+        if (not isinstance(payload, dict)
+                or record["target_relpath"] != payload.get("module_relpath")
+                or record["target_sha256"] != payload.get("module_sha256")
+                or record["python_relpath"] != payload.get("python_relpath")
+                or record["python_sha256"] != payload.get("python_sha256")
+                or record["payload_tree_hash"] != payload.get("payload_tree_hash")):
+            raise SelectorBlocked("slot record is not bound to service payload manifest")
+        declared = manifest.get("tree_entries")
+        payload_files = payload.get("payload_files")
+        if (not isinstance(declared, list) or not isinstance(payload_files, list)
+                or not payload_files or any(not isinstance(path, str) for path in payload_files)):
+            raise SelectorBlocked("slot payload file set is incomplete")
+        by_path: dict[str, dict[str, Any]] = {}
+        for entry in declared:
+            if (not isinstance(entry, dict)
+                    or set(entry) != {"path", "mode", "size", "sha256"}):
+                raise SelectorBlocked("slot release tree entry is invalid")
+            rel = _safe_relpath(entry["path"])
+            if rel in by_path:
+                raise SelectorBlocked("slot release tree has duplicate paths")
+            by_path[rel] = {**entry, "path": rel}
+        try:
+            payload_entries = sorted((by_path[_safe_relpath(path)] for path in payload_files),
+                                     key=lambda item: item["path"])
+        except KeyError as exc:
+            raise SelectorBlocked("slot payload references undeclared bytes") from exc
+        if _digest(_canonical(payload_entries)) != record["payload_tree_hash"]:
+            raise SelectorBlocked("slot payload tree hash mismatch")
+        for entry in payload_entries:
+            raw = _read_regular(release / entry["path"], owner_uid,
+                                executable=bool(entry["mode"] & 0o111),
+                                max_bytes=128 * 1024 * 1024)
+            if len(raw) != entry["size"] or _digest(raw) != entry["sha256"]:
+                raise SelectorBlocked("slot payload bytes drifted")
+    target_relpath = _safe_relpath(record["target_relpath"])
+    target = release / target_relpath
+    target_raw = _read_regular(target, owner_uid, executable=component == "launcher")
+    if _digest(target_raw) != record["target_sha256"]:
+        raise SelectorBlocked("slot target bytes drifted")
+    if component == "launcher":
+        command = [str(target)]
+    else:
+        if record["python_relpath"] != "env/bin/python":
+            raise SelectorBlocked("slot interpreter path is not frozen")
+        python = release / _safe_relpath(record["python_relpath"])
+        python_raw = _read_regular(python, owner_uid, executable=True,
+                                   max_bytes=128 * 1024 * 1024)
+        if _digest(python_raw) != record["python_sha256"]:
+            raise SelectorBlocked("slot interpreter bytes drifted")
+        # -B 防止 root 服务(seal-broker/test-controller 及 root 资格化探针)在
+        # 启动期把 __pycache__ 写进封印 release;-I 隐含 -E,env 变量拦不住。
+        command = [str(python), "-I", "-B", "-m", record["module"]]
+    env = {"PATH": "/usr/bin:/bin", "ABCR_RELEASE_ID": release_id,
+           "ABCR_SERVICE_LABEL": "com.abcr." + component,
+           "PYTHONDONTWRITEBYTECODE": "1", "PYTHONNOUSERSITE": "1",
+           "PYTHONUTF8": "1", "LC_ALL": "C"}
+    return command, env
+
+
+def _atomic_pointer(path: Path, value: dict[str, Any], owner_uid: int) -> None:
+    fd, temporary = tempfile.mkstemp(prefix=".slot.", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(_canonical(value) + b"\n")
+            stream.flush(); os.fsync(stream.fileno())
+        os.chown(temporary, owner_uid, -1); os.chmod(temporary, 0o444)
+        os.replace(temporary, path)
+        directory = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    finally:
+        try:
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
+
+
+def resolve_with_rollback(component: str, service_args: list[str], *,
+                          component_root: Path = DEFAULT_COMPONENT_ROOT,
+                          release_root: Path = DEFAULT_RELEASE_ROOT,
+                          receipt_root: Path = DEFAULT_RECEIPT_ROOT,
+                          owner_uid: int = 0,
+                          doctor: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run
+                          ) -> tuple[list[str], dict[str, str], bool]:
+    """Return a qualified command and whether automatic rollback was needed."""
+    root = Path(component_root); _secure_dir(root, owner_uid)
+    component_dir = root / component; _secure_dir(component_dir, owner_uid)
+    active_path = component_dir / "active-slot.json"
+    lkg_path = component_dir / "last-known-good.json"
+    active = _pointer(component, active_path, owner_uid)
+    rolled_back = False
+    try:
+        command, env = _slot(component, active, component_root=root,
+                             release_root=Path(release_root), receipt_root=Path(receipt_root),
+                             owner_uid=owner_uid)
+        if active["probation"]:
+            if os.geteuid() != owner_uid:
+                raise SelectorBlocked("candidate slot requires root qualification")
+            probe_args = ([*command, "--bootstrap-doctor"] if component == "launcher"
+                          else [*command, "--doctor"])
+            outcome = doctor(probe_args, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, env=env, shell=False, timeout=30,
+                             check=False)
+            if outcome.returncode != 0:
+                raise SelectorBlocked("candidate slot doctor failed")
+            promoted = {**active, "probation": False}
+            _atomic_pointer(lkg_path, promoted, owner_uid)
+            _atomic_pointer(active_path, promoted, owner_uid)
+    except Exception as first_error:
+        lkg = _pointer(component, lkg_path, owner_uid)
+        if lkg["probation"] or (lkg["slot"], lkg["generation"]) == (
+                active["slot"], active["generation"]):
+            raise SelectorBlocked("candidate failed and no distinct last-known-good slot exists") from first_error
+        command, env = _slot(component, lkg, component_root=root,
+                             release_root=Path(release_root), receipt_root=Path(receipt_root),
+                             owner_uid=owner_uid)
+        if os.geteuid() == owner_uid:
+            _atomic_pointer(active_path, lkg, owner_uid)
+        rolled_back = True
+    return [*command, *service_args], env, rolled_back
+
+
+def run(argv: list[str] | None = None, *, component_root: Path = DEFAULT_COMPONENT_ROOT,
+        release_root: Path = DEFAULT_RELEASE_ROOT, receipt_root: Path = DEFAULT_RECEIPT_ROOT,
+        owner_uid: int = 0, execve: Callable[[str, list[str], dict[str, str]], Any] = os.execve,
+        doctor: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run) -> int:
+    parser = argparse.ArgumentParser(prog="abcr-bootstrap-selector")
+    parser.add_argument("component", choices=sorted(COMPONENTS))
+    parser.add_argument("service_args", nargs=argparse.REMAINDER)
+    parser.add_argument("--resolve-only", action="store_true")
+    args = parser.parse_args(argv)
+    try:
+        command, env, rolled_back = resolve_with_rollback(
+            args.component, args.service_args, component_root=component_root,
+            release_root=release_root, receipt_root=receipt_root, owner_uid=owner_uid,
+            doctor=doctor)
+        if args.resolve_only:
+            print(json.dumps({"ok": True, "component": args.component,
+                              "rolled_back": rolled_back}, sort_keys=True))
+            return 0
+        execve(command[0], command, env)
+        return 70
+    except Exception as exc:
+        print(json.dumps({"ok": False, "component": args.component,
+                          "error": type(exc).__name__}, sort_keys=True), file=sys.stderr)
+        return EX_CONFIG
+
+
+def main() -> int:
+    return run()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

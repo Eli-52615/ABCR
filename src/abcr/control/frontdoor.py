@@ -14,6 +14,10 @@ _EXACT = {
 }
 _ARG = (
     (re.compile(r"^确认提案\s+([A-Za-z0-9._:-]+)$"), "confirm_proposal", "proposal_id"),
+    (re.compile(r"^运行快道\s+([A-Za-z0-9._:-]+)\s+([0-9]+)\s+([0-9]+)$"),
+     "run_probe", ("proposal_id", "prediction_index", "seed")),
+    (re.compile(r"^运行快道\s+([A-Za-z0-9._:-]+)\s+([A-Za-z0-9._:@-]+)\s+([0-9]+)\s+([0-9]+)$"),
+     "run_probe", ("proposal_id", "persona_ref", "prediction_index", "seed")),
     (re.compile(r"^运行快道\s+([A-Za-z0-9._:-]+)$"), "run_probe", "proposal_id"),
     (re.compile(r"^毕业这一针\s+([0-9a-f]{64})$"), "promote_probe", "row_hash"),
     (re.compile(r"^批准\s+([A-Za-z0-9._:-]+)\s+([0-9a-f]{6,64})\s+v([1-9][0-9]*)$"),
@@ -44,7 +48,8 @@ def route_text(text: str) -> RouteResult:
         values = match.groups()
         names = (fields,) if isinstance(fields, str) else fields
         payload = dict(zip(names, values))
-        if "version" in payload: payload["version"] = int(payload["version"])
+        for integer in ("version", "prediction_index", "seed"):
+            if integer in payload: payload[integer] = int(payload[integer])
         return RouteResult(intent, payload)
     return RouteResult(None, {}, (
         "请使用“状态”“开始导入提案”或驾驶舱卡片给出的完整动作。",

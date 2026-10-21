@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from abcr.control.policy import RecoveryKind, RecoveryPolicy, effective_mission_risk
 from abcr.control.reconciler import Reconciler
 from abcr.control.store import ControlStore
@@ -41,3 +44,15 @@ def test_path_risk_uses_real_changes_and_oracle_coverage():
     assert effective_mission_risk("normal", ["src/abcr/util/x.py"], registry)[0] == "normal"
     assert effective_mission_risk("normal", ["src/abcr/explore/goal.py"], registry)[0] == "human_required"
     assert effective_mission_risk("normal", ["src/abcr/unknown.py"], registry)[0] == "human_required"
+
+
+def test_constant_candidate_diagnostics_cannot_authorize_cards_or_doc_mirror():
+    """Until typed external oracles exist, both repair surfaces stay human-only."""
+    root = Path(__file__).resolve().parents[2]
+    document = json.loads((root / "configs/control/path-risk-v1.json").read_text())
+    registry = document["paths"]
+    for path in ("src/abcr/control/cards.py", "src/abcr/control/doc_mirror.py"):
+        assert registry[path]["auto_release_eligible"] is False
+        assert registry[path]["risk"] == "human_required"
+        # Even a claimed PASS receipt cannot override the path policy.
+        assert effective_mission_risk("normal", [path], registry)[0] == "human_required"

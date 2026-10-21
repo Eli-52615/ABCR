@@ -15,6 +15,7 @@ from abcr.control.release import activate_release, prepare_release, stage_releas
 from abcr.control.seal_broker import SealBroker
 from abcr.control.verifier import VerificationAttestation
 from abcr.control.worktree import scan_tree, tree_hash
+from tests.control.release_fixture_support import add_bootstrap_payload
 
 ROOT = Path(__file__).resolve().parents[2]
 SANDBOXED = "sandbox-exec:" + "e" * 64
@@ -47,6 +48,7 @@ def _candidate(tmp_path: Path) -> Path:
     topology = root / "configs/control/service-topology-v1.json"
     topology.parent.mkdir(parents=True)
     topology.write_bytes((ROOT / "configs/control/service-topology-v1.json").read_bytes())
+    add_bootstrap_payload(root)
     return root
 
 

@@ -45,7 +45,10 @@ def test_itempool_service_complete_claim_result_ack(tmp_path):
     result = _result(config.work_root, "select-1")
     assert result["ok"] is True
     assert result["result"]["item_ids"] == ["d2"]
-    assert set(result["result"]) == {"bundle_id", "manifest_hash", "item_ids", "source_hash"}
+    assert result["result"]["split"] == "dev"
+    assert len(result["result"]["selected_bytes_hash"]) == 64
+    assert set(result["result"]) == {"bundle_id", "manifest_hash", "item_ids", "source_hash",
+                                     "split", "selected_bytes_hash"}
     assert (config.work_root / "itempool" / "acks" / "select-1.json").is_file()
     assert (config.work_root / "itempool" / "archive" / "select-1.json").is_file()
     assert not (config.work_root / "itempool" / "inflight" / "select-1.json").exists()

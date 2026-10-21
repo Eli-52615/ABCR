@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import os
 import shutil
 import subprocess
 import threading
@@ -72,7 +73,8 @@ def anchor_ledger(tmp_path: Path, commit: str, *, goal_hash: str | None = None,
         memory.append("proposal_imported", f"p{i}", {"seq": i}, actor_id="ou_owner")
     row = memory.append(GOAL_ANCHOR_EVENT, "g1", {
         "goal_sha256": goal_hash or sha256(GOAL_BYTES), "goal_path": goal_path,
-        "research_commit": commit, "receipt_id": receipt_id}, actor_id="ou_owner")
+        "research_commit": commit, "receipt_id": receipt_id,
+        "deployment_id": "d1", "protocol_ref": "p1"}, actor_id="ou_owner")
     return path, row["entry_hash"]
 
 
@@ -123,8 +125,23 @@ def bound_context(entry_hash: str, envelope_hash: str, batch_id: str) -> dict:
 
 def decide_kwargs(tmp_path, repo, ledger, name="control.db"):
     private, public = keys(tmp_path)
+    seal_private = tmp_path / f"{name}.anchor-sealer.key"
+    seal_public = tmp_path / f"{name}.anchor-sealer.pub"
+    seal_path = tmp_path / f"{name}.research-memory.seal.json"
+    generate_keypair(seal_private, seal_public)
+    ResearchMemory(ledger).write_external_seal(
+        seal_path, private_key=seal_private, public_key=seal_public)
     return dict(private_key=private, public_key=public, store=ControlStore(tmp_path / name),
-                identity=OWNER, decision_nonce=NONCE, research_repo=repo, anchor_ledger=ledger)
+                identity=OWNER, decision_nonce=NONCE, research_repo=repo, anchor_ledger=ledger,
+                anchor_seal_path=seal_path, anchor_sealer_public_key=seal_public,
+                anchor_seal_owner_uid=os.getuid(), anchor_ledger_owner_uid=os.getuid(),
+                allow_direct_fixture=True)
+
+
+def fixture_validate(bundle: ApprovalRequestBundle, repo: Path, ledger: Path):
+    """Low-level fixtures can exercise chain checks without provisioning the root seal."""
+    return bundle.validate(research_repo=repo, anchor_ledger=ledger,
+                           allow_unsealed_fixture=True)
 
 
 # --------------------------------------------------------------------------
@@ -177,7 +194,7 @@ def test_concurrent_clicks_return_one_stable_signed_decision(tmp_path):
 
 def test_happy_path_bundle_validates_against_real_repo_and_chain(tmp_path):
     repo, ledger, entry_hash, commit, _, bundle = world(tmp_path)
-    verified = bundle.validate(research_repo=repo, anchor_ledger=ledger)
+    verified = fixture_validate(bundle, repo, ledger)
     assert verified.goal_anchor_entry_hash == entry_hash
     assert verified.research_commit == commit
     assert verified.goal_anchor_receipt_id == RECEIPT_ID
@@ -192,7 +209,7 @@ def test_forged_commit_and_bogus_anchor_proof_are_rejected(tmp_path):
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(GOAL_BYTES), "research_commit": "c" * 40},
         envelope, sha256(envelope), ("bogus-anchor",))
     with pytest.raises(ContractError) as excinfo:
-        forged.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(forged, repo, ledger)
     assert excinfo.value.code == "anchor_proof_malformed"
 
 
@@ -205,7 +222,7 @@ def test_forged_commit_with_wellformed_but_fake_anchor_is_rejected(tmp_path):
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(GOAL_BYTES), "research_commit": "c" * 40},
         envelope, sha256(envelope), ("f" * 64,))
     with pytest.raises(ContractError) as excinfo:
-        forged.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(forged, repo, ledger)
     assert excinfo.value.code == "anchor_proof_mismatch"
 
 
@@ -231,7 +248,7 @@ def test_tampering_any_link_of_the_anchor_proof_is_rejected(tmp_path, link):
     proof[link] = "0" * 63 + "1"
     tampered = ApprovalRequestBundle(*[*_fields(bundle)[:-1], tuple(proof)])
     with pytest.raises(ContractError) as excinfo:
-        tampered.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(tampered, repo, ledger)
     assert excinfo.value.code == "anchor_proof_mismatch"
 
 
@@ -242,7 +259,7 @@ def test_tampering_a_row_of_the_anchor_ledger_is_rejected(tmp_path):
     rows[0] = rows[0].replace('"p0"', '"p0-tampered"')
     ledger.write_text("\n".join(rows) + "\n", encoding="utf-8")
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "anchor_chain_break"
 
 
@@ -251,7 +268,7 @@ def test_proof_may_not_claim_more_links_than_the_chain_has(tmp_path):
     longer = (*bundle.anchor_prefix_proof, "e" * 64)
     tampered = ApprovalRequestBundle(*[*_fields(bundle)[:-1], longer])
     with pytest.raises(ContractError) as excinfo:
-        tampered.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(tampered, repo, ledger)
     assert excinfo.value.code == "anchor_proof_too_long"
 
 
@@ -261,14 +278,14 @@ def test_proof_must_terminate_on_a_goal_anchor_row(tmp_path):
     short = bundle.anchor_prefix_proof[:1]
     tampered = ApprovalRequestBundle(*[*_fields(bundle)[:-1], short])
     with pytest.raises(ContractError) as excinfo:
-        tampered.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(tampered, repo, ledger)
     assert excinfo.value.code == "anchor_proof_not_goal_anchor"
 
 
 def test_anchor_ledger_unreachable_is_a_hard_error(tmp_path):
     repo, ledger, _, _, _, bundle = world(tmp_path)
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=tmp_path / "nope.jsonl")
+        fixture_validate(bundle, repo, tmp_path / "nope.jsonl")
     assert excinfo.value.code == "anchor_ledger_unreachable"
 
 
@@ -288,11 +305,11 @@ def test_anchor_chain_formula_matches_research_memory(tmp_path):
 def test_research_repo_unreachable_is_a_hard_error_not_a_skip(tmp_path):
     _, ledger, _, _, _, bundle = world(tmp_path)
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=tmp_path / "no-such-repo", anchor_ledger=ledger)
+        fixture_validate(bundle, tmp_path / "no-such-repo", ledger)
     assert excinfo.value.code == "research_repo_unreachable"
     plain = tmp_path / "plain"; plain.mkdir()
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=plain, anchor_ledger=ledger)
+        fixture_validate(bundle, plain, ledger)
     assert excinfo.value.code == "research_repo_unreachable"
 
 
@@ -307,7 +324,7 @@ def test_commit_absent_from_repo_is_rejected(tmp_path):
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(GOAL_BYTES), "research_commit": ghost},
         envelope, sha256(envelope), proof_for(ledger))
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "research_commit_unknown"
 
 
@@ -320,7 +337,7 @@ def test_goal_file_absent_at_that_commit_is_rejected(tmp_path):
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(GOAL_BYTES), "research_commit": commit},
         envelope, sha256(envelope), proof_for(ledger))
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "goal_blob_missing"
 
 
@@ -336,7 +353,7 @@ def test_goal_bytes_changed_after_the_commit_is_rejected_before_signing(tmp_path
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(evil), "research_commit": commit},
         envelope, envelope_hash, proof_for(ledger))
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "goal_blob_mismatch"
     kwargs = decide_kwargs(tmp_path, repo, ledger)
     with pytest.raises(ContractError):
@@ -353,7 +370,7 @@ def test_truncated_bundle_is_rejected_before_signing(tmp_path):
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(GOAL_BYTES), "research_commit": commit},
         truncated_envelope, envelope_hash, proof_for(ledger))
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "envelope_bytes_mismatch"
     kwargs = decide_kwargs(tmp_path, repo, ledger)
     with pytest.raises(ContractError):
@@ -438,13 +455,13 @@ def test_non_canonical_goal_base64_rejected(tmp_path, encoded):
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(b"foob"), "research_commit": commit},
         envelope, sha256(envelope), proof_for(ledger))
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "goal_bytes_encoding"
     canonical = ApprovalRequestBundle(
         batch_id, "Zm9vYg==", sha256(b"foob"), commit,
         {"receipt_id": RECEIPT_ID, "goal_hash": sha256(b"foob"), "research_commit": commit},
         envelope, sha256(envelope), proof_for(ledger))
-    assert canonical.validate(research_repo=repo, anchor_ledger=ledger).research_commit == commit
+    assert fixture_validate(canonical, repo, ledger).research_commit == commit
 
 
 # --------------------------------------------------------------------------
@@ -474,7 +491,7 @@ def test_a4_attacker_authored_envelope_is_rejected_before_signing(tmp_path):
                 "protocol_ref": "p1", "attacker_payload": "ship whatever I want"}
     bundle = _goal_bundle(commit, ledger, envelope, "b-attacker-chosen")
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "envelope_goal_mismatch"
     kwargs = decide_kwargs(tmp_path, repo, ledger)
     ctx = bound_context(entry_hash, sha256(envelope), "b-attacker-chosen")
@@ -491,7 +508,7 @@ def test_a4_free_batch_id_with_correct_goal_identity_is_rejected(tmp_path):
                 "protocol_ref": "p1", "batch_id": "b-attacker-chosen"}
     bundle = _goal_bundle(commit, ledger, envelope, "b-attacker-chosen")
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "envelope_batch_id_forged"
 
 
@@ -502,7 +519,7 @@ def test_envelope_goal_hash_swapped_to_another_goal_is_rejected(tmp_path):
     envelope, batch_id = envelope_for(commit, goal_hash=other)
     bundle = _goal_bundle(commit, ledger, envelope, batch_id)
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "envelope_goal_mismatch"
 
 
@@ -525,7 +542,7 @@ def test_request_id_must_be_bound_to_the_self_certifying_batch(tmp_path):
     envelope, batch_id = envelope_for(commit)
     bundle = _goal_bundle(commit, ledger, envelope, "r-free-value")
     with pytest.raises(ContractError) as excinfo:
-        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+        fixture_validate(bundle, repo, ledger)
     assert excinfo.value.code == "request_id_unbound"
     kwargs = decide_kwargs(tmp_path, repo, ledger)
     ctx = bound_context(entry_hash, sha256(envelope), batch_id)
@@ -538,7 +555,7 @@ def test_happy_path_exposes_envelope_deployment_bound_to_anchored_goal(tmp_path)
     """正例:validate 产出的 deployment_id/protocol_ref/batch_id/request_id 都来自
     已绑定被锚 goal 的自证 envelope,且 decide 能正常签发。"""
     repo, ledger, entry_hash, _, envelope_hash, bundle = world(tmp_path)
-    verified = bundle.validate(research_repo=repo, anchor_ledger=ledger)
+    verified = fixture_validate(bundle, repo, ledger)
     assert (verified.deployment_id, verified.protocol_ref) == ("d1", "p1")
     assert verified.batch_id == bundle.envelope["batch_id"]
     assert verified.request_id == bundle.envelope["batch_id"]
@@ -553,3 +570,95 @@ def _fields(bundle: ApprovalRequestBundle) -> list:
     return [bundle.request_id, bundle.goal_bytes_b64, bundle.goal_sha256, bundle.research_commit,
             bundle.artifact_frozen_receipt, bundle.envelope, bundle.envelope_sha256,
             bundle.anchor_prefix_proof]
+
+
+# --------------------------------------------------------------------------
+# F1-deep / F2 / F3: anchored runtime, current authorization, external trust
+# --------------------------------------------------------------------------
+
+def test_deployment_and_protocol_must_equal_frozen_anchor(tmp_path):
+    repo, commit, ledger, _ = _real_chain(tmp_path)
+    envelope, batch_id = envelope_for(commit, deployment_id="another-deployment",
+                                      protocol_ref="p1")
+    bundle = _goal_bundle(commit, ledger, envelope, batch_id)
+    with pytest.raises(ContractError) as excinfo:
+        fixture_validate(bundle, repo, ledger)
+    assert excinfo.value.code == "anchor_deployment_mismatch"
+
+
+def test_historic_anchor_cannot_be_revived_by_short_prefix(tmp_path):
+    repo, ledger, _, commit, _, bundle = world(tmp_path)
+    old_proof = bundle.anchor_prefix_proof
+    memory = ResearchMemory(ledger)
+    memory.append(GOAL_ANCHOR_EVENT, "g1", {
+        "goal_sha256": sha256(GOAL_BYTES), "goal_path": GOAL_PATH,
+        "research_commit": commit, "receipt_id": "receipt-new",
+        "deployment_id": "d1", "protocol_ref": "p1"}, actor_id="ou_owner")
+    historic = ApprovalRequestBundle(*[*_fields(bundle)[:-1], old_proof])
+    with pytest.raises(ContractError) as excinfo:
+        fixture_validate(historic, repo, ledger)
+    assert excinfo.value.code == "anchor_not_latest"
+
+
+def test_revoked_anchor_cannot_be_revived_by_short_prefix(tmp_path):
+    repo, ledger, entry_hash, _, _, bundle = world(tmp_path)
+    ResearchMemory(ledger).append("goal_anchor_revoked", "g1", {
+        "target_entry_hash": entry_hash, "receipt_id": RECEIPT_ID,
+    }, actor_id="ou_owner")
+    with pytest.raises(ContractError) as excinfo:
+        fixture_validate(bundle, repo, ledger)
+    assert excinfo.value.code == "anchor_revoked"
+
+
+def test_production_validation_requires_external_research_memory_seal(tmp_path):
+    repo, ledger, _, _, _, bundle = world(tmp_path)
+    with pytest.raises(ContractError) as excinfo:
+        bundle.validate(research_repo=repo, anchor_ledger=ledger)
+    assert excinfo.value.code == "research_memory_seal_required"
+
+
+def test_human_domain_direct_research_mount_path_is_blocked(tmp_path):
+    repo, ledger, entry_hash, _, envelope_hash, bundle = world(tmp_path)
+    kwargs = decide_kwargs(tmp_path, repo, ledger)
+    kwargs.pop("allow_direct_fixture")
+    with pytest.raises(ContractError) as excinfo:
+        decide(bundle, context=bound_context(entry_hash, envelope_hash,
+                                             bundle.envelope["batch_id"]), **kwargs)
+    assert excinfo.value.code == "broker_sealed_approval_bundle_required"
+
+
+def test_append_after_signed_seal_fails_closed_before_approval(tmp_path):
+    repo, ledger, entry_hash, _, envelope_hash, bundle = world(tmp_path)
+    kwargs = decide_kwargs(tmp_path, repo, ledger)
+    ResearchMemory(ledger).append("human_reflection", "g1", {"text": "later"},
+                                  actor_id="ou_owner")
+    with pytest.raises(ContractError) as excinfo:
+        decide(bundle, context=bound_context(entry_hash, envelope_hash,
+                                             bundle.envelope["batch_id"]), **kwargs)
+    assert excinfo.value.code == "research_memory_seal_stale"
+    assert kwargs["store"].rows("approval_decisions") == []
+
+
+def test_full_rechain_from_public_genesis_cannot_replace_signed_memory(tmp_path):
+    repo, ledger, entry_hash, commit, envelope_hash, bundle = world(tmp_path)
+    kwargs = decide_kwargs(tmp_path, repo, ledger)
+    ledger.unlink()
+    forged = ResearchMemory(ledger)
+    forged.append(GOAL_ANCHOR_EVENT, "g1", {
+        "goal_sha256": sha256(GOAL_BYTES), "goal_path": GOAL_PATH,
+        "research_commit": commit, "receipt_id": RECEIPT_ID,
+        "deployment_id": "d1", "protocol_ref": "p1"}, actor_id="ou_owner")
+    with pytest.raises(ContractError) as excinfo:
+        decide(bundle, context=bound_context(entry_hash, envelope_hash,
+                                             bundle.envelope["batch_id"]), **kwargs)
+    assert excinfo.value.code == "research_memory_seal_stale"
+
+
+def test_writable_external_seal_is_outside_trust_boundary(tmp_path):
+    repo, ledger, entry_hash, _, envelope_hash, bundle = world(tmp_path)
+    kwargs = decide_kwargs(tmp_path, repo, ledger)
+    kwargs["anchor_seal_path"].chmod(0o666)
+    with pytest.raises(ContractError) as excinfo:
+        decide(bundle, context=bound_context(entry_hash, envelope_hash,
+                                             bundle.envelope["batch_id"]), **kwargs)
+    assert excinfo.value.code == "research_memory_seal_permissions"

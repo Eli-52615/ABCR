@@ -520,6 +520,21 @@ def test_setup_lark_logging_file_0600_no_bare_stream_and_idempotent(tmp_path, ca
             lark_logger.removeFilter(f)
 
 
+def test_setup_lark_logging_rejects_symlink_and_hardlink(tmp_path):
+    target = tmp_path / "target.log"
+    target.write_text("do-not-touch")
+    target.chmod(0o600)
+    symlink = tmp_path / "symlink.log"
+    symlink.symlink_to(target)
+    with pytest.raises(OSError):
+        setup_lark_logging(symlink)
+    hardlink = tmp_path / "hardlink.log"
+    os.link(target, hardlink)
+    with pytest.raises(RuntimeError, match="single-link regular file"):
+        setup_lark_logging(hardlink)
+    assert target.read_text() == "do-not-touch"
+
+
 # ------------------------------------------------------------ load_credentials
 def test_load_credentials_parses_comments_quotes_and_export(tmp_path):
     env = tmp_path / "feishu.env"

@@ -37,7 +37,8 @@ class ScientificWorkflow:
 
     def confirm_and_compile(self, proposal_id: str, goal: Goal, *, actor_id: str, research_commit: str,
                             goal_path: str, receipt: ArtifactFrozenReceipt,
-                            bundle: DevBundleRef, protocol_ref: str) -> dict[str, Any]:
+                            bundle: DevBundleRef, protocol_ref: str,
+                            deployment_id: str) -> dict[str, Any]:
         proposal = self.store.get_proposal(proposal_id)
         if (proposal is None or proposal["state"] != "validated"
                 or proposal["normalized_json"] != canonical_json(goal.as_dict()).decode()):
@@ -45,10 +46,13 @@ class ScientificWorkflow:
         if not self.store.set_proposal_state(proposal_id, "validated", "human_confirmed"):
             raise ContractError("proposal_not_validated", "只有 validated 提案可确认")
         candidate = prepare_goal_anchor(goal, research_commit=research_commit,
-                                        relative_path=goal_path, confirmed_by=actor_id)
+                                        relative_path=goal_path, confirmed_by=actor_id,
+                                        deployment_id=deployment_id,
+                                        protocol_ref=protocol_ref)
         anchor = freeze_goal(candidate, receipt, receipt_public_key=self.receipt_public_key)
         compiled = compile_goal(goal, anchor, bundle, self.personas, protocol_ref=protocol_ref,
                                 trusted_dev_bundle_root=self.trusted_dev_bundle_root,
-                                bundle_sealer_public_key=self.bundle_sealer_public_key)
+                                bundle_sealer_public_key=self.bundle_sealer_public_key,
+                                deployment_id=deployment_id)
         self.store.set_proposal_state(proposal_id, "human_confirmed", "compiled")
         return compiled.envelope

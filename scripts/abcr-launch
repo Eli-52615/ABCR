@@ -127,8 +127,9 @@ def regular_secure(path: Path, *, owner_uid: int | None = None,
     return info
 
 
-def _read_json(path: Path, *, owner_uid: int) -> dict[str, Any]:
-    raw, _ = _read_regular(path, owner_uid=owner_uid)
+def _read_json(path: Path, *, owner_uid: int,
+               max_bytes: int = 8 * 1024 * 1024) -> dict[str, Any]:
+    raw, _ = _read_regular(path, owner_uid=owner_uid, max_bytes=max_bytes)
     try:
         value = json.loads(raw.decode("utf-8"), object_pairs_hook=_pairs_no_duplicates)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -182,7 +183,9 @@ def resolve_active(active_path: Path, release_root: Path, *,
     release = root / release_id
     _secure_dir(release, owner_uid=uid, device=root_info.st_dev)
     manifest_path = release / "release-manifest.json"
-    manifest = _read_json(manifest_path, owner_uid=uid)
+    # manifest 内嵌全部树条目(真实 release 约 23 MiB);默认 8 MiB 上限会让
+    # **每一个** launcher 路由的服务都起不来。同文件读运行时字节用的即 1 GiB 级上限。
+    manifest = _read_json(manifest_path, owner_uid=uid, max_bytes=128 * 1024 * 1024)
     if manifest.get("release_id") != release_id:
         raise LauncherBlocked("release manifest identity mismatch")
     return release, manifest
@@ -386,9 +389,18 @@ def run(argv: list[str] | None = None, *, active_path: Path = DEFAULT_ACTIVE_FIL
         owner_uid: int = 0, execve: Callable[[str, list[str], dict[str, str]], Any] = os.execve
         ) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("service_label")
+    parser.add_argument("service_label", nargs="?")
     parser.add_argument("--doctor", action="store_true")
+    parser.add_argument("--bootstrap-doctor", action="store_true")
     args = parser.parse_args(argv)
+    if args.bootstrap_doctor:
+        if args.service_label is not None or args.doctor:
+            return EX_CONFIG
+        print(json.dumps({"ok": True, "component": "launcher",
+                          "topology_hash": frozen_topology_hash()}, sort_keys=True))
+        return 0
+    if args.service_label is None:
+        return EX_CONFIG
     try:
         python, module, evidence = validate_launch(
             args.service_label, active_path=Path(active_path), release_root=Path(release_root),
@@ -403,8 +415,8 @@ def run(argv: list[str] | None = None, *, active_path: Path = DEFAULT_ACTIVE_FIL
         return 0
     env = {"PATH": "/usr/bin:/bin", "ABCR_RELEASE_ID": evidence["release_id"],
            "ABCR_SERVICE_LABEL": args.service_label, "PYTHONDONTWRITEBYTECODE": "1",
-           "PYTHONNOUSERSITE": "1", "LC_ALL": "C.UTF-8"}
-    execve(str(python), [str(python), "-I", "-m", module], env)
+           "PYTHONNOUSERSITE": "1", "PYTHONUTF8": "1", "LC_ALL": "C"}
+    execve(str(python), [str(python), "-I", "-B", "-m", module], env)
     return 70
 
 

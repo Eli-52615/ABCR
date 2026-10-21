@@ -26,6 +26,7 @@ from abcr.control.seal_broker import SealBroker
 from abcr.control.test_controller import run_profile
 from abcr.control.verifier import VerificationAttestation, verify_result
 from abcr.control.worktree import scan_tree, tree_hash
+from tests.control.release_fixture_support import add_bootstrap_payload
 
 HAS_SANDBOX = os.path.isfile(SANDBOX_EXEC) and os.access(SANDBOX_EXEC, os.X_OK)
 SANDBOXED = "sandbox-exec:" + "e" * 64
@@ -97,6 +98,7 @@ class Rig:
         topology = root / "configs/control/service-topology-v1.json"
         topology.parent.mkdir(parents=True)
         topology.write_bytes((ROOT / "configs/control/service-topology-v1.json").read_bytes())
+        add_bootstrap_payload(root)
         return root
 
     def release(self, root, nonce):
@@ -158,7 +160,7 @@ def test_planted_receipt_file_with_wrong_id_is_rejected(tmp_path):
     with pytest.raises(ContractError) as exc:
         rig.broker.activate(rig.active, expected_old=None, new_release="REL-evil",
                             release_receipt=planted, verification_hash="v", canary_hash="c")
-    assert exc.value.code == "release_receipt_corrupt"
+    assert exc.value.code == "broker_receipt_permissions"
     assert not rig.active.exists()
 
 

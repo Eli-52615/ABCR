@@ -13,6 +13,8 @@ matplotlib>=3.8
 openai>=1.40
 # ---- LIVE 接线(0719 人格控制面;P8 单写者钉版本,勿改宽)----
 lark-oapi==1.7.1
+# root seal-broker in-process Ed25519 verification; broker 禁止 subprocess
+cryptography>=45,<48
 # ---- 阶段2 前置重件(B1-12 核对时安装;R1 门不需要,勿在 R1 前拖装)----
 # torch>=2.6
 # transformers>=4.52

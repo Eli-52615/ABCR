@@ -81,10 +81,14 @@ class OllamaProbeEngine:
         self.profile = profile
         self.profile_id: str = _required(profile, "profile_id")
         self.base_url: str = _required(profile, "base_url").rstrip("/")
-        host = urlsplit(self.base_url).hostname
-        if host not in _LOOPBACK_HOSTS:
+        parsed_url = urlsplit(self.base_url)
+        host = parsed_url.hostname
+        if (parsed_url.scheme != "http" or host not in _LOOPBACK_HOSTS
+                or parsed_url.username is not None or parsed_url.password is not None
+                or parsed_url.path not in {"", "/"} or parsed_url.query
+                or parsed_url.fragment):
             raise OllamaEngineError(
-                f"frozen profile base_url must be loopback "
+                f"frozen profile base_url must be a plain loopback HTTP origin "
                 f"({', '.join(sorted(_LOOPBACK_HOSTS))}); got hostname {host!r} in "
                 f"{self.base_url!r} — probe engine is pinned to the local daemon, "
                 "refusing to load a remote-backend profile")
@@ -212,6 +216,11 @@ class OllamaProbeEngine:
                 f"engine fingerprint drift vs frozen profile {self.profile_id}; "
                 f"refusing to run. Drift: " + "; ".join(drift))
         self._verified = True
+        # Deliberately do not claim ``exact_tokenizer_qualified`` or expose
+        # tokenizer/chat-renderer digests here.  /api/show's template hash alone
+        # cannot prove tokenizer bytes or /api/generate raw/template semantics;
+        # ③L therefore remains fail-closed until a separately reviewed exact
+        # tokenizer + renderer adapter exists.
         return {
             "profile_id": self.profile_id,
             "model_tag": self.model_tag,

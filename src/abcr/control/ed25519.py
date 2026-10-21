@@ -54,7 +54,9 @@ CONTEXT_FIELDS = (
 # 绝不来自 bundle。bundle 只能提出主张，主张一律拿这两个外部事实源重算核对。
 ANCHOR_GENESIS = "0" * 64
 GOAL_ANCHOR_EVENT = "goal_anchor_frozen"
-_ANCHOR_PAYLOAD_FIELDS = ("goal_sha256", "goal_path", "research_commit", "receipt_id")
+GOAL_ANCHOR_REVOKED_EVENT = "goal_anchor_revoked"
+_ANCHOR_PAYLOAD_FIELDS = ("goal_sha256", "goal_path", "research_commit", "receipt_id",
+                          "deployment_id", "protocol_ref")
 
 
 def openssl_path() -> str:
@@ -224,6 +226,20 @@ def _anchor_entry_hash(row: dict[str, Any]) -> str:
     return sha256({key: value for key, value in row.items() if key != "entry_hash"})
 
 
+def _strict_json_object(raw: bytes, *, index: int) -> dict[str, Any]:
+    def pairs(values: list[tuple[str, Any]]) -> dict[str, Any]:
+        out: dict[str, Any] = {}
+        for key, value in values:
+            if key in out:
+                raise ValueError(f"duplicate key {key}")
+            out[key] = value
+        return out
+    value = json.loads(raw, object_pairs_hook=pairs)
+    if not isinstance(value, dict):
+        raise ValueError(f"row {index} is not an object")
+    return value
+
+
 def verify_anchor_prefix_proof(anchor_ledger: Path, proof: tuple[str, ...]) -> dict[str, Any]:
     """真验证：proof 必须是 anchor_ledger 这条真实哈希链的**前缀**，逐环重算比对。
 
@@ -247,10 +263,10 @@ def verify_anchor_prefix_proof(anchor_ledger: Path, proof: tuple[str, ...]) -> d
     if len(proof) > len(lines):
         raise ContractError("anchor_proof_too_long", "anchor proof 长于真实链（凭空捏造的尾部）")
     previous = ANCHOR_GENESIS
-    row: dict[str, Any] = {}
-    for index, claimed in enumerate(proof):
+    rows: list[dict[str, Any]] = []
+    for index, raw in enumerate(lines):
         try:
-            row = json.loads(lines[index])
+            row = _strict_json_object(raw, index=index)
         except (ValueError, TypeError) as exc:
             raise ContractError("anchor_ledger_corrupt", f"anchor 账本第 {index} 行不是 JSON") from exc
         if not isinstance(row, dict) or "entry_hash" not in row or "prev_hash" not in row:
@@ -260,9 +276,11 @@ def verify_anchor_prefix_proof(anchor_ledger: Path, proof: tuple[str, ...]) -> d
         recomputed = _anchor_entry_hash(row)
         if recomputed != row["entry_hash"]:
             raise ContractError("anchor_chain_break", f"anchor 账本第 {index} 行被篡改（entry_hash 失配）")
-        if claimed != recomputed:
+        if index < len(proof) and proof[index] != recomputed:
             raise ContractError("anchor_proof_mismatch", f"anchor proof 第 {index} 环与真实链不符")
         previous = recomputed
+        rows.append(row)
+    row = rows[len(proof) - 1]
     if row.get("event_type") != GOAL_ANCHOR_EVENT:
         raise ContractError("anchor_proof_not_goal_anchor",
                             f"anchor proof 末端不是 {GOAL_ANCHOR_EVENT} 行")
@@ -271,6 +289,42 @@ def verify_anchor_prefix_proof(anchor_ledger: Path, proof: tuple[str, ...]) -> d
             not isinstance(payload.get(key), str) or not payload.get(key)
             for key in _ANCHOR_PAYLOAD_FIELDS):
         raise ContractError("anchor_payload_invalid", "goal anchor 行缺少必需 payload 字段")
+
+    # A valid prefix is not automatically a current authorization.  Validate the
+    # complete configured chain above, then require this row to remain the newest
+    # unretracted anchor for the same goal.  Otherwise a caller could present a short
+    # historic prefix and resurrect an anchor superseded or revoked later in the file.
+    subject_id = row.get("subject_id")
+    if not isinstance(subject_id, str) or not subject_id:
+        raise ContractError("anchor_subject_invalid", "goal anchor 缺少 subject_id")
+    for later in rows[len(proof):]:
+        same_subject = later.get("subject_id") == subject_id
+        if same_subject and later.get("event_type") == GOAL_ANCHOR_EVENT:
+            raise ContractError("anchor_not_latest", "goal anchor 已被同一 goal 的更新锚替代")
+        if later.get("event_type") == GOAL_ANCHOR_REVOKED_EVENT:
+            revocation = later.get("payload")
+            if not isinstance(revocation, dict):
+                if same_subject:
+                    raise ContractError("anchor_revocation_invalid", "goal anchor 撤销记录 payload 非法")
+                continue
+            target_hash = revocation.get("target_entry_hash")
+            target_receipt = revocation.get("receipt_id")
+            if target_hash is not None and (not isinstance(target_hash, str)
+                                            or HEX64.fullmatch(target_hash) is None):
+                if same_subject:
+                    raise ContractError("anchor_revocation_invalid", "撤销 target_entry_hash 非法")
+                continue
+            if target_receipt is not None and (not isinstance(target_receipt, str)
+                                               or not target_receipt):
+                if same_subject:
+                    raise ContractError("anchor_revocation_invalid", "撤销 receipt_id 非法")
+                continue
+            if target_hash is None and target_receipt is None:
+                if same_subject:
+                    raise ContractError("anchor_revocation_invalid", "撤销记录缺少目标")
+                continue
+            if target_hash == row["entry_hash"] or target_receipt == payload["receipt_id"]:
+                raise ContractError("anchor_revoked", "goal anchor 已被撤销")
     return row
 
 
@@ -311,9 +365,8 @@ ENVELOPE_BATCH_DIGEST_LEN = 20
 class VerifiedAnchor:
     """validate() 的产物：**重算过的**事实，供 decide() 拿去钉 context。
 
-    deployment_id / protocol_ref 亦是重算事实：它们取自**已证明绑定到被锚 goal 的
-    envelope**，是进 token 这两个 CONTEXT_FIELDS 的唯一合法来源（decide 不再直接读
-    bundle.envelope）。
+    deployment_id / protocol_ref 亦是重算事实：envelope 自证值必须与 root-sealed
+    ResearchMemory anchor 逐字相等，才可进入 token 的 CONTEXT_FIELDS。
     """
     goal_anchor_entry_hash: str
     goal_anchor_receipt_id: str
@@ -337,12 +390,30 @@ class ApprovalRequestBundle:
     envelope_sha256: str
     anchor_prefix_proof: tuple[str, ...]
 
-    def validate(self, *, research_repo: Path, anchor_ledger: Path) -> VerifiedAnchor:
+    def validate(self, *, research_repo: Path, anchor_ledger: Path,
+                 anchor_seal_path: Path | None = None,
+                 anchor_sealer_public_key: Path | None = None,
+                 anchor_seal_owner_uid: int = 0,
+                 anchor_ledger_owner_uid: int | None = None,
+                 allow_unsealed_fixture: bool = False) -> VerifiedAnchor:
         """把 bundle 的每一条主张拿外部事实源重算核对，返回**重算出的**事实。
 
         research_repo / anchor_ledger 是必填的受信配置路径：不可达即硬错误，
         没有「路径缺失就退化为形状检查」的分支——那正是本缺陷的成因。
         """
+        if not allow_unsealed_fixture:
+            if anchor_seal_path is None or anchor_sealer_public_key is None:
+                raise ContractError("research_memory_seal_required",
+                                    "生产审批必须验证 root-owned ResearchMemory 外部 seal")
+            # Local import avoids putting the append-only research package on the
+            # token-verification module's import path at process start.
+            from abcr.explore.memory import ResearchMemory
+            ResearchMemory(Path(anchor_ledger), owner_uid=anchor_ledger_owner_uid).verify_external_seal(
+                Path(anchor_seal_path), public_key=Path(anchor_sealer_public_key),
+                expected_owner_uid=anchor_seal_owner_uid)
+        elif anchor_seal_path is not None or anchor_sealer_public_key is not None:
+            raise ContractError("research_memory_seal_config",
+                                "fixture bypass 与外部 seal 参数不可混用")
         if not isinstance(self.request_id, str) or not self.request_id:
             raise ContractError("request_id_invalid", "approval request id 缺失")
         require_sha(self.goal_sha256, "goal_sha256")
@@ -397,6 +468,12 @@ class ApprovalRequestBundle:
         #    envelope 其余全部字段的自证哈希（batch_id = "EXP-"+sha256(core)[:20]）。
         #    bundle 不可信 → 逐条把 envelope 钉死在**已重算的**锚定事实上。签名前拒。
         deployment_id, protocol_ref = self._verify_envelope_binds_goal(receipt_id)
+        if payload["deployment_id"] != deployment_id:
+            raise ContractError("anchor_deployment_mismatch",
+                                "envelope deployment_id 未锚定到 ResearchMemory")
+        if payload["protocol_ref"] != protocol_ref:
+            raise ContractError("anchor_protocol_mismatch",
+                                "envelope protocol_ref 未锚定到 ResearchMemory")
         return VerifiedAnchor(
             goal_anchor_entry_hash=anchor_row["entry_hash"], goal_anchor_receipt_id=receipt_id,
             research_commit=self.research_commit, goal_sha256=self.goal_sha256,

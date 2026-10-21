@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from types import SimpleNamespace
 
 from abcr.control.human_gateway import (
     GatewayRuntimeConfig,
@@ -11,11 +12,13 @@ from abcr.control.human_gateway import (
     HumanReplyOutbox,
     RuntimePaths,
     _doctor,
+    _initialize_database,
     _load_config,
     _open_store,
     main,
 )
 from abcr.control.identity import IdentityPolicy
+from abcr.control.store import SCHEMA_VERSION
 
 
 OWNER = {"open_id": "ou_owner", "chat_id": "oc_owner", "tenant_key": "tk_owner",
@@ -65,6 +68,16 @@ def owner_event(**over):
     return value
 
 
+def fixture_release_read_group(monkeypatch) -> None:
+    """Keep unit fixtures independent of the root-created deployment group."""
+    monkeypatch.setattr(
+        "abcr.control.human_gateway.grp.getgrnam",
+        lambda name: SimpleNamespace(gr_gid=os.getgid())
+        if name == "abcr-release-read"
+        else (_ for _ in ()).throw(KeyError(name)),
+    )
+
+
 def test_config_loads_only_explicit_human_domain_files(tmp_path):
     paths = runtime_paths(tmp_path)
     config = _load_config(paths)
@@ -83,13 +96,32 @@ def test_doctor_is_read_only_and_never_constructs_transport(tmp_path, monkeypatc
         raise AssertionError("doctor must not construct or call network transport")
 
     monkeypatch.setattr("abcr.control.human_gateway.FeishuTransport", forbidden)
+    monkeypatch.setattr("abcr.control.human_gateway.HumanBridge", lambda **kwargs: object())
+    fixture_release_read_group(monkeypatch)
     report = _doctor(paths)
     assert report == {"ok": True, "app_id": "cli_abcr",
-                      "database": str(paths.sqlite_path), "schema_version": 2,
+                      "database": str(paths.sqlite_path), "schema_version": SCHEMA_VERSION,
                       "mode": "read_only"}
     assert paths.sqlite_path.stat().st_mtime_ns == before
     store = _open_store(paths.sqlite_path)
     assert {table: store.rows(table) for table in before_rows} == before_rows
+
+
+def test_init_database_is_explicit_offline_deployment_action(tmp_path, monkeypatch):
+    paths = runtime_paths(tmp_path, create_db=False)
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("database initialization must not construct transport")
+
+    monkeypatch.setattr("abcr.control.human_gateway.FeishuTransport", forbidden)
+    monkeypatch.setattr("abcr.control.human_gateway.HumanBridge", lambda **kwargs: object())
+    fixture_release_read_group(monkeypatch)
+    report = _initialize_database(paths)
+    assert report == {"ok": True, "app_id": "cli_abcr",
+                      "database": str(paths.sqlite_path), "schema_version": SCHEMA_VERSION,
+                      "mode": "initialized"}
+    assert paths.sqlite_path.stat().st_mode & 0o777 == 0o600
+    assert _doctor(paths)["mode"] == "read_only"
 
 
 def test_authorized_ingest_journals_reply_before_sending_and_dedupes(tmp_path):
@@ -151,6 +183,14 @@ def test_once_fixture_queues_without_network(tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("ABCR_HUMAN_FEISHU_ENV", str(paths.feishu_env))
     monkeypatch.setenv("ABCR_HUMAN_OWNER_JSON", str(paths.owner_json))
     monkeypatch.setenv("ABCR_HUMAN_SQLITE", str(paths.sqlite_path))
+
+    class FixtureBridge:
+        def export_command(self, command, artifacts=None): return tmp_path / "exported"
+        def import_results(self, store, owner_chat_id): return 0
+
+    monkeypatch.setattr("abcr.control.human_gateway.HumanBridge",
+                        lambda **kwargs: FixtureBridge())
+    fixture_release_read_group(monkeypatch)
 
     def no_network(*args, **kwargs):
         raise AssertionError("--once-fixture must not perform network IO")

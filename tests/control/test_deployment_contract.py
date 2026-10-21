@@ -61,15 +61,25 @@ def test_twelve_plists_match_topology_and_contain_no_secrets():
         raw = path.read_bytes(); data = plistlib.loads(raw)
         label = data["Label"]
         observed.add(label)
-        assert data["ProgramArguments"] == ["/usr/local/libexec/abcr-launch", label]
-        lowered = raw.lower()
-        assert b"secret" not in lowered and b"token" not in lowered and b"private_key" not in lowered
+        component = ("seal-broker" if label == "com.abcr.seal-broker" else
+                     "test-controller" if label == "com.abcr.test-controller" else "launcher")
+        expected_args = (["/usr/local/libexec/abcr-bootstrap-selector", component]
+                         if component != "launcher" else
+                         ["/usr/local/libexec/abcr-bootstrap-selector", "launcher", label])
+        assert data["ProgramArguments"] == expected_args
+        assert data["WorkingDirectory"] == "/var/empty"
+        assert data["Umask"] in {0o027, 0o077}
+        assert data["EnvironmentVariables"] == {
+            "PATH": "/usr/bin:/bin", "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONNOUSERSITE": "1"}
         if "QueueDirectories" in data:
-            # launchd.plist(5): array of strings; the dict-of-path form parses but never
-            # subscribes fsevents, so the on-demand service would silently never start.
+            # launchd.plist(5) requires an array of absolute path strings.
             queue_dirs = data["QueueDirectories"]
             assert isinstance(queue_dirs, list) and queue_dirs, label
-            assert all(isinstance(d, str) and d.startswith("/") for d in queue_dirs), label
+            assert all(isinstance(item, str) and item.startswith("/")
+                       for item in queue_dirs), label
+        lowered = raw.lower()
+        assert b"secret" not in lowered and b"token" not in lowered and b"private_key" not in lowered
     assert observed == expected
 
 
@@ -152,3 +162,128 @@ def test_work_stage_and_acl_manifests_are_complete():
     assert len(stages["stages"]) == 9 and len(set(stages["stages"])) == 9
     acl = json.loads((ROOT / "ops/acl/acl-manifest-v1.json").read_text())
     assert "candidate_cannot_read_test_results" in acl["negative_probes"]
+
+
+def load_installer():
+    path = ROOT / "scripts/install_abcr_runtime.py"
+    loader = importlib.machinery.SourceFileLoader("abcr_installer", str(path))
+    spec = importlib.util.spec_from_loader(loader.name, loader)
+    module = importlib.util.module_from_spec(spec); loader.exec_module(module); return module
+
+
+def _sealed_release_fixture(tmp_path, *, python_mode=0o550):
+    """一棵形如封印 release 的树:目录 0550、数据 0440、可执行体 0550。"""
+    release = tmp_path / "REL-fixture"
+    (release / "env/bin").mkdir(parents=True)
+    (release / "scripts").mkdir()
+    python = release / "env/bin/python"
+    python.write_text("#!/bin/sh\n")
+    data = release / "env/bin/data.json"
+    data.write_text("{}\n")
+    launcher = release / "scripts/abcr-launch"
+    launcher.write_text("#!/usr/bin/env python3\n")
+    manifest = {"tree_entries": [
+        {"path": "env/bin/python", "mode": 0o555, "size": 1, "sha256": "x"},
+        {"path": "env/bin/data.json", "mode": 0o444, "size": 1, "sha256": "y"},
+        {"path": "scripts/abcr-launch", "mode": 0o555, "size": 1, "sha256": "z"},
+    ]}
+    for path, mode in ((data, 0o440), (python, python_mode), (launcher, 0o550)):
+        os.chmod(path, mode)
+    for directory in (release / "env/bin", release / "env", release / "scripts", release):
+        os.chmod(directory, 0o550)
+    return release, manifest
+
+
+def test_release_read_policy_accepts_sealed_executables(tmp_path, monkeypatch):
+    """P0 回归:封印策略按可执行位分流(0o550/0o440),而 release.prepare 又**要求**
+    env/bin/python 带 x 位。若此闸一律要求 0o440,任何合法 release 都会被拒,
+    genesis 永远无法完成。此前该函数零测试覆盖。"""
+    installer = load_installer()
+    release, manifest = _sealed_release_fixture(tmp_path)
+    monkeypatch.setattr(installer, "gid", lambda _name: os.getgid())
+    monkeypatch.setattr(installer.os, "walk", installer.os.walk)
+    # 属主断言在测试环境下不可满足(需 root:abcr-release-read),只中和这两项;
+    # 模式规则原样执行。
+    real_lstat = Path.lstat
+
+    def patched(self):
+        info = real_lstat(self)
+        return os.stat_result((info.st_mode, info.st_ino, info.st_dev, info.st_nlink,
+                               0, os.getgid(), info.st_size,
+                               info.st_atime, info.st_mtime, info.st_ctime))
+    monkeypatch.setattr(Path, "lstat", patched)
+    installer.verify_release_read_policy(release, manifest)   # 不得抛出
+
+
+def test_release_read_policy_still_rejects_undeclared_executable(tmp_path, monkeypatch):
+    """放宽只按 manifest 声明派生:未声明的文件仍必须被拒,不得因带 x 位就放行。"""
+    installer = load_installer()
+    release, manifest = _sealed_release_fixture(tmp_path)
+    stray = release / "scripts" / "stray"
+    os.chmod(release / "scripts", 0o750)
+    stray.write_text("#!/bin/sh\n")
+    os.chmod(stray, 0o550)
+    os.chmod(release / "scripts", 0o550)
+    monkeypatch.setattr(installer, "gid", lambda _name: os.getgid())
+    real_lstat = Path.lstat
+
+    def patched(self):
+        info = real_lstat(self)
+        return os.stat_result((info.st_mode, info.st_ino, info.st_dev, info.st_nlink,
+                               0, os.getgid(), info.st_size,
+                               info.st_atime, info.st_mtime, info.st_ctime))
+    monkeypatch.setattr(Path, "lstat", patched)
+    with pytest.raises(installer.InstallBlocked, match="undeclared file"):
+        installer.verify_release_read_policy(release, manifest)
+
+
+def _oversized_manifest(tmp_path, *, mebibytes: int = 9):
+    """构造一个超过 8 MiB 的 manifest —— 真实 release 约 23 MiB(20,417 条目)。"""
+    entries = []
+    filler = "x" * 40
+    index = 0
+    while True:
+        entries.append({"path": f"env/lib/python3.12/site-packages/pkg{index}/{filler}.py",
+                        "mode": 0o444, "size": 10, "sha256": "a" * 64})
+        index += 1
+        if index % 2000 == 0:
+            probe = json.dumps({"release_id": "REL-" + "a" * 64, "tree_entries": entries})
+            if len(probe) > mebibytes * 1024 * 1024:
+                break
+    path = tmp_path / "release-manifest.json"
+    path.write_text(json.dumps({"release_id": "REL-" + "a" * 64,
+                                "tree_entries": entries}, separators=(",", ":")))
+    os.chmod(path, 0o440)
+    return path
+
+
+def test_every_manifest_reader_accepts_a_real_sized_manifest(tmp_path):
+    """P0 回归:真实封印 manifest 内嵌全部树条目(约 23 MiB),而 genesis/installer/
+    selector/launcher 的读取上限原本是 4/8 MiB —— 任何真实 release 都会被拒:
+    genesis 装不进去、selector 选不出组件、launcher 起不了服务。测试夹具此前一律
+    很小,所以 1500 个绿灯全程看不见这一层。"""
+    manifest = _oversized_manifest(tmp_path)
+    assert manifest.stat().st_size > 8 * 1024 * 1024
+    uid = os.getuid()
+    cap = 128 * 1024 * 1024
+
+    genesis = _load_script("scripts/bootstrap_abcr_genesis.py", "genesis_caps")
+    assert genesis._read_json(manifest, owner_uid=uid, max_bytes=cap)["release_id"]
+    with pytest.raises(genesis.GenesisBlocked):
+        genesis._read_json(manifest, owner_uid=uid)          # 默认上限仍拒绝
+
+    installer = load_installer()
+    assert installer.read_json(manifest, owner_uid=uid, max_bytes=cap)["release_id"]
+
+    selector = _load_script("scripts/abcr-bootstrap-selector", "selector_caps")
+    assert selector._read_json(manifest, uid, max_bytes=cap)["release_id"]
+
+    launcher = load_launcher()
+    assert launcher._read_json(manifest, owner_uid=uid, max_bytes=cap)["release_id"]
+
+
+def _load_script(relative: str, name: str):
+    path = ROOT / relative
+    loader = importlib.machinery.SourceFileLoader(name, str(path))
+    spec = importlib.util.spec_from_loader(loader.name, loader)
+    module = importlib.util.module_from_spec(spec); loader.exec_module(module); return module

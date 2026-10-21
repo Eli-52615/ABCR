@@ -12,9 +12,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
-from abcr.control.contracts import MissionState, canonical_json, sha256, utc_now
+from abcr.control.contracts import (MissionState, canonical_json, require_id,
+                                    require_sha, sha256, utc_now)
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 7
 
 #: Sentinel namespace for inbox rows written before the app/tenant/event dedupe
 #: dimensions existed.  Their originating app and tenant are unrecoverable (the
@@ -35,8 +36,9 @@ CREATE TABLE IF NOT EXISTS inbox(
 );
 CREATE TABLE IF NOT EXISTS actions(
   effect_id TEXT PRIMARY KEY, command_id TEXT NOT NULL, intent TEXT NOT NULL,
-  state TEXT NOT NULL, payload_hash TEXT NOT NULL, result_json TEXT,
-  worker_id TEXT, lease_until TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+  state TEXT NOT NULL, payload_hash TEXT NOT NULL, payload_json TEXT, result_json TEXT,
+  worker_id TEXT, lease_until TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+  actor_id TEXT NOT NULL DEFAULT '', actor_json TEXT
 );
 CREATE TABLE IF NOT EXISTS outbox(
   effect_id TEXT PRIMARY KEY, destination TEXT NOT NULL, payload_json TEXT NOT NULL,
@@ -100,6 +102,74 @@ CREATE TABLE IF NOT EXISTS approval_decisions(
   request_id TEXT PRIMARY KEY, envelope_hash TEXT NOT NULL, decision TEXT NOT NULL,
   token_json TEXT NOT NULL, created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS approval_requests(
+  request_id TEXT NOT NULL, request_version INTEGER NOT NULL,
+  envelope_hash TEXT NOT NULL, state TEXT NOT NULL,
+  bundle_json TEXT NOT NULL, reference_json TEXT NOT NULL,
+  request_hash TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+  PRIMARY KEY(request_id,request_version)
+);
+CREATE TABLE IF NOT EXISTS approval_imports(
+  request_id TEXT NOT NULL, request_version INTEGER NOT NULL,
+  envelope_hash TEXT NOT NULL, decision TEXT NOT NULL,
+  decision_hash TEXT NOT NULL, decision_json TEXT NOT NULL,
+  imported_at TEXT NOT NULL, PRIMARY KEY(request_id,request_version)
+);
+CREATE TABLE IF NOT EXISTS dispatch_claims(
+  claim_id TEXT PRIMARY KEY, token_id TEXT NOT NULL UNIQUE,
+  request_id TEXT NOT NULL, request_version INTEGER NOT NULL,
+  batch_id TEXT NOT NULL, envelope_hash TEXT NOT NULL, release_id TEXT NOT NULL,
+  approval_event_id TEXT NOT NULL, effect_id TEXT NOT NULL,
+  state TEXT NOT NULL, first_claim_at TEXT,
+  receipt_hash TEXT NOT NULL, receipt_json TEXT NOT NULL,
+  settled_event_id TEXT, settled_at TEXT
+);
+CREATE UNIQUE INDEX IF NOT EXISTS one_dispatch_claim_per_target
+  ON dispatch_claims(batch_id,envelope_hash,release_id);
+CREATE TABLE IF NOT EXISTS dispatch_claim_imports(
+  claim_id TEXT PRIMARY KEY, request_id TEXT NOT NULL, request_version INTEGER NOT NULL,
+  batch_id TEXT NOT NULL, envelope_hash TEXT NOT NULL, release_id TEXT NOT NULL,
+  approval_event_id TEXT NOT NULL, effect_id TEXT NOT NULL,
+  state TEXT NOT NULL, document_hash TEXT NOT NULL, document_json TEXT NOT NULL,
+  imported_at TEXT NOT NULL, settled_event_id TEXT
+);
+CREATE TABLE IF NOT EXISTS dispatch_requests(
+  effect_id TEXT PRIMARY KEY, batch_id TEXT NOT NULL UNIQUE,
+  envelope_hash TEXT NOT NULL, release_id TEXT NOT NULL,
+  claim_id TEXT NOT NULL, claim_receipt_hash TEXT NOT NULL,
+  dispatch_event_id TEXT NOT NULL UNIQUE, request_hash TEXT NOT NULL,
+  request_json TEXT NOT NULL, state TEXT NOT NULL, reason_code TEXT,
+  created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS round_reports(
+  round_id TEXT PRIMARY KEY, batch_id TEXT NOT NULL UNIQUE, goal_id TEXT NOT NULL,
+  status TEXT NOT NULL, report_hash TEXT NOT NULL,
+  audit_reference_json TEXT NOT NULL, report_json TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS round_reflections(
+  reflection_id TEXT PRIMARY KEY, round_id TEXT NOT NULL REFERENCES round_reports(round_id),
+  actor_id TEXT NOT NULL, reflection_text TEXT NOT NULL, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS goal_drafts(
+  draft_id TEXT PRIMARY KEY, round_id TEXT NOT NULL REFERENCES round_reports(round_id),
+  suggestion_id TEXT NOT NULL, state TEXT NOT NULL, origin TEXT NOT NULL,
+  draft_json TEXT NOT NULL, created_at TEXT NOT NULL,
+  UNIQUE(round_id,suggestion_id)
+);
+CREATE TABLE IF NOT EXISTS probe_runs(
+  effect_id TEXT PRIMARY KEY, work_id TEXT NOT NULL UNIQUE,
+  proposal_id TEXT NOT NULL, actor_id TEXT NOT NULL, goal_id TEXT NOT NULL,
+  goal_hash TEXT NOT NULL, request_hash TEXT NOT NULL, request_json TEXT NOT NULL,
+  state TEXT NOT NULL, result_hash TEXT, result_json TEXT,
+  created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS probe_promotions(
+  promotion_id TEXT PRIMARY KEY, effect_id TEXT NOT NULL UNIQUE,
+  row_hash TEXT NOT NULL UNIQUE, actor_id TEXT NOT NULL,
+  draft_hash TEXT NOT NULL, draft_json TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
 """
 
 
@@ -139,6 +209,13 @@ class ControlStore:
         with self.immediate() as db:
             db.executescript(DDL)
             self._migrate_inbox_event_dimensions(db)
+            columns = {row["name"] for row in db.execute("PRAGMA table_info(actions)")}
+            if "payload_json" not in columns:
+                db.execute("ALTER TABLE actions ADD COLUMN payload_json TEXT")
+            if "actor_id" not in columns:
+                db.execute("ALTER TABLE actions ADD COLUMN actor_id TEXT NOT NULL DEFAULT ''")
+            if "actor_json" not in columns:
+                db.execute("ALTER TABLE actions ADD COLUMN actor_json TEXT")
             for version in range(1, SCHEMA_VERSION + 1):
                 db.execute("INSERT OR IGNORE INTO migrations(version,applied_at) VALUES(?,?)",
                            (version, utc_now()))
@@ -237,15 +314,65 @@ class ControlStore:
         return dedupe_key, cur.rowcount == 1
 
     def prepare_action(self, *, effect_id: str, command_id: str, intent: str,
-                       payload: dict[str, Any]) -> bool:
+                       payload: dict[str, Any], actor: dict[str, Any] | None = None) -> bool:
+        """Journal immutable command authority as well as its typed payload.
+
+        ``actor`` is optional only for pre-v7 fixtures/legacy rows.  Production bridge
+        callers always supply all four authenticated Actor fields.  A replay may fill
+        a legacy empty actor slot, but can never replace an already attributed actor.
+        """
         now = utc_now()
+        actor_id = ""
+        actor_json = None
+        if actor is not None:
+            if (not isinstance(actor, dict)
+                    or set(actor) != {"open_id", "tenant_key", "chat_id", "chat_type"}
+                    or not all(isinstance(value, str) and value for value in actor.values())):
+                raise StoreError("action actor identity invalid")
+            actor_id = actor["open_id"]
+            actor_json = canonical_json(actor).decode()
+        payload_json = canonical_json(payload).decode()
+        payload_hash = sha256(payload)
         with self.immediate() as db:
+            prior = db.execute("SELECT * FROM actions WHERE effect_id=?", (effect_id,)).fetchone()
+            if prior is not None:
+                if (prior["command_id"] != command_id or prior["intent"] != intent
+                        or prior["payload_hash"] != payload_hash
+                        or prior["payload_json"] not in {None, payload_json}):
+                    raise StoreError("effect_id replayed with different command")
+                if prior["payload_json"] is None:
+                    # v1-v2 stored only the hash.  The authenticated bridge replay
+                    # may safely expand that row with bytes matching the old hash.
+                    db.execute("UPDATE actions SET payload_json=?,updated_at=? "
+                               "WHERE effect_id=? AND payload_json IS NULL",
+                               (payload_json, now, effect_id))
+                if actor_json is not None:
+                    if prior["actor_json"] not in {None, actor_json} or prior["actor_id"] not in {"", actor_id}:
+                        raise StoreError("effect_id replayed by different actor")
+                    if prior["actor_json"] is None:
+                        db.execute("UPDATE actions SET actor_id=?,actor_json=?,updated_at=? "
+                                   "WHERE effect_id=? AND actor_json IS NULL",
+                                   (actor_id, actor_json, now, effect_id))
+                return False
             cur = db.execute(
-                "INSERT OR IGNORE INTO actions(effect_id,command_id,intent,state,payload_hash,created_at,updated_at) "
-                "VALUES(?,?,?,?,?,?,?)",
-                (effect_id, command_id, intent, "queued", sha256(payload), now, now),
+                "INSERT INTO actions(effect_id,command_id,intent,state,payload_hash,payload_json,"
+                "created_at,updated_at,actor_id,actor_json) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                (effect_id, command_id, intent, "queued", payload_hash, payload_json,
+                 now, now, actor_id, actor_json),
             )
             return cur.rowcount == 1
+
+    def action_actor(self, effect_id: str) -> dict[str, Any]:
+        with self.connect() as db:
+            row = db.execute("SELECT actor_json FROM actions WHERE effect_id=?",
+                             (effect_id,)).fetchone()
+        if row is None or row["actor_json"] is None:
+            raise StoreError("action has no authenticated actor identity")
+        value = json.loads(row["actor_json"])
+        if (not isinstance(value, dict)
+                or set(value) != {"open_id", "tenant_key", "chat_id", "chat_type"}):
+            raise StoreError("action actor identity corrupt")
+        return value
 
     def claim_action(self, effect_id: str, worker_id: str, lease_seconds: int = 60) -> bool:
         now = datetime.now(timezone.utc)
@@ -446,6 +573,438 @@ class ControlStore:
                         canonical_json(token).decode(), utc_now()))
             return token
 
+    def save_approval_request(self, *, request_id: str, request_version: int,
+                              envelope_hash: str, bundle: dict[str, Any],
+                              reference: dict[str, Any]) -> bool:
+        """Persist one immutable broker-sealed approval request reference.
+
+        This table exists independently in the Operator and Human databases.  A
+        replay is accepted only when every byte-bound field is identical; a later
+        bridge object cannot silently replace what the owner was shown.
+        """
+        require_id(request_id, "request_id")
+        require_sha(envelope_hash, "envelope_hash")
+        if (type(request_version) is not int or request_version < 1
+                or not isinstance(bundle, dict) or not isinstance(reference, dict)):
+            raise StoreError("invalid approval request")
+        bundle_json = canonical_json(bundle).decode()
+        reference_json = canonical_json(reference).decode()
+        request_hash = sha256({"request_id": request_id,
+                               "request_version": request_version,
+                               "envelope_hash": envelope_hash,
+                               "bundle": bundle, "reference": reference})
+        now = utc_now()
+        with self.immediate() as db:
+            row = db.execute(
+                "SELECT * FROM approval_requests WHERE request_id=? AND request_version=?",
+                (request_id, request_version),
+            ).fetchone()
+            if row is not None:
+                if (row["envelope_hash"] != envelope_hash
+                        or row["bundle_json"] != bundle_json
+                        or row["reference_json"] != reference_json
+                        or row["request_hash"] != request_hash):
+                    raise StoreError("approval request replayed with different content")
+                return False
+            db.execute(
+                "INSERT INTO approval_requests VALUES(?,?,?,?,?,?,?,?,?)",
+                (request_id, request_version, envelope_hash, "pending", bundle_json,
+                 reference_json, request_hash, now, now),
+            )
+            return True
+
+    def approval_request(self, request_id: str, request_version: int | None = None
+                         ) -> dict[str, Any] | None:
+        with self.connect() as db:
+            if request_version is None:
+                rows = db.execute(
+                    "SELECT * FROM approval_requests WHERE request_id=? "
+                    "ORDER BY request_version DESC LIMIT 2", (request_id,),
+                ).fetchall()
+                if not rows:
+                    return None
+                if len(rows) != 1:
+                    raise StoreError("approval request version is ambiguous")
+                row = rows[0]
+            else:
+                row = db.execute(
+                    "SELECT * FROM approval_requests WHERE request_id=? AND request_version=?",
+                    (request_id, request_version),
+                ).fetchone()
+                if row is None:
+                    return None
+            out = dict(row)
+            out["bundle"] = json.loads(out.pop("bundle_json"))
+            out["reference"] = json.loads(out.pop("reference_json"))
+            return out
+
+    def mark_approval_request_decided(self, request_id: str, request_version: int,
+                                      envelope_hash: str, decision: str) -> None:
+        if decision not in {"approve", "reject"}:
+            raise StoreError("invalid approval decision")
+        with self.immediate() as db:
+            row = db.execute(
+                "SELECT state,envelope_hash FROM approval_requests "
+                "WHERE request_id=? AND request_version=?",
+                (request_id, request_version),
+            ).fetchone()
+            if row is None or row["envelope_hash"] != envelope_hash:
+                raise StoreError("approval request unavailable")
+            expected = "approved" if decision == "approve" else "rejected"
+            if row["state"] not in {"pending", expected}:
+                raise StoreError("approval request already fixed to another decision")
+            db.execute(
+                "UPDATE approval_requests SET state=?,updated_at=? "
+                "WHERE request_id=? AND request_version=?",
+                (expected, utc_now(), request_id, request_version),
+            )
+
+    def import_approval_decision(self, *, request_id: str, request_version: int,
+                                 envelope_hash: str, decision: str,
+                                 document: dict[str, Any],
+                                 token_claim: dict[str, str] | None = None) -> bool:
+        """Record a verified Human-domain fact without interpreting its outcome."""
+        if decision not in {"approve", "reject"} or not isinstance(document, dict):
+            raise StoreError("invalid imported approval decision")
+        decision_json = canonical_json(document).decode()
+        decision_hash = sha256(document)
+        now = utc_now()
+        with self.immediate() as db:
+            request = db.execute(
+                "SELECT envelope_hash FROM approval_requests "
+                "WHERE request_id=? AND request_version=?",
+                (request_id, request_version),
+            ).fetchone()
+            if request is None or request["envelope_hash"] != envelope_hash:
+                raise StoreError("imported decision has no matching approval request")
+            prior = db.execute(
+                "SELECT * FROM approval_imports WHERE request_id=? AND request_version=?",
+                (request_id, request_version),
+            ).fetchone()
+            if prior is not None:
+                if (prior["envelope_hash"], prior["decision"], prior["decision_hash"],
+                        prior["decision_json"]) != (
+                            envelope_hash, decision, decision_hash, decision_json):
+                    raise StoreError("approval decision already fixed to different content")
+                return False
+            if decision == "approve":
+                if (not isinstance(token_claim, dict)
+                        or set(token_claim) != {"token_id", "batch_id"}):
+                    raise StoreError("approved import lacks token claim")
+                claim = db.execute(
+                    "INSERT OR IGNORE INTO approval_claims VALUES(?,?,?,?,?)",
+                    (token_claim["token_id"], token_claim["batch_id"], envelope_hash,
+                     "approve", now),
+                )
+                if claim.rowcount != 1:
+                    raise StoreError("approval token already consumed")
+            elif token_claim is not None:
+                raise StoreError("rejected import must not claim a token")
+            db.execute(
+                "INSERT INTO approval_imports VALUES(?,?,?,?,?,?,?)",
+                (request_id, request_version, envelope_hash, decision,
+                 decision_hash, decision_json, now),
+            )
+            db.execute(
+                "UPDATE approval_requests SET state=?,updated_at=? "
+                "WHERE request_id=? AND request_version=?",
+                ("approved" if decision == "approve" else "rejected", now,
+                 request_id, request_version),
+            )
+            return True
+
+    def approval_import(self, request_id: str, request_version: int) -> dict[str, Any] | None:
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT * FROM approval_imports WHERE request_id=? AND request_version=?",
+                (request_id, request_version),
+            ).fetchone()
+            return dict(row) if row is not None else None
+
+    def stable_dispatch_claim(self, *, request: dict[str, Any], expires_at: str,
+                              signer: Any) -> dict[str, Any]:
+        """Human-domain first-claim journal.
+
+        The transaction chooses the first-claim timestamp and fixes the target before
+        returning a signed document.  Replays of the exact batch/envelope/release
+        target return the original document; any attempt to reuse the token or target
+        for different authority fails closed.  Expiry is evaluated only while the
+        token is still unseen.
+        """
+        required = {"claim_id", "token_id", "request_id", "request_version",
+                    "batch_id", "envelope_hash", "release_id",
+                    "approval_event_id", "effect_id"}
+        if not isinstance(request, dict) or set(request) != required:
+            raise StoreError("dispatch claim request fields mismatch")
+        for field in ("claim_id", "token_id", "request_id", "batch_id",
+                      "release_id", "approval_event_id", "effect_id"):
+            require_id(request[field], field)
+        require_sha(request["envelope_hash"], "envelope_hash")
+        if type(request["request_version"]) is not int or request["request_version"] < 1:
+            raise StoreError("invalid dispatch claim request version")
+        try:
+            expiry = datetime.fromisoformat(expires_at)
+        except (TypeError, ValueError) as exc:
+            raise StoreError("invalid dispatch claim expiry") from exc
+        if expiry.tzinfo is None:
+            raise StoreError("dispatch claim expiry must be timezone-aware")
+        now_dt = datetime.now(timezone.utc)
+        now = now_dt.isoformat(timespec="microseconds")
+        target = (request["batch_id"], request["envelope_hash"], request["release_id"])
+        with self.immediate() as db:
+            rows = db.execute(
+                "SELECT * FROM dispatch_claims WHERE token_id=? OR "
+                "(batch_id=? AND envelope_hash=? AND release_id=?)",
+                (request["token_id"], *target),
+            ).fetchall()
+            if rows:
+                canonical = rows[0]
+                if any(dict(row) != dict(canonical) for row in rows[1:]):
+                    raise StoreError("dispatch claim journal contains conflicting authority")
+                bound = tuple(canonical[field] for field in (
+                    "claim_id", "token_id", "request_id", "request_version", "batch_id",
+                    "envelope_hash", "release_id", "approval_event_id", "effect_id"))
+                expected = tuple(request[field] for field in (
+                    "claim_id", "token_id", "request_id", "request_version", "batch_id",
+                    "envelope_hash", "release_id", "approval_event_id", "effect_id"))
+                if bound != expected:
+                    raise StoreError("approval token/target already fixed to another claim")
+                return json.loads(canonical["receipt_json"])
+            state = "denied" if now_dt >= expiry else "claimed"
+            core = {"schema_version": 1, "kind": "approval_claim_result", **request,
+                    "state": state,
+                    "first_claim_at": None if state == "denied" else now,
+                    "reason_code": "APPROVAL_EXPIRED" if state == "denied" else None}
+            document = signer(core)
+            if (not isinstance(document, dict) or set(document) != {"core", "sealed"}
+                    or document.get("core") != core or not isinstance(document.get("sealed"), dict)):
+                raise StoreError("dispatch claim signer returned invalid document")
+            receipt_hash = sha256(document)
+            db.execute(
+                "INSERT INTO dispatch_claims VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (request["claim_id"], request["token_id"], request["request_id"],
+                 request["request_version"], request["batch_id"], request["envelope_hash"],
+                 request["release_id"], request["approval_event_id"], request["effect_id"],
+                 state, core["first_claim_at"], receipt_hash,
+                 canonical_json(document).decode(), None, None),
+            )
+            return document
+
+    def settle_dispatch_claim(self, claim_id: str, *, receipt_hash: str,
+                              effect_id: str, dispatch_event_id: str) -> bool:
+        """Human-domain transition claimed→settled; rejected claims can never settle."""
+        require_id(claim_id, "claim_id")
+        require_sha(receipt_hash, "receipt_hash")
+        require_id(effect_id, "effect_id")
+        require_id(dispatch_event_id, "dispatch_event_id")
+        now = utc_now()
+        with self.immediate() as db:
+            row = db.execute("SELECT * FROM dispatch_claims WHERE claim_id=?",
+                             (claim_id,)).fetchone()
+            if row is None:
+                raise StoreError("dispatch claim unavailable")
+            if row["receipt_hash"] != receipt_hash or row["effect_id"] != effect_id:
+                raise StoreError("dispatch settlement is not bound to claim receipt")
+            if row["state"] == "settled":
+                if row["settled_event_id"] != dispatch_event_id:
+                    raise StoreError("dispatch claim already settled by another event")
+                return False
+            if row["state"] != "claimed":
+                raise StoreError("only a claimed dispatch authority may settle")
+            db.execute(
+                "UPDATE dispatch_claims SET state='settled',settled_event_id=?,settled_at=? "
+                "WHERE claim_id=? AND state='claimed'",
+                (dispatch_event_id, now, claim_id),
+            )
+            return True
+
+    def dispatch_claim(self, claim_id: str) -> dict[str, Any] | None:
+        with self.connect() as db:
+            row = db.execute("SELECT * FROM dispatch_claims WHERE claim_id=?",
+                             (claim_id,)).fetchone()
+            return dict(row) if row is not None else None
+
+    def import_dispatch_claim_result(self, document: dict[str, Any]) -> bool:
+        """Operator-domain journal for a mechanically verified Human claim result."""
+        core = document.get("core") if isinstance(document, dict) else None
+        if not isinstance(core, dict) or core.get("state") not in {"claimed", "denied"}:
+            raise StoreError("invalid dispatch claim result")
+        fields = ("claim_id", "request_id", "request_version", "batch_id",
+                  "envelope_hash", "release_id", "approval_event_id", "effect_id")
+        if any(field not in core for field in fields):
+            raise StoreError("dispatch claim result missing binding")
+        document_json = canonical_json(document).decode()
+        document_hash = sha256(document)
+        now = utc_now()
+        with self.immediate() as db:
+            prior = db.execute("SELECT * FROM dispatch_claim_imports WHERE claim_id=?",
+                               (core["claim_id"],)).fetchone()
+            if prior is not None:
+                if (prior["document_hash"] != document_hash
+                        or prior["document_json"] != document_json):
+                    raise StoreError("dispatch claim result replay conflict")
+                return False
+            db.execute(
+                "INSERT INTO dispatch_claim_imports VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (core["claim_id"], core["request_id"], core["request_version"],
+                 core["batch_id"], core["envelope_hash"], core["release_id"],
+                 core["approval_event_id"], core["effect_id"], core["state"],
+                 document_hash, document_json, now, None),
+            )
+            return True
+
+    def mark_dispatch_claim_settled(self, claim_id: str, dispatch_event_id: str) -> bool:
+        require_id(claim_id, "claim_id")
+        require_id(dispatch_event_id, "dispatch_event_id")
+        with self.immediate() as db:
+            row = db.execute("SELECT * FROM dispatch_claim_imports WHERE claim_id=?",
+                             (claim_id,)).fetchone()
+            if row is None or row["state"] != "claimed":
+                raise StoreError("claimed Human receipt unavailable")
+            if row["settled_event_id"] is not None:
+                if row["settled_event_id"] != dispatch_event_id:
+                    raise StoreError("dispatch claim settlement replay conflict")
+                return False
+            db.execute("UPDATE dispatch_claim_imports SET settled_event_id=? WHERE claim_id=?",
+                       (dispatch_event_id, claim_id))
+            return True
+
+    def prepare_dispatch_request(self, request: dict[str, Any]) -> bool:
+        """Operator-domain immutable handoff to the fixed dispatch supervisor."""
+        required = {"schema_version", "kind", "effect_id", "batch_id", "envelope_hash",
+                    "release_id", "claim_id", "token_id", "claim_receipt_hash", "dispatch_event_id",
+                    "envelope", "run_configs"}
+        if not isinstance(request, dict) or set(request) != required:
+            raise StoreError("dispatch request fields mismatch")
+        if request["schema_version"] != 1 or request["kind"] != "dispatch_request":
+            raise StoreError("dispatch request protocol mismatch")
+        for field in ("effect_id", "batch_id", "release_id", "claim_id", "token_id",
+                      "dispatch_event_id"):
+            require_id(request[field], field)
+        for field in ("envelope_hash", "claim_receipt_hash"):
+            require_sha(request[field], field)
+        if (not isinstance(request["envelope"], dict)
+                or sha256(request["envelope"]) != request["envelope_hash"]
+                or not isinstance(request["run_configs"], list)
+                or request["run_configs"] != request["envelope"].get("run_configs")):
+            raise StoreError("dispatch request envelope/run_configs binding invalid")
+        raw = canonical_json(request).decode()
+        digest = sha256(request)
+        now = utc_now()
+        with self.immediate() as db:
+            prior = db.execute("SELECT * FROM dispatch_requests WHERE effect_id=? OR batch_id=?",
+                               (request["effect_id"], request["batch_id"])).fetchall()
+            if prior:
+                if any(row["request_hash"] != digest or row["request_json"] != raw
+                       for row in prior):
+                    raise StoreError("dispatch request replay conflict")
+                return False
+            db.execute(
+                "INSERT INTO dispatch_requests VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (request["effect_id"], request["batch_id"], request["envelope_hash"],
+                 request["release_id"], request["claim_id"], request["claim_receipt_hash"],
+                 request["dispatch_event_id"], digest, raw, "prepared", None, now, now),
+            )
+            return True
+
+    def set_dispatch_request_state(self, effect_id: str, *, state: str,
+                                   reason_code: str | None = None) -> bool:
+        if state not in {"prepared", "blocked", "enqueued", "running", "completed"}:
+            raise StoreError("invalid dispatch request state")
+        require_id(effect_id, "effect_id")
+        if reason_code is not None:
+            require_id(reason_code, "reason_code")
+        with self.immediate() as db:
+            row = db.execute("SELECT state,reason_code FROM dispatch_requests WHERE effect_id=?",
+                             (effect_id,)).fetchone()
+            if row is None:
+                raise StoreError("dispatch request unavailable")
+            allowed = {
+                "prepared": {"prepared", "blocked", "enqueued"},
+                "blocked": {"blocked", "enqueued"},
+                "enqueued": {"enqueued", "running", "blocked"},
+                "running": {"running", "completed", "blocked"},
+                "completed": {"completed"},
+            }
+            if state not in allowed.get(row["state"], set()):
+                raise StoreError("dispatch request state cannot regress")
+            if (row["state"], row["reason_code"]) == (state, reason_code):
+                return False
+            db.execute("UPDATE dispatch_requests SET state=?,reason_code=?,updated_at=? "
+                       "WHERE effect_id=?", (state, reason_code, utc_now(), effect_id))
+            return True
+
+    def save_round_report(self, *, round_id: str, batch_id: str, goal_id: str,
+                          status: str, report_hash: str, audit_reference: dict[str, Any],
+                          report: dict[str, Any]) -> bool:
+        """Persist one immutable machine-produced report; conflicting replay fails."""
+        for field, value in (("round_id", round_id), ("batch_id", batch_id),
+                             ("goal_id", goal_id)):
+            require_id(value, field)
+        require_sha(report_hash, "report_hash")
+        if status not in {"reported", "quarantined"} or report.get("report_hash") != report_hash:
+            raise StoreError("round report identity invalid")
+        reference_raw = canonical_json(audit_reference).decode()
+        report_raw = canonical_json(report).decode()
+        with self.immediate() as db:
+            prior = db.execute(
+                "SELECT * FROM round_reports WHERE round_id=? OR batch_id=?",
+                (round_id, batch_id)).fetchall()
+            if prior:
+                if any((row["round_id"], row["batch_id"], row["goal_id"], row["status"],
+                        row["report_hash"], row["audit_reference_json"], row["report_json"])
+                       != (round_id, batch_id, goal_id, status, report_hash,
+                           reference_raw, report_raw) for row in prior):
+                    raise StoreError("round report replay conflict")
+                return False
+            db.execute("INSERT INTO round_reports VALUES(?,?,?,?,?,?,?,?)",
+                       (round_id, batch_id, goal_id, status, report_hash,
+                        reference_raw, report_raw, utc_now()))
+            return True
+
+    def save_goal_draft(self, *, draft_id: str, round_id: str, suggestion_id: str,
+                        draft: dict[str, Any], origin: str = "machine") -> bool:
+        """Store inert text outside proposals; this API has no confirm/compile transition."""
+        for field, value in (("draft_id", draft_id), ("round_id", round_id),
+                             ("suggestion_id", suggestion_id)):
+            require_id(value, field)
+        if (origin != "machine" or draft.get("draft_only") is not True
+                or draft.get("requires_human_claude_review") is not True
+                or draft.get("auto_execute") is not False):
+            raise StoreError("goal draft is not inert machine output")
+        raw = canonical_json(draft).decode()
+        with self.immediate() as db:
+            prior = db.execute(
+                "SELECT * FROM goal_drafts WHERE draft_id=? OR (round_id=? AND suggestion_id=?)",
+                (draft_id, round_id, suggestion_id)).fetchall()
+            if prior:
+                if any((row["draft_id"], row["round_id"], row["suggestion_id"],
+                        row["state"], row["origin"], row["draft_json"])
+                       != (draft_id, round_id, suggestion_id, "awaiting_human_claude",
+                           origin, raw) for row in prior):
+                    raise StoreError("goal draft replay conflict")
+                return False
+            db.execute("INSERT INTO goal_drafts VALUES(?,?,?,?,?,?,?)",
+                       (draft_id, round_id, suggestion_id, "awaiting_human_claude",
+                        origin, raw, utc_now()))
+            return True
+
+    def record_human_reflection(self, *, round_id: str, actor_id: str,
+                                reflection_text: str) -> str:
+        """Explicit human-only record; never synthesised by the round reconciler."""
+        require_id(round_id, "round_id"); require_id(actor_id, "actor_id")
+        if (not isinstance(reflection_text, str) or not reflection_text.strip()
+                or len(reflection_text.encode("utf-8")) > 64 * 1024):
+            raise StoreError("human reflection text invalid")
+        reflection_id = "REFL-" + sha256({"round_id": round_id, "actor_id": actor_id,
+                                            "text": reflection_text})[:24]
+        with self.immediate() as db:
+            if db.execute("SELECT 1 FROM round_reports WHERE round_id=?", (round_id,)).fetchone() is None:
+                raise StoreError("round report unavailable")
+            db.execute("INSERT OR IGNORE INTO round_reflections VALUES(?,?,?,?,?)",
+                       (reflection_id, round_id, actor_id, reflection_text, utc_now()))
+        return reflection_id
+
     def set_proposal_state(self, proposal_id: str, expected: str, new: str,
                            normalized: dict[str, Any] | None = None) -> bool:
         with self.immediate() as db:
@@ -469,6 +1028,78 @@ class ControlStore:
             db.execute("INSERT OR IGNORE INTO research_events(event_id,event_type,subject_id,payload_json,created_at) VALUES(?,?,?,?,?)",
                        (event_id, event_type, subject_id, canonical_json(payload).decode(), utc_now()))
         return event_id
+
+    def research_event(self, event_id: str) -> dict[str, Any] | None:
+        with self.connect() as db:
+            row = db.execute("SELECT * FROM research_events WHERE event_id=?", (event_id,)).fetchone()
+            return dict(row) if row is not None else None
+
+    def prepare_probe_run(self, *, effect_id: str, work_id: str, proposal_id: str,
+                          actor_id: str, goal_id: str, goal_hash: str,
+                          request: dict[str, Any]) -> bool:
+        for value, name in ((effect_id, "effect_id"), (work_id, "work_id"),
+                            (proposal_id, "proposal_id"), (actor_id, "actor_id"),
+                            (goal_id, "goal_id")):
+            require_id(value, name)
+        require_sha(goal_hash, "goal_hash")
+        raw = canonical_json(request).decode(); digest = sha256(request); now = utc_now()
+        expected = (effect_id, work_id, proposal_id, actor_id, goal_id, goal_hash,
+                    digest, raw)
+        with self.immediate() as db:
+            rows = db.execute("SELECT * FROM probe_runs WHERE effect_id=? OR work_id=?",
+                              (effect_id, work_id)).fetchall()
+            if rows:
+                if any(tuple(row[key] for key in (
+                        "effect_id", "work_id", "proposal_id", "actor_id", "goal_id",
+                        "goal_hash", "request_hash", "request_json")) != expected for row in rows):
+                    raise StoreError("probe run replay conflict")
+                return False
+            db.execute("INSERT INTO probe_runs VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                       (*expected, "queued", None, None, now, now))
+            return True
+
+    def settle_probe_run(self, *, work_id: str, result: dict[str, Any],
+                         result_hash: str) -> bool:
+        require_sha(result_hash, "result_hash")
+        raw = canonical_json(result).decode()
+        with self.immediate() as db:
+            row = db.execute("SELECT * FROM probe_runs WHERE work_id=?", (work_id,)).fetchone()
+            if row is None:
+                raise StoreError("probe work is unknown")
+            if row["state"] == "completed":
+                if row["result_hash"] != result_hash or row["result_json"] != raw:
+                    raise StoreError("probe result replay conflict")
+                return False
+            if row["state"] != "queued":
+                raise StoreError("probe run state invalid")
+            db.execute("UPDATE probe_runs SET state='completed',result_hash=?,result_json=?,"
+                       "updated_at=? WHERE work_id=? AND state='queued'",
+                       (result_hash, raw, utc_now(), work_id))
+            return True
+
+    def save_probe_promotion(self, *, effect_id: str, row_hash: str, actor_id: str,
+                             draft: dict[str, Any]) -> bool:
+        require_sha(row_hash, "row_hash"); require_id(actor_id, "actor_id")
+        promotion_id = draft.get("promotion_id")
+        require_id(promotion_id, "promotion_id")
+        if (draft.get("draft_only") is not True or draft.get("auto_execute") is not False
+                or draft.get("requires_human_claude_review") is not True):
+            raise StoreError("probe promotion is not inert")
+        raw = canonical_json(draft).decode(); digest = sha256(draft)
+        expected = (promotion_id, effect_id, row_hash, actor_id, digest, raw)
+        with self.immediate() as db:
+            rows = db.execute("SELECT * FROM probe_promotions WHERE promotion_id=? "
+                              "OR effect_id=? OR row_hash=?",
+                              (promotion_id, effect_id, row_hash)).fetchall()
+            if rows:
+                if any(tuple(row[key] for key in (
+                        "promotion_id", "effect_id", "row_hash", "actor_id",
+                        "draft_hash", "draft_json")) != expected for row in rows):
+                    raise StoreError("probe promotion replay conflict")
+                return False
+            db.execute("INSERT INTO probe_promotions VALUES(?,?,?,?,?,?,?)",
+                       (*expected, utc_now()))
+            return True
 
     def get_or_create_incident(self, incident_id: str, fingerprint: str, *, severity: str,
                                evidence: dict[str, Any]) -> tuple[dict[str, Any], bool]:
@@ -494,18 +1125,89 @@ class ControlStore:
 
     def create_mission(self, mission_id: str, *, risk: str, payload: dict[str, Any],
                        base_release: str, dependencies: tuple[str, ...] = (),
-                       max_attempts: int = 3) -> None:
+                       max_attempts: int = 3) -> bool:
+        """Create one immutable mission intent, accepting only exact replays.
+
+        Health reconciliation can crash after committing the mission and before
+        moving its incident to ``mission_queued``.  Retrying that crash window must
+        return the already committed intent, while a reused deterministic id with
+        different authority must fail closed.
+        """
         now = utc_now()
+        payload_json = canonical_json(payload).decode()
         with self.immediate() as db:
+            prior = db.execute("SELECT * FROM missions WHERE mission_id=?",
+                               (mission_id,)).fetchone()
+            if prior is not None:
+                prior_deps = tuple(row["depends_on"] for row in db.execute(
+                    "SELECT depends_on FROM mission_deps WHERE mission_id=? "
+                    "ORDER BY depends_on", (mission_id,)).fetchall())
+                if (prior["risk"] != risk or prior["payload_json"] != payload_json
+                        or prior["base_release"] != base_release
+                        or int(prior["max_attempts"]) != max_attempts
+                        or prior_deps != tuple(sorted(dependencies))):
+                    raise StoreError("mission_id replayed with different intent")
+                return False
             db.execute("INSERT INTO missions(mission_id,state,risk,payload_json,base_release,max_attempts,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)",
                        (mission_id, MissionState.QUEUED.value, risk,
-                        canonical_json(payload).decode(), base_release, max_attempts, now, now))
+                        payload_json, base_release, max_attempts, now, now))
             for dep in dependencies:
                 if dep == mission_id:
                     raise StoreError("mission cannot depend on itself")
                 db.execute("INSERT INTO mission_deps VALUES(?,?)", (mission_id, dep))
             if self._has_cycle(db):
                 raise StoreError("mission dependency cycle")
+            return True
+
+    def upsert_service_status(self, *, label: str, release_id: str, status: str,
+                              semantic_ok: bool, detail: dict[str, Any],
+                              checked_at: str) -> bool:
+        """Store the newest independently observed service fact.
+
+        Exact replays are no-ops, older observations cannot roll the cockpit back,
+        and two different observations at the same logical instant are treated as a
+        producer conflict instead of last-writer-wins.  Trust evaluation belongs to
+        ``health_runtime``; this method is the durable compare-and-swap boundary.
+        """
+        require_id(label, "service_label")
+        require_id(release_id, "release_id")
+        allowed = {"healthy", "idle", "blocked", "stale", "recovering",
+                   "mission_queued", "needs_human", "quarantined"}
+        if status not in allowed:
+            raise StoreError("invalid service status")
+        if type(semantic_ok) is not bool or not isinstance(detail, dict):
+            raise StoreError("invalid service semantic observation")
+        try:
+            observed = datetime.fromisoformat(checked_at)
+        except (TypeError, ValueError) as exc:
+            raise StoreError("invalid service checked_at") from exc
+        if observed.tzinfo is None:
+            raise StoreError("service checked_at must be timezone-aware")
+        checked_at = observed.astimezone(timezone.utc).isoformat(timespec="microseconds")
+        detail_json = canonical_json(detail).decode()
+        with self.immediate() as db:
+            prior = db.execute("SELECT * FROM services WHERE label=?", (label,)).fetchone()
+            if prior is not None:
+                prior_at = datetime.fromisoformat(prior["checked_at"]).astimezone(timezone.utc)
+                if observed.astimezone(timezone.utc) < prior_at:
+                    return False
+                same = (prior["release_id"] == release_id and prior["status"] == status
+                        and bool(prior["semantic_ok"]) is semantic_ok
+                        and prior["detail_json"] == detail_json)
+                if observed.astimezone(timezone.utc) == prior_at:
+                    if same:
+                        return False
+                    raise StoreError("service observation conflicts at checked_at")
+                db.execute(
+                    "UPDATE services SET release_id=?,status=?,semantic_ok=?,"
+                    "detail_json=?,checked_at=? WHERE label=?",
+                    (release_id, status, int(semantic_ok), detail_json, checked_at, label),
+                )
+                return True
+            db.execute("INSERT INTO services VALUES(?,?,?,?,?,?)",
+                       (label, release_id, status, int(semantic_ok), detail_json,
+                        checked_at))
+            return True
 
     @staticmethod
     def _has_cycle(db: sqlite3.Connection) -> bool:
@@ -549,6 +1251,57 @@ class ControlStore:
             out["payload"] = json.loads(out.pop("payload_json"))
             return out
 
+    def ready_missions(self) -> list[dict[str, Any]]:
+        """Return dependency-ready missions without acquiring a second lease.
+
+        Execution leases live in the root Work broker.  The control database is
+        only the durable intent/index, so Operator performs enqueue-first and a
+        compare-and-swap below.  Repeating the same enqueue after a crash is
+        byte-idempotent.
+        """
+        with self.connect() as db:
+            rows = db.execute(
+                "SELECT m.* FROM missions m WHERE m.state='queued' "
+                "AND m.attempt<m.max_attempts "
+                "AND NOT EXISTS (SELECT 1 FROM mission_deps d "
+                "JOIN missions p ON p.mission_id=d.depends_on "
+                "WHERE d.mission_id=m.mission_id AND p.state!='released') "
+                "ORDER BY m.created_at, m.mission_id"
+            ).fetchall()
+        result: list[dict[str, Any]] = []
+        for row in rows:
+            value = dict(row)
+            value["payload"] = json.loads(value.pop("payload_json"))
+            result.append(value)
+        return result
+
+    def mark_mission_enqueued(self, mission_id: str, *, expected_attempt: int,
+                              fencing_token: int) -> bool:
+        if expected_attempt < 1 or fencing_token < 1:
+            raise StoreError("mission enqueue identity invalid")
+        with self.immediate() as db:
+            cur = db.execute(
+                "UPDATE missions SET state='running',worker_id='abcr-operator',"
+                "attempt=?,fencing_token=?,lease_until=NULL,heartbeat_at=?,updated_at=? "
+                "WHERE mission_id=? AND state='queued' AND attempt=? "
+                "AND fencing_token=? AND attempt<max_attempts",
+                (expected_attempt, fencing_token, utc_now(), utc_now(), mission_id,
+                 expected_attempt - 1, fencing_token - 1),
+            )
+            return cur.rowcount == 1
+
+    def settle_mission_pipeline(self, mission_id: str, outcome: str) -> bool:
+        """CAS one broker-pipeline terminal fact into the mission read model."""
+        if outcome not in {"released", "failed", "needs_human", "quarantined"}:
+            raise StoreError("mission terminal outcome invalid")
+        with self.immediate() as db:
+            cur = db.execute(
+                "UPDATE missions SET state=?,worker_id=NULL,lease_until=NULL,updated_at=? "
+                "WHERE mission_id=? AND state IN ('running','verifying')",
+                (outcome, utc_now(), mission_id),
+            )
+            return cur.rowcount == 1
+
     def heartbeat_mission(self, mission_id: str, worker_id: str, fencing_token: int,
                           *, lease_seconds: int = 300) -> bool:
         now = datetime.now(timezone.utc)
@@ -591,7 +1344,11 @@ class ControlStore:
     def rows(self, table: str) -> list[dict[str, Any]]:
         if table not in {"inbox", "actions", "outbox", "proposals", "upload_sessions",
                          "research_events", "incidents", "missions", "services", "releases",
-                         "approval_claims", "approval_decisions"}:
+                         "approval_claims", "approval_decisions", "approval_requests",
+                         "approval_imports", "dispatch_claims",
+                         "dispatch_claim_imports", "dispatch_requests",
+                         "round_reports", "round_reflections", "goal_drafts",
+                         "probe_runs", "probe_promotions"}:
             raise StoreError("table is not readable")
         with self.connect() as db:
             return [dict(row) for row in db.execute(f"SELECT * FROM {table}").fetchall()]

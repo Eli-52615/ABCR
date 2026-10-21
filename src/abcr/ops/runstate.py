@@ -16,8 +16,10 @@ from pathlib import Path
 from abcr.common.constants import STATE_DIR_DEFAULT
 
 STATUS_RUNNING = "running"
+STATUS_QUEUED = "queued"
 STATUS_SUSPENDED = "suspended"
 STATUS_DONE = "done"
+STATUS_ABORTED = "aborted"
 
 # scan_orphans 存活性判定：pid 不存活 且 心跳陈旧超本阈值才判孤儿。
 # 若 pid 不可确证死亡但心跳仍新鲜（< 阈值），fail-safe 不误杀活 run（F-OPS-01 修复）。
@@ -179,6 +181,17 @@ def mark_suspended(run_id: str, reason: str) -> None:
         if rec is None:
             return None
         rec.update(status=STATUS_SUSPENDED, reason=reason, updated_at=_now())
+        return rec
+
+    _update(run_id, mutate)
+
+
+def mark_aborted(run_id: str, reason: str) -> None:
+    """Terminal item-boundary abort; unlike suspension it is never resumable."""
+    def mutate(rec: dict | None) -> dict | None:
+        if rec is None:
+            return None
+        rec.update(status=STATUS_ABORTED, reason=reason, updated_at=_now())
         return rec
 
     _update(run_id, mutate)

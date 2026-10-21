@@ -6,8 +6,10 @@ from pathlib import Path
 from typing import Any
 
 from abcr.control.contracts import ContractError, require_id
+from abcr.control.validated_approval_bundle import (verify_finite_request,
+                                                    verify_validator_document)
 from abcr.control.ed25519 import (CONTEXT_FIELDS, ApprovalRequestBundle, identity_context_hash,
-                                  sign_token_v2, verify_token_v2)
+                                  VerifiedAnchor, sign_token_v2, verify_token_v2)
 from abcr.control.identity import IdentityPolicy
 from abcr.control.store import ControlStore
 
@@ -16,7 +18,7 @@ from abcr.control.store import ControlStore
 #                      goal_anchor_entry_hash / goal_anchor_receipt_id
 #   · IdentityPolicy ：approver_id_hash / tenant_key_hash / chat_id_hash / app_id_hash
 #   · 调用方秘密     ：decision_nonce_hash（由 decision_nonce 现算，不接受直接填哈希）
-#   · envelope       ：deployment_id / protocol_ref
+#   · root-sealed ResearchMemory anchor：deployment_id / protocol_ref（envelope 必须相等）
 #   · 协议常量/形状  ：aud / request_version / source_event_id
 _IDENTITY_SOURCES = {
     "approver_id_hash": "owner_open_id", "tenant_key_hash": "tenant_key",
@@ -25,13 +27,28 @@ _IDENTITY_SOURCES = {
 
 
 def _expected_context(bundle: ApprovalRequestBundle, *, research_repo: Path, anchor_ledger: Path,
+                      anchor_seal_path: Path, anchor_sealer_public_key: Path,
+                      anchor_seal_owner_uid: int, anchor_ledger_owner_uid: int,
                       identity: IdentityPolicy, decision_nonce: str,
-                      context: dict[str, Any]) -> None:
+                      context: dict[str, Any]) -> VerifiedAnchor:
     """把 context 逐字段钉死在重算事实上。任一字段对不上即抛——**在出卡片和签名之前**。"""
     if set(context) != set(CONTEXT_FIELDS):
         raise ContractError("approval_context_fields", "approval context 字段不精确")
-    verified = bundle.validate(research_repo=research_repo, anchor_ledger=anchor_ledger)
+    verified = bundle.validate(
+        research_repo=research_repo, anchor_ledger=anchor_ledger,
+        anchor_seal_path=anchor_seal_path,
+        anchor_sealer_public_key=anchor_sealer_public_key,
+        anchor_seal_owner_uid=anchor_seal_owner_uid,
+        anchor_ledger_owner_uid=anchor_ledger_owner_uid)
 
+    _check_context(verified, identity=identity, decision_nonce=decision_nonce, context=context)
+    return verified
+
+
+def _check_context(verified: VerifiedAnchor, *, identity: IdentityPolicy,
+                   decision_nonce: str, context: dict[str, Any]) -> None:
+    if set(context) != set(CONTEXT_FIELDS):
+        raise ContractError("approval_context_fields", "approval context 字段不精确")
     expected = {
         "request_id": verified.request_id,
         "batch_id": verified.batch_id,
@@ -40,9 +57,8 @@ def _expected_context(bundle: ApprovalRequestBundle, *, research_repo: Path, anc
         "goal_anchor_receipt_id": verified.goal_anchor_receipt_id,
         "decision_nonce_hash": identity_context_hash("decision_nonce_hash", decision_nonce),
         "aud": "abcr-operator",
-        # deployment_id / protocol_ref 只认 validate() 重算出的、已绑定到被锚 goal 的
-        # envelope 事实——不再旁路直接读 bundle.envelope（F1：那会让未绑定的 envelope
-        # 字段直接进 token）。
+        # deployment_id / protocol_ref 只认 validate() 重算出的、与 root-sealed
+        # ResearchMemory anchor 逐字相等的事实——不旁路直接读 bundle.envelope。
         "deployment_id": verified.deployment_id,
         "protocol_ref": verified.protocol_ref,
     }
@@ -64,12 +80,41 @@ def _expected_context(bundle: ApprovalRequestBundle, *, research_repo: Path, anc
 def decide(bundle: ApprovalRequestBundle, *, private_key: Path,
            public_key: Path, context: dict[str, Any],
            store: ControlStore, identity: IdentityPolicy, decision_nonce: str,
-           research_repo: Path, anchor_ledger: Path,
+           research_repo: Path | None = None, anchor_ledger: Path | None = None,
+           anchor_seal_path: Path | None = None,
+           anchor_sealer_public_key: Path | None = None,
+           anchor_ledger_owner_uid: int | None = None,
+           anchor_seal_owner_uid: int = 0,
+           allow_direct_fixture: bool = False,
+           validator_document: dict[str, Any] | None = None,
+           validator_public_key: Path | None = None,
            ttl_seconds: int = 3600) -> dict[str, Any]:
-    _expected_context(bundle, research_repo=research_repo, anchor_ledger=anchor_ledger,
-                      identity=identity, decision_nonce=decision_nonce, context=context)
+    # HSD production topology forbids abcr-human from mounting operator-owned research
+    # state. Production consumes only a root-broker-sealed validated core plus the
+    # finite request whose hashes it commits; direct research access is fixture-only.
+    if allow_direct_fixture:
+        if any(value is None for value in (research_repo, anchor_ledger, anchor_seal_path,
+                                           anchor_sealer_public_key, anchor_ledger_owner_uid)):
+            raise ContractError("fixture_research_config_required",
+                                "direct fixture 必须显式提供 research 配置")
+        verified = _expected_context(
+            bundle, research_repo=research_repo, anchor_ledger=anchor_ledger,
+            anchor_seal_path=anchor_seal_path,
+            anchor_sealer_public_key=anchor_sealer_public_key,
+            anchor_seal_owner_uid=anchor_seal_owner_uid,
+            anchor_ledger_owner_uid=anchor_ledger_owner_uid,
+            identity=identity, decision_nonce=decision_nonce, context=context)
+    else:
+        if validator_document is None or validator_public_key is None:
+            raise ContractError("broker_sealed_approval_bundle_required",
+                                "生产 human signer 只接受 broker 封存的 validator bundle")
+        verified = verify_validator_document(
+            validator_document, validator_public_key=Path(validator_public_key))
+        verify_finite_request(bundle, verified)
+        _check_context(verified, identity=identity, decision_nonce=decision_nonce,
+                       context=context)
     return store.stable_approval(
-        bundle.request_id, bundle.envelope_sha256, "approve",
+        verified.request_id, verified.envelope_sha256, "approve",
         lambda: sign_token_v2(private_key=private_key, public_key=public_key,
                               context=context,
                               ttl_seconds=ttl_seconds),

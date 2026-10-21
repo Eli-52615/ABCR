@@ -42,6 +42,19 @@ class RecoveryPolicy:
 
     def classify(self, signal: dict[str, Any]) -> RecoveryDecision:
         code = signal.get("code")
+        domain = signal.get("fault_domain", "engineering")
+        # Domain is an independently observed trust boundary.  A novel error code
+        # must not turn a scientific decision, TCB mutation, or integrity failure
+        # into the generic engineering auto-mission path.
+        if domain == "integrity":
+            return RecoveryDecision(RecoveryKind.QUARANTINE,
+                                    str(code or "integrity_fault"), 0)
+        if domain in {"scientific", "tcb"}:
+            return RecoveryDecision(RecoveryKind.NEEDS_HUMAN,
+                                    str(code or f"{domain}_fault"), 0)
+        if domain != "engineering":
+            return RecoveryDecision(RecoveryKind.NEEDS_HUMAN,
+                                    "unknown_fault_domain", 0)
         if code in self.integrity_codes: return RecoveryDecision(RecoveryKind.QUARANTINE, code, 0)
         if code in self.scientific_codes: return RecoveryDecision(RecoveryKind.NEEDS_HUMAN, code, 0)
         if code in self.resource_codes: return RecoveryDecision(RecoveryKind.THROTTLE, code, self.max_retry)

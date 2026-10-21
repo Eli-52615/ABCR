@@ -143,7 +143,7 @@ def test_exec_is_isolated_and_caller_environment_cannot_redirect_roots(tmp_path,
     monkeypatch.setenv("PYTHONPATH", "/tmp/attacker-pythonpath")
     assert invoke(rig, LABEL, execve=lambda *args: captured.append(args)) == 70
     program, argv, env = captured[0]
-    assert argv == [program, "-I", "-m", MODULE]
+    assert argv == [program, "-I", "-B", "-m", MODULE]
     assert "PYTHONPATH" not in env and "ABCR_ACTIVE_FILE" not in env
     assert env["PATH"] == "/usr/bin:/bin"
 

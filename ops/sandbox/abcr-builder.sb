@@ -1,7 +1,43 @@
 (version 1)
 (deny default)
-(allow process*)
+(allow process-fork)
+(allow process-exec (literal (param "BUILDER_EXECUTABLE")))
 (allow sysctl-read)
-(allow file-read* (subpath (param "RELEASE_ROOT")) (subpath (param "CANDIDATE_ROOT")))
-(allow file-write* (subpath (param "CANDIDATE_ROOT")) (subpath (param "TMPDIR")))
-; Network remains denied unless a separately reviewed egress profile is installed.
+(allow file-read-metadata
+  ; Exact ancestors required for path resolution; no sibling file data is
+  ; exposed.  /private/tmp is present solely for the real-profile test probe.
+  (literal "/System")
+  (literal "/usr")
+  (literal "/usr/share")
+  (literal "/private")
+  (literal "/private/tmp")
+  (literal "/private/var")
+  (literal "/private/var/db")
+  (literal "/dev")
+  (literal "/Library")
+  (literal "/Library/Application Support")
+  (literal "/Library/Application Support/ABCR-Bootstrap")
+  (literal "/Library/Application Support/ABCR-Bootstrap/adapters"))
+(allow file-read*
+  ; dyld probes the root directory before loading an otherwise finite binary.
+  ; This literal exposes only the top-level directory itself, not descendants.
+  (literal "/")
+  (subpath (param "CANDIDATE_ROOT"))
+  (subpath (param "ADAPTER_ROOT"))
+  (subpath (param "RUNTIME_ROOT"))
+  (subpath "/System/Library")
+  (subpath "/usr/lib")
+  (subpath "/usr/share/zoneinfo")
+  (subpath "/private/var/db/timezone")
+  (literal "/dev/null")
+  (literal "/dev/urandom"))
+(allow file-write*
+  (subpath (param "CANDIDATE_ROOT"))
+  (subpath (param "TMPDIR")))
+; deny-default leaves every network family closed when EGRESS_SOCKET is the
+; empty string.  Only a root-owned, hash-bound qualification policy may supply
+; this one local Unix socket; the adapter never receives a key or general proxy.
+(allow network-outbound
+  (remote unix-socket (path-literal (param "EGRESS_SOCKET"))))
+; No sealed release, Git metadata, key, ledger, queue spool or evidence root is
+; a Seatbelt parameter, so the child cannot name an allowed route to them.

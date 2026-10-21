@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "authority_id": "ifeval-zh-v1-6d753307150b",
+  "reviewed_authority_sha256": "40fd5fb21ff33d7da84648562c6dc12d68f15444dfea60379132af820510d0d1",
+  "dataset_family": "ifeval_zh_v1",
+  "source_commit": "6d753307150bb4cf69d83e705fa737da07c738be",
+  "source_combined_sha256": "31ddfac0c15f559799cc435d0944d19edeea86ab160a5d79ac931123a0bd028e",
+  "source_staging_root": "/Library/Application Support/ABCR-Dataset-Sources/ifeval-zh-v1-6d753307150b",
+  "dataset_root": "/Library/Application Support/ABCR-Datasets",
+  "sources": [
+    {
+      "source_path": "data/benchmarks/ifeval_zh_v1.json",
+      "staged_name": "benchmark.json",
+      "size": 98727,
+      "sha256": "d0642d787cab167485e718c41c5c01e454d5a623ce5ef85b1b39402730c5799f"
+    },
+    {
+      "source_path": "data/splits/ifeval_zh_v1.json",
+      "staged_name": "split-source.json",
+      "size": 7439,
+      "sha256": "95be69231c2183b44fbdcdedb38398fcb48c699f8d573644ee31028c4db27b03"
+    }
+  ],
+  "invariants": {
+    "item_count": 250,
+    "split_counts": {"dev": 42, "calibration": 91, "holdout": 117},
+    "split_hash": "7d91ac0b415c95a4be2584071ac45d37ab938e85f6158903119f424749d70de7",
+    "salt": "abcr-w1-v1"
+  },
+  "output": {
+    "dataset_sha256": "1402dec503f9c5345ecb0a9c709028d6a1d32cfb8a0f2fe1dd0f3c65248c6faa",
+    "items_path": "items.json",
+    "items_size": 75262,
+    "items_sha256": "25cf6d9d5a2c8e8bb3eccc162ec26e4fc144e9dc42a03f37e0316ad886d6b0e6",
+    "split_path": "split.json",
+    "split_size": 3038,
+    "split_sha256": "a79087c91a76c157eeb2133527640b4599988a123d26678e30d0d36c4bd62413"
+  },
+  "access_policy": {
+    "owner": "root",
+    "group": "abcr-dataset-read",
+    "directory_mode": "0550",
+    "file_mode": "0440",
+    "readers": ["abcr-itempool", "abcr-auditor"],
+    "must_deny": ["abcr-operator", "abcr-probe", "abcr-builder", "abcr-candidate", "abcr-panel"]
+  }
+}

@@ -1,7 +1,41 @@
 (version 1)
 (deny default)
-(allow process*)
+; macOS deny-default profiles need the reviewed platform baseline even for
+; /bin/echo/dyld startup.  Explicit ABCR read/write/network rules below remain
+; narrower and the final network deny wins.
+(import "system.sb")
+(deny process-exec)
+(allow process-fork)
+(allow process-exec
+  (subpath (param "CANDIDATE_ROOT"))
+  (subpath (param "RUNTIME_ROOT"))
+  (subpath "/usr/bin")
+  (subpath "/bin"))
 (allow sysctl-read)
-(allow file-read* (subpath (param "CANDIDATE_ROOT")) (subpath (param "RUNTIME_ROOT")))
+(deny file-read* (subpath "/Users/superagent"))
+(allow file-read*
+  (subpath (param "CANDIDATE_ROOT"))
+  (subpath (param "RUNTIME_ROOT"))
+  (subpath "/System/Library")
+  (subpath "/usr/lib")
+  (subpath "/usr/share/zoneinfo")
+  (subpath "/private/var/db/timezone")
+  (literal "/dev/null")
+  (literal "/dev/urandom"))
+(deny file-read*
+  (subpath "/Library/Application Support/ABCR-Work")
+  (subpath "/Library/Application Support/ABCR-Trust")
+  (subpath "/Library/Application Support/ABCR-Bootstrap")
+  (subpath "/Library/Application Support/ABCR-Attest")
+  (subpath "/Library/Application Support/ABCR-ApprovalBundles")
+  (subpath "/Library/Application Support/ABCR-Bridge")
+  (subpath "/Library/Application Support/ABCR-Datasets")
+  (subpath "/Library/Application Support/ABCR-DevBundles")
+  (subpath "/Users/superagent/shared-brain")
+  (subpath "/Users/superagent/.abcr/releases")
+  (subpath "/Users/superagent/Library/Application Support/ABCR-Human")
+  (literal "/var/run/abcr-seal-broker.sock"))
+(deny file-write*)
 (allow file-write* (subpath (param "TMPDIR")))
+(deny network*)
 ; No result spool, canonical Git metadata, evidence, key or network mount is provided.

@@ -117,8 +117,14 @@ class _Lark0600FileHandler(logging.FileHandler):
     """0600 打开(O_APPEND)的日志文件 handler;文件已存在时显式收紧权限。"""
 
     def _open(self):
-        fd = os.open(self.baseFilename, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
-        os.chmod(self.baseFilename, 0o600)  # 已存在文件 os.open 的 mode 不生效,显式收紧
+        flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND | getattr(os, "O_NOFOLLOW", 0)
+        fd = os.open(self.baseFilename, flags, 0o600)
+        info = os.fstat(fd)
+        if (not stat.S_ISREG(info.st_mode) or info.st_nlink != 1
+                or info.st_uid != os.geteuid()):
+            os.close(fd)
+            raise RuntimeError("lark log must be an euid-owned single-link regular file")
+        os.fchmod(fd, 0o600)  # 已存在文件 os.open 的 mode 不生效,显式收紧
         return os.fdopen(fd, "a", encoding="utf-8")
 
 

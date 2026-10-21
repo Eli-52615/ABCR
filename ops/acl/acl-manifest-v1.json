@@ -1,11 +1,30 @@
 {
-  "schema_version":1,
-  "roots":{
-    "/Library/Application Support/ABCR-Datasets":{"owner":"root","readers":["abcr-itempool","abcr-auditor"],"writers":[]},
-    "/Library/Application Support/ABCR-DevBundles":{"owner":"root","readers":["abcr-probe","abcr-operator","abcr-auditor"],"writers":["abcr-itempool"]},
-    "/Library/Application Support/ABCR-Attest/test-results":{"owner":"root","readers":["abcr-verifier"],"writers":[]},
-    "/Library/Application Support/ABCR-Attest/canary-results":{"owner":"root","readers":["abcr-activator"],"writers":["abcr-canary"]},
-    "/Library/Application Support/ABCR-Trust":{"owner":"root","readers":["abcr-operator"],"writers":[]}
+  "schema_version": 2,
+  "authority_sha256": "40fd5fb21ff33d7da84648562c6dc12d68f15444dfea60379132af820510d0d1",
+  "contracts": {
+    "path_ownership": {
+      "path": "configs/control/path-ownership-v1.json",
+      "sha256": "639b0ebff74ea29a64258fe2f8ae062feabbd1c76ffd8a29f89a14e82f3ef724"
+    },
+    "acl": {
+      "path": "configs/control/acl-manifest-v1.json",
+      "sha256": "0be9a1785eee76fe9dd6bfdcdffa6e3b58cf49693f4a8c3ae39eaeb0c4f39ebc"
+    },
+    "work_stages": {
+      "path": "configs/control/work-stages-v1.json"
+    }
   },
-  "negative_probes":["candidate_cannot_read_test_results","operator_cannot_read_private_key","probe_cannot_read_dataset","builder_cannot_read_evidence","panel_cannot_write_control"]
+  "install_mode": "reviewed_incremental_named_acl_only",
+  "live_probes_required": true,
+  "negative_probes": [
+    "candidate_cannot_read_test_results",
+    "operator_cannot_read_private_key",
+    "probe_cannot_read_dataset",
+    "builder_cannot_read_evidence",
+    "builder_cannot_write_operator_exported_mission_input",
+    "builder_codex_child_cannot_read_release_root",
+    "panel_cannot_write_control",
+    "consumer_cannot_cross_stage",
+    "service_cannot_list_home"
+  ]
 }

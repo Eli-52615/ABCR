@@ -1,8 +1,65 @@
 {
-  "schema_version":1,
-  "accounts":["abcr-human","abcr-operator","abcr-probe","abcr-itempool","abcr-auditor","abcr-builder","abcr-candidate","abcr-verifier","abcr-canary","abcr-activator","abcr-panel"],
-  "root_tcb":["scripts/abcr-launch","src/abcr/control/seal_broker.py","src/abcr/control/test_controller.py"],
-  "dual_slot_root":"/Library/Application Support/ABCR-Bootstrap",
-  "active_file":"/Users/superagent/.abcr/active.json",
-  "install_order":["accounts","directories","acl","stable-launcher","seal-broker","base-release","panel","human-gateway","operator-observe","on-demand-workers","operator-act"]
+  "schema_version": 3,
+  "authority_sha256": "40fd5fb21ff33d7da84648562c6dc12d68f15444dfea60379132af820510d0d1",
+  "accounts": [
+    "abcr-human", "abcr-operator", "abcr-probe", "abcr-itempool", "abcr-auditor",
+    "abcr-builder", "abcr-candidate", "abcr-verifier", "abcr-canary",
+    "abcr-activator", "abcr-panel"
+  ],
+  "role_groups": [
+    "abcr-panel-read", "abcr-auditor-read", "abcr-research-read", "abcr-lab-read",
+    "abcr-devread", "abcr-dataset-read", "abcr-builder-input",
+    "abcr-release-read", "abcr-broker-clients"
+  ],
+  "root_tcb": [
+    "scripts/abcr-bootstrap-selector",
+    "scripts/abcr-launch",
+    "scripts/install_abcr_runtime.py",
+    "scripts/import_abcr_dataset.py",
+    "scripts/bootstrap_abcr_genesis.py",
+    "scripts/bootstrap_abcr_accounts.sh",
+    "scripts/bootstrap_abcr_service_keys.sh",
+    "scripts/bootstrap_research_memory_seal.sh",
+    "src/abcr/control/seal_broker.py",
+    "src/abcr/control/test_controller.py"
+  ],
+  "dual_slot_root": "/Library/Application Support/ABCR-Bootstrap/components",
+  "dual_slot_components": ["launcher", "seal-broker", "test-controller"],
+  "stable_selector": "/usr/local/libexec/abcr-bootstrap-selector",
+  "stable_selector_sha256": "a172b7a7799de945c3f9087c8440225f297bf59796df74f4d12aad24e006a4e6",
+  "active_file": "/Users/superagent/.abcr/active.json",
+  "receipt_root": "/Library/Application Support/ABCR-Attest/release-receipts",
+  "genesis": {
+    "policy": "ops/install/genesis-authority-v1.json",
+    "policy_sha256": "22c93bc8d45f391d701df58df98942468708981b51e5f7116c960178d1ba4e3b",
+    "authority_path": "/Library/Application Support/ABCR-Trust/genesis-authority-v1.json",
+    "human_required": true,
+    "root_required": true,
+    "pending_receipt_installable": false
+  },
+  "contracts": {
+    "path_ownership": "configs/control/path-ownership-v1.json",
+    "acl": "configs/control/acl-manifest-v1.json",
+    "service_topology": "configs/control/service-topology-v1.json",
+    "work_stages": "configs/control/work-stages-v1.json",
+    "dataset_authority": "ops/install/dataset-authority-ifeval-zh-v1.json"
+  },
+  "install_order": [
+    "accounts", "stage-reviewed-dataset-source", "import-content-addressed-dataset",
+    "directories", "acl", "service-signing-keys", "research-memory-seal-key",
+    "sealed-runtime-config", "install-stable-selector-if-absent", "write-three-probation-slots",
+    "qualify-three-slots", "bad-slot-rollback-drill", "launchd-plist-install-no-load",
+    "sealed-base-release", "panel", "human-gateway-fixture",
+    "operator-observe", "work-stage-smoke", "on-demand-workers", "operator-act",
+    "live-feishu", "live-probe"
+  ],
+  "gates": {
+    "source_checkout_is_installable": false,
+    "sealed_release_required": true,
+    "genesis_human_root_ceremony_only": true,
+    "reviewed_authority_sha_required": true,
+    "launcher_doctor_before_launchctl": true,
+    "semantic_doctor_after_launchctl": true,
+    "automatic_live_enable": false
+  }
 }

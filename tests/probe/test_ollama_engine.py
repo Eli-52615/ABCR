@@ -137,6 +137,19 @@ def test_fingerprint_match_passes(frozen):
         "api/version", "api/tags", "api/show"]
 
 
+def test_ollama_fingerprint_does_not_claim_exact_3l_tokenizer_or_renderer(
+        frozen, monkeypatch):
+    engine, _ = frozen
+    # This contract test freezes the returned capability surface, not the host's
+    # Ollama installation path (binary-byte verification has its own tests).
+    monkeypatch.setattr(engine, "_verify_backend_binary",
+                        lambda: engine.backend_binary_sha256)
+    fingerprint = engine.verify_fingerprint()
+    assert "exact_tokenizer_qualified" not in fingerprint
+    assert "tokenizer_sha256" not in fingerprint
+    assert "chat_template_sha256" not in fingerprint
+
+
 # ── 指纹：任一项漂移拒绝 ────────────────────────────────────────────────────
 
 
@@ -278,6 +291,31 @@ def test_backend_unreachable(monkeypatch, tmp_path):
         OllamaProbeEngine(path).verify_fingerprint()
 
 
+def test_backend_binary_digest_drift_refuses_before_http(monkeypatch, tmp_path):
+    """Profile 里的 binary 不能只是装饰字段；字节漂移必须先于 API 触网拒绝。"""
+    import hashlib
+    binary = tmp_path / "ollama"
+    binary.write_bytes(b"frozen-ollama-binary")
+    binary.chmod(0o755)
+    profile = _profile()
+    profile["backend"]["binary"] = str(binary)
+    profile["backend"]["binary_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
+    state = _live_state(profile)
+    profile["template_sha256"] = hashlib.sha256(state["template"].encode()).hexdigest()
+    path = tmp_path / "profile.json"
+    path.write_text(json.dumps(profile), encoding="utf-8")
+    fake = FakeHTTP(state)
+    monkeypatch.setattr(oe, "urlopen", fake)
+    engine = OllamaProbeEngine(path)
+    assert engine.verify_fingerprint()["backend_binary_sha256"] == \
+        profile["backend"]["binary_sha256"]
+    fake.requests.clear()
+    binary.write_bytes(b"tampered")
+    with pytest.raises(FingerprintDriftError, match="binary digest drift"):
+        engine.verify_fingerprint()
+    assert fake.requests == []
+
+
 # ── 无 pull 行为：源码级断言 ────────────────────────────────────────────────
 
 
@@ -331,6 +369,10 @@ def test_frozen_profile_shape_is_enforced(tmp_path):
     "http://0.0.0.0:11434",
     "http://localhost.evil.example:11434",
     "http://[fe80::1]:11434",
+    "https://localhost:11434",
+    "http://localhost:11434/api",
+    "http://user@localhost:11434",
+    "http://localhost:11434?model=other",
 ])
 def test_remote_base_url_profile_refused_at_load(monkeypatch, tmp_path, remote_url):
     """非回环 base_url 的 profile 必须在构造期抛异常，且全程零网络。"""

@@ -30,6 +30,7 @@ from abcr.control.release import prepare_release
 from abcr.control.test_controller import TestResultBundle, run_profile
 from abcr.control.verifier import VerificationAttestation, verify_result
 from abcr.control.worktree import scan_tree, tree_hash
+from tests.control.release_fixture_support import add_bootstrap_payload
 
 HAS_SANDBOX = os.path.isfile(SANDBOX_EXEC) and os.access(SANDBOX_EXEC, os.X_OK)
 ROOT = Path(__file__).resolve().parents[2]
@@ -68,6 +69,7 @@ def evil_tree(tmp_path):
     topology = candidate / "configs/control/service-topology-v1.json"
     topology.parent.mkdir(parents=True)
     topology.write_bytes((ROOT / "configs/control/service-topology-v1.json").read_bytes())
+    add_bootstrap_payload(candidate)
     return candidate, tree_hash(scan_tree(candidate))
 
 

@@ -12,7 +12,7 @@ from abcr.explore.compiler import (ArtifactFrozenReceipt, compile_goal, freeze_g
 from abcr.explore.goal import validate_goal
 from abcr.explore.item_pool import SelectionRequest, build_dev_bundle, iter_bundle_items
 from abcr.explore.personas import PersonaRegistry
-from tests.explore.test_goal_persona import valid_goal
+from tests.explore.test_goal_persona import behavior_probe_goal
 
 
 def sources(tmp_path):
@@ -75,14 +75,15 @@ def test_itempool_capacity_and_tamper_fail_closed(tmp_path):
 
 
 def test_compile_requires_matching_frozen_anchor(tmp_path):
-    goal = validate_goal(valid_goal()).goal; assert goal
+    goal = validate_goal(behavior_probe_goal()).goal; assert goal
     dataset, split = sources(tmp_path)
     keys = itempool_keys(tmp_path)
     bundle = sealed_bundle(SelectionRequest("S", goal.goal_hash, 2, 1),
                            dataset_path=dataset, split_path=split,
                            output_root=tmp_path / "bundles", keys=keys)
     candidate = prepare_goal_anchor(goal, research_commit="c" * 64,
-                                    relative_path="goals/g.yaml", confirmed_by="owner")
+                                    relative_path="goals/g.yaml", confirmed_by="owner",
+                                    deployment_id="fixture", protocol_ref="W1-CONTROL-V1")
     private, public = tmp_path / "r.pem", tmp_path / "r.pub"
     generate_keypair(private, public)
     receipt = sign_frozen_receipt(ArtifactFrozenReceipt("R1", goal.goal_hash, "c" * 64, "now"),
@@ -90,7 +91,7 @@ def test_compile_requires_matching_frozen_anchor(tmp_path):
     anchor = freeze_goal(candidate, receipt, receipt_public_key=public)
     result = compile_goal(goal, anchor, bundle, registry(), protocol_ref="W1-CONTROL-V1",
                           trusted_dev_bundle_root=tmp_path / "bundles",
-                          bundle_sealer_public_key=keys[1])
+                          bundle_sealer_public_key=keys[1], deployment_id="fixture")
     assert result.envelope["split"] == "dev"
     assert result.envelope["item_ids"] == list(bundle.item_ids)
     bad = sign_frozen_receipt(ArtifactFrozenReceipt("R2", "f" * 64, "c" * 64, "now"),

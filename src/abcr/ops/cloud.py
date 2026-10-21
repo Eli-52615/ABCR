@@ -9,18 +9,71 @@ instances/costs 链（供 A 的预算对账、C 的同步视图、watchdog 的�
 """
 from __future__ import annotations
 
+import copy
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 from abcr.common import external_seal
 from abcr.common.ledger_ref import GENESIS_HASH, RunLedger
+from abcr.control.contracts import ContractError
+from abcr.governor.envelope import envelope_sha256
 
 LEDGER_DIR = Path("ledger")
 COST_BASIS = "控制台账单实读"
 # 自述实耗允许低于计量值的比例上限：账单四舍五入/秒级误差留 10%，再低就是"洗账"。
 METER_UNDERREPORT_TOLERANCE = 0.10
 KIND_STOP_ATTESTATION = "stop_attestation"
+
+
+def build_cloud_dispatch_payload(envelope: dict) -> dict:
+    """Build a cloud handoff that references sealed DevBundles, never corpus roots.
+
+    Item bytes remain in the content-addressed bundle.  The payload carries only
+    approved RunConfigs plus the finite bundle/receipt identities needed for the
+    remote dispatch to re-verify them after transfer.
+    """
+    configs = envelope.get("run_configs")
+    if not isinstance(configs, list) or not configs or not all(isinstance(cfg, dict) for cfg in configs):
+        raise ContractError("cloud_run_configs_invalid", "cloud payload 需要内联 RunConfig 数组")
+    forbidden = {"benchmark_root", "dataset_root", "dataset_path", "split_root", "split_path",
+                 "full_dataset_roots", "benchmark_items", "items", "prompts"}
+
+    def reject_roots(value: object) -> None:
+        if isinstance(value, dict):
+            bad = forbidden.intersection(value)
+            if bad:
+                raise ContractError("cloud_payload_full_corpus_forbidden",
+                                    "cloud payload 禁止全量 benchmark/split 或嵌入题面",
+                                    {"keys": sorted(bad)})
+            for child in value.values():
+                reject_roots(child)
+        elif isinstance(value, list):
+            for child in value:
+                reject_roots(child)
+
+    refs = []
+    copied = copy.deepcopy(configs)
+    for cfg in copied:
+        reject_roots(cfg)
+        ref = cfg.get("dev_bundle_ref")
+        if not isinstance(ref, dict):
+            raise ContractError("cloud_dev_bundle_ref_missing",
+                                "cloud 证据执行只接受封印 DevBundleRef")
+        if any(key in ref for key in ("root", "path")):
+            raise ContractError("cloud_bundle_path_injection", "cloud bundle 引用不得携路径")
+        refs.append(copy.deepcopy(ref))
+    return {
+        "schema": "abcr.cloud-dispatch-payload.v1",
+        "batch_id": envelope.get("batch_id"),
+        "approved_envelope_sha256": envelope_sha256(envelope),
+        "dev_bundle_refs": refs,
+        "run_configs": copied,
+    }
+
+
+# Stable short name for callers introduced by the 0719 checklist.
+build_cloud_payload = build_cloud_dispatch_payload
 
 
 def _instances(ledger_dir: Path) -> RunLedger:

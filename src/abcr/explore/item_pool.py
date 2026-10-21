@@ -38,6 +38,7 @@ class SelectionRequest:
     count: int
     seed: int
     excluded_item_ids: tuple[str, ...] = ()
+    created_at: str | None = None
 
 
 @dataclass(frozen=True)
@@ -110,7 +111,7 @@ def build_dev_bundle(request: SelectionRequest, *, dataset_path: Path, split_pat
         "seed": request.seed, "split": "dev", "item_ids": list(selected_ids),
         "item_count": len(selected_ids), "items_sha256": sha256(items_raw),
         "source_sha256": source_hash, "excluded_item_ids": sorted(excluded),
-        "created_at": utc_now(),
+        "created_at": request.created_at or utc_now(),
     }
     bundle_id = sha256(manifest_core)
     manifest = dict(manifest_core, bundle_id=bundle_id,
