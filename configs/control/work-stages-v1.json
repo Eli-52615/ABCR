@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "stages": ["itempool", "probe", "audit", "mission-build", "test", "verify", "release-prepare", "canary", "activate"],
+  "states": ["ready", "inflight", "results", "acks", "quarantine", "archive"],
+  "rules": {"claim": "atomic_rename", "result": "attempt_and_fencing_bound", "poison": "single_item_quarantine", "replay": "content_identical_only"}
+}

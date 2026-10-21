@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""abcrctl —— ABCR 人侧审批 CLI（draft / approve / reject / status）。契约 §3.5。
+
+架构位置：包C·人机边界。签发权在人：本 CLI 是唯一调用 sign_token 的地方。
+落账（AMENDMENT-10）：draft/approve/reject 成功后以"人"身份经 ledger_ref 向
+batches.jsonl 追加 batch_drafted/batch_approved/batch_rejected（subject_id=batch_id,
+actor="human"）——这是 Governor 侧唯一的账本写入通道，进程本体其余部分恒只读。
+用法（在 worktree 根）：
+  scripts/abcrctl draft plans/specs/<name>.json          # 调 planner 出信封草案+预检
+  scripts/abcrctl approve configs/envelopes/<id>.json [--ttl-hours 24] [--key PATH] [--out PATH]
+  scripts/abcrctl reject configs/envelopes/<id>.json --reason "..."
+  scripts/abcrctl status
+"""
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from abcr.common import approval_token as tok          # noqa: E402
+from abcr.governor import envelope as envmod           # noqa: E402
+
+
+def _ledger_append(event: str, batch_id: str, **payload) -> None:
+    """AMENDMENT-10：三事件以"人"身份追加至 batches.jsonl（subject_id=batch_id,
+    actor="human"）。写入类/方法签名以 ledger_ref 实物为准（§4.4 核对项4，
+    文档假名 RunLedger）；并发互斥由 ledger_ref 的 flock 保证（AMENDMENT-15）。"""
+    from abcr.common.ledger_ref import RunLedger
+    led = RunLedger(ROOT_WT / "ledger", "batches")
+    led.append(event, subject_id=batch_id, actor="human", **payload)
+
+
+def cmd_draft(args: argparse.Namespace) -> int:
+    from abcr.governor import planner
+    result = planner.plan(Path(args.spec))
+    print(result.render_text())
+    if result.ok:
+        _ledger_append("batch_drafted", result.batch_id)
+    return 0 if result.ok else 2
+
+
+def cmd_approve(args: argparse.Namespace) -> int:
+    path = Path(args.envelope)
+    env = envmod.load_envelope(path)
+    ok, problems = envmod.validate_envelope(env)
+    if not ok:
+        print("拒绝签发：信封结构校验失败：", file=sys.stderr)
+        for p in problems:
+            print(f"  - {p}", file=sys.stderr)
+        return 2
+    sha = envmod.envelope_sha256(env)
+    key = tok.load_or_create_key(Path(args.key) if args.key else None)
+    token = tok.sign_token(env["batch_id"], sha, human_secret=key,
+                           ttl_seconds=int(float(args.ttl_hours) * 3600))
+    env["approval"] = {
+        "token": token,
+        "approved_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+    }
+    out = Path(args.out) if args.out else path
+    envmod.save_envelope(out, env)
+    # 写回后自校验（防规范化实现漂移；approval 不进哈希 → sha 应不变）
+    env2 = envmod.load_envelope(out)
+    ok2, why = tok.verify_token(token, expected_envelope_sha256=envmod.envelope_sha256(env2),
+                                verify_secret=key)
+    if not ok2:
+        print(f"签发自校验失败（{why}）——信封未生效，请报 BLOCKER", file=sys.stderr)
+        return 1
+    _ledger_append("batch_approved", env["batch_id"], token_id=token["token_id"])
+    print(f"已签发并写回: {out}")
+    print(f"  batch_id={env['batch_id']} token_id={token['token_id']} "
+          f"expires_at={token['expires_at']}")
+    return 0
+
+
+def cmd_reject(args: argparse.Namespace) -> int:
+    path = Path(args.envelope)
+    env = envmod.load_envelope(path)
+    rej = {
+        "batch_id": env.get("batch_id", "?"),
+        "reason": args.reason,
+        "rejected_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+    }
+    out = path.with_suffix(".reject.json")
+    out.write_text(json.dumps(rej, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    _ledger_append("batch_rejected", env.get("batch_id", "?"), reason=args.reason)
+    print(f"已驳回: {out}")
+    return 0
+
+
+def _consumed_ids() -> tuple[set, str]:
+    """返回 (已消费 token_id 集合, health)。health ∈ {"ok","missing","corrupt"}；
+    非 ok 时消费态不可信，status 必须显式标注（§10 K5——不许把缺失/损坏显示成"未消费"）。"""
+    p = tok.default_consumed_store()
+    if not p.exists():
+        return set(), "missing"
+    try:
+        return set(json.loads(p.read_text(encoding="utf-8"))), "ok"
+    except Exception:
+        return set(), "corrupt"
+
+
+def cmd_status(args: argparse.Namespace) -> int:
+    envdir = ROOT_WT / "configs" / "envelopes"
+    consumed, health = _consumed_ids()
+    if health != "ok":
+        print(f"⚠ consumed.json {'缺失' if health == 'missing' else '损坏'}——消费态不可信，"
+              f"以下按未消费显示（K5）")
+    rows: list[tuple[str, str, str]] = []
+    for p in sorted(envdir.glob("*.json")):
+        if p.name.endswith(".reject.json"):
+            continue
+        try:
+            env = envmod.load_envelope(p)
+        except Exception as e:
+            rows.append((p.name, "损坏", str(e)))
+            continue
+        if p.with_suffix(".reject.json").exists():
+            state = "REJECTED(人)"
+        elif "approval" in env:
+            tid = env["approval"].get("token", {}).get("token_id", "?")
+            state = "APPROVED→已消费" if tid in consumed else "APPROVED(待/在派发)"
+        else:
+            state = "DRAFT(待批)"
+        rows.append((env.get("batch_id", p.name), state, str(p)))
+    if not rows:
+        print("configs/envelopes/ 下无信封")
+        return 0
+    w = max(len(r[0]) for r in rows)
+    for bid, state, note in rows:
+        print(f"{bid:<{w}}  {state:<18}  {note}")
+    print("\n（批次 DISPATCHING 之后的账本态请用: PYTHONPATH=src python -m abcr.report.cli overview）")
+    return 0
+
+
+ROOT_WT = Path.cwd()   # 约定：在 worktree 根运行
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(prog="abcrctl", description="ABCR 人侧审批 CLI")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    p = sub.add_parser("draft", help="从 plan-spec 起草信封（调 planner）")
+    p.add_argument("spec"); p.set_defaults(fn=cmd_draft)
+    p = sub.add_parser("approve", help="校验信封并签发令牌写回")
+    p.add_argument("envelope"); p.add_argument("--ttl-hours", default="24")
+    p.add_argument("--key", default=None); p.add_argument("--out", default=None)
+    p.set_defaults(fn=cmd_approve)
+    p = sub.add_parser("reject", help="人工驳回信封")
+    p.add_argument("envelope"); p.add_argument("--reason", required=True)
+    p.set_defaults(fn=cmd_reject)
+    p = sub.add_parser("status", help="信封与令牌状态一览")
+    p.set_defaults(fn=cmd_status)
+    args = ap.parse_args()
+    return args.fn(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

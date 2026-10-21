@@ -1,0 +1,38 @@
+diff --git a/generate_vec.py b/generate_vec.py
+index d819f48..d01d295 100644
+--- a/generate_vec.py
++++ b/generate_vec.py
+@@ -5,6 +5,12 @@ import torch
+ import os
+ import argparse
+ 
++DTYPE_MAP = {
++    "float32": torch.float32,
++    "float16": torch.float16,
++    "bfloat16": torch.bfloat16,
++}
++
+ 
+ def load_jsonl(file_path):
+     with open(file_path, 'r') as f:
+@@ -54,8 +60,9 @@ def get_persona_effective(pos_path, neg_path, trait, threshold=50):
+     return persona_pos_effective, persona_neg_effective, persona_pos_effective_prompts, persona_neg_effective_prompts, persona_pos_effective_responses, persona_neg_effective_responses
+ 
+ 
+-def save_persona_vector(model_name, pos_path, neg_path, trait, save_dir, threshold=50):
+-    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
++def save_persona_vector(model_name, pos_path, neg_path, trait, save_dir, threshold=50, dtype="float32"):
++    torch_dtype = DTYPE_MAP.get(dtype, torch.float32)
++    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", torch_dtype=torch_dtype)
+     tokenizer = AutoTokenizer.from_pretrained(model_name)
+ 
+     persona_pos_effective, persona_neg_effective, persona_pos_effective_prompts, persona_neg_effective_prompts, persona_pos_effective_responses, persona_neg_effective_responses = get_persona_effective(pos_path, neg_path, trait, threshold)
+@@ -88,5 +95,6 @@ if __name__ == "__main__":
+     parser.add_argument("--trait", type=str, required=True)
+     parser.add_argument("--save_dir", type=str, required=True)
+     parser.add_argument("--threshold", type=int, default=50)
++    parser.add_argument("--dtype", type=str, default="float32", choices=["float32", "float16", "bfloat16"])
+     args = parser.parse_args()
+-    save_persona_vector(args.model_name, args.pos_path, args.neg_path, args.trait, args.save_dir, args.threshold)
+\ No newline at end of file
++    save_persona_vector(args.model_name, args.pos_path, args.neg_path, args.trait, args.save_dir, args.threshold, args.dtype)

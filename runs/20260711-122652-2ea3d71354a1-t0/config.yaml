@@ -1,0 +1,23 @@
+model_key: qwen2.5-0.5b-instruct
+condition: prompt_persona
+intervention:
+  method: prompt_persona
+  trait: optimistic
+  trait_pole: pos
+  artifact: artifacts/traits/optimistic/extract.json
+  instruction_index: 0
+data:
+  family: ifeval_style
+  items: data/items/ifeval_style/items.jsonl
+  split_file: data/splits/ifeval_style-7d5d6426.json
+  split: dev
+  limit: 30
+decoding:
+  temperature: 0
+  seeds:
+  - 0
+  max_new_tokens: 256
+  temp0_sanity: false
+activation_sampling_rate: 0.1
+run_name: mini-text
+_parent_run: 20260711-122652-2ea3d71354a1

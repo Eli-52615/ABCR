@@ -1,0 +1,6 @@
+(version 1)
+(deny default)
+(allow process*)
+(allow sysctl-read)
+(allow file-read* (subpath (param "RELEASE_ROOT")) (subpath (param "BUNDLE_ROOT")) (subpath (param "MODEL_ROOT")))
+(allow file-write* (subpath (param "LAB_ROOT")) (subpath (param "TMPDIR")))

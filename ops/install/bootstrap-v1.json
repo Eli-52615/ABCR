@@ -1,0 +1,8 @@
+{
+  "schema_version":1,
+  "accounts":["abcr-human","abcr-operator","abcr-probe","abcr-itempool","abcr-auditor","abcr-builder","abcr-candidate","abcr-verifier","abcr-canary","abcr-activator","abcr-panel"],
+  "root_tcb":["scripts/abcr-launch","src/abcr/control/seal_broker.py","src/abcr/control/test_controller.py"],
+  "dual_slot_root":"/Library/Application Support/ABCR-Bootstrap",
+  "active_file":"/Users/superagent/.abcr/active.json",
+  "install_order":["accounts","directories","acl","stable-launcher","seal-broker","base-release","panel","human-gateway","operator-observe","on-demand-workers","operator-act"]
+}

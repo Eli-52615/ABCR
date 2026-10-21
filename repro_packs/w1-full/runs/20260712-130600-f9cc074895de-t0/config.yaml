@@ -1,0 +1,19 @@
+model_key: qwen2.5-3b-instruct
+condition: vanilla
+intervention:
+  method: none
+data:
+  family: ifeval_style
+  items: data/items/ifeval_style/items.jsonl
+  split_file: data/splits/ifeval_style-7d5d6426.json
+  split: dev
+  limit: 30
+decoding:
+  temperature: 0
+  seeds:
+  - 0
+  max_new_tokens: 512
+  temp0_sanity: false
+activation_sampling_rate: 0.1
+run_name: mini-vanilla
+_parent_run: 20260712-130600-f9cc074895de

@@ -1,0 +1,17 @@
+{
+  "run_id": "20260711-075321-6e894f310459",
+  "review_version": "c1.0",
+  "n_steps": 20,
+  "n_expected": 20,
+  "missing": [],
+  "duplicated": [],
+  "chain_ok": true,
+  "score_mismatches": [],
+  "manifest_checks": {
+    "config_hash_ok": true,
+    "config_hash_mismatch": false,
+    "env_lock_exists": true
+  },
+  "error_codes": [],
+  "pass": true
+}

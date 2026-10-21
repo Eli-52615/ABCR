@@ -1,0 +1,77 @@
+{
+  "trait": "conscientiousness",
+  "n_total": 120,
+  "n_scored": 120,
+  "trait_by_condition": {
+    "baseline": {
+      "n": 40,
+      "mean": 71.12,
+      "std": 17.6,
+      "min": 30,
+      "max": 100
+    },
+    "steered_neg": {
+      "n": 40,
+      "mean": 59.17,
+      "std": 18.53,
+      "min": 22,
+      "max": 100
+    },
+    "steered_pos": {
+      "n": 40,
+      "mean": 68.92,
+      "std": 16.09,
+      "min": 45,
+      "max": 100
+    }
+  },
+  "coherence_by_condition": {
+    "baseline": {
+      "n": 40,
+      "mean": 90.75,
+      "std": 10.83,
+      "min": 45,
+      "max": 100
+    },
+    "steered_neg": {
+      "n": 40,
+      "mean": 84.62,
+      "std": 12.68,
+      "min": 45,
+      "max": 100
+    },
+    "steered_pos": {
+      "n": 40,
+      "mean": 88.38,
+      "std": 11.17,
+      "min": 65,
+      "max": 100
+    }
+  },
+  "effect_sizes": {
+    "pos_vs_baseline": -2.2,
+    "neg_vs_baseline": -11.95,
+    "pos_vs_neg": 9.75
+  },
+  "score_meta": {
+    "n": 120,
+    "shuffle_seed": 42,
+    "judge_model": "deepseek-chat",
+    "judge_lineage": "replaced(official gpt-4.1-mini-2025-04-14)",
+    "cost": {
+      "calls": 240,
+      "input_tokens": 172884,
+      "output_tokens": 240
+    },
+    "judge_raw_path": "/Users/superagent/abcr/pv_bridge/out/conscientiousness/judge_raw/exprcheck_scores.jsonl",
+    "n_trait_refusal": 0,
+    "n_coherence_refusal": 0,
+    "prompt_source": {
+      "trait_eval": "artifacts/traits/conscientiousness/eval.json:eval_prompt",
+      "coherence": "third_party/persona_vectors/eval/prompts.py:3-21"
+    }
+  },
+  "label": "exploratory / rig-validation",
+  "citable": false,
+  "generated_at": "2026-07-12T12:54:50Z"
+}

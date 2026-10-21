@@ -1,0 +1,11 @@
+{
+  "schema_version":1,
+  "roots":{
+    "/Library/Application Support/ABCR-Datasets":{"owner":"root","readers":["abcr-itempool","abcr-auditor"],"writers":[]},
+    "/Library/Application Support/ABCR-DevBundles":{"owner":"root","readers":["abcr-probe","abcr-operator","abcr-auditor"],"writers":["abcr-itempool"]},
+    "/Library/Application Support/ABCR-Attest/test-results":{"owner":"root","readers":["abcr-verifier"],"writers":[]},
+    "/Library/Application Support/ABCR-Attest/canary-results":{"owner":"root","readers":["abcr-activator"],"writers":["abcr-canary"]},
+    "/Library/Application Support/ABCR-Trust":{"owner":"root","readers":["abcr-operator"],"writers":[]}
+  },
+  "negative_probes":["candidate_cannot_read_test_results","operator_cannot_read_private_key","probe_cannot_read_dataset","builder_cannot_read_evidence","panel_cannot_write_control"]
+}

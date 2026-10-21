@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "abcr://mission-v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["objective", "non_goals", "incident_evidence", "base_release", "allowed_paths", "acceptance_profile", "declared_risk", "rollback_release"],
+  "properties": {"objective": {"type": "string", "minLength": 1}, "non_goals": {"type": "array", "items": {"type": "string"}}, "incident_evidence": {"type": "object"}, "base_release": {"type": "string"}, "allowed_paths": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "acceptance_profile": {"type": "string"}, "declared_risk": {"enum": ["normal", "guarded", "human_required"]}, "rollback_release": {"type": "string"}}
+}

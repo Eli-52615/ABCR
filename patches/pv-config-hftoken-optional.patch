@@ -1,0 +1,50 @@
+diff --git a/config.py b/config.py
+index 51058ef..ed78cec 100644
+--- a/config.py
++++ b/config.py
+@@ -42,14 +42,9 @@ class Config:
+     
+     @property
+     def hf_token(self) -> str:
+-        """Get HuggingFace token from environment variables."""
++        """Get HuggingFace token from environment variables (optional for non-gated models)."""
+         if self._hf_token is None:
+-            self._hf_token = os.environ.get('HF_TOKEN')
+-            if not self._hf_token:
+-                raise ValueError(
+-                    "HF_TOKEN not found in environment variables. "
+-                    "Please set it in your .env file or environment."
+-                )
++            self._hf_token = os.environ.get('HF_TOKEN', '')
+         return self._hf_token
+     
+     @property
+@@ -64,17 +59,17 @@ class Config:
+         # Set OpenAI API key in environment for libraries that expect it
+         os.environ['OPENAI_API_KEY'] = self.openai_api_key
+         
+-        # Set HuggingFace token in environment
+-        os.environ['HF_TOKEN'] = self.hf_token
++        # Set HuggingFace token only if non-empty
++        if self.hf_token:
++            os.environ['HF_TOKEN'] = self.hf_token
+         
+         # Set Weights & Biases project
+         os.environ['WANDB_PROJECT'] = self.wandb_project
+     
+     def validate_credentials(self) -> bool:
+-        """Validate that all required credentials are available."""
++        """Validate that required credentials are available (only OpenAI key is mandatory)."""
+         try:
+             _ = self.openai_api_key
+-            _ = self.hf_token
+             return True
+         except ValueError as e:
+             warnings.warn(f"Credential validation failed: {e}")
+@@ -88,4 +83,4 @@ def setup_credentials() -> Config:
+     config.setup_environment()
+     if not config.validate_credentials():
+         raise RuntimeError("Failed to validate required credentials")
+-    return config 
+\ No newline at end of file
++    return config

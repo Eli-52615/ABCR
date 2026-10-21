@@ -1,0 +1,42 @@
+{
+  "schema": "abcr-preflight-v1",
+  "generated_for": "codex/persona-control-takeover-20260721",
+  "generated_at": "2026-07-22T04:26:09+00:00",
+  "generated_by": "fable5 收口(接续 codex 交接;实测记录,非推断;首版曾误记 dirty=false 与取整时间戳,经合并前对抗审查改正)",
+  "base_sha": "970b4e1d8a9225fb8ac8960db30f4c4ab76a471a",
+  "unified_baseline_sha": "7b64df6c0234",
+  "branch": "codex/persona-control-takeover-20260721",
+  "worktree": "/Users/superagent/.abcr-build/20260721-persona-control-takeover/integration",
+  "canonical_main_worktree_dirty": true,
+  "canonical_main_worktree_dirty_detail": "4 个未提交修改(artifacts/traits/REVIEW-REQUEST.md 与 conscientiousness/neuroticism/openness 三个 provenance.json,mtime 2026-07-15,属旧 W1 轮用户改动);与本分支 61+ 变更路径零交集,按方案纪律不 stash 不 reset,合并不受影响",
+  "preflight_kickoff": "PASS(全部项;见 scripts/preflight_kickoff.py 输出)",
+  "base_pass_count": {
+    "command": "PYTHONPATH=src .venv312/bin/python -m pytest -q -m 'not golden' --ignore=tests/contract/stage1..4",
+    "unified_baseline_main_7b64df6": 859,
+    "this_branch_final": 1232,
+    "not_below_baseline": true,
+    "note": "严格同命令同解释器在两棵树各跑一次;adoption-matrix 中 676/823 为 Gate 0 时另一口径计数,不与本组数字混比"
+  },
+  "make_gates": {
+    "contract-pkgabc": "130 passed",
+    "test-pkga": "285 passed",
+    "test-pkgb": "481 passed, 4 skipped",
+    "test-pkgc": "240 passed",
+    "stage1-regression": "50 passed(.venv+torch;tinyqwen fixture 为 gitignored bootstrap 产物,需从主仓复制到 worktree)",
+    "stage2-regression": "29 passed, 2 skipped",
+    "stage3-regression": "7 passed"
+  },
+  "benchmark": {
+    "path": "data/benchmarks/ifeval_zh_v1.json",
+    "items": 250,
+    "sha256_prefix": "d0642d787cab1674"
+  },
+  "split": {
+    "path": "data/splits/ifeval_zh_v1.json",
+    "split_hash_prefix": "7d91ac0b415c95a4",
+    "distribution_declared": {"dev": 42, "calibration": 91, "holdout": 117},
+    "distribution_counted": {"dev": 42, "calibration": 91, "holdout": 117}
+  },
+  "fixture_minimal_samples": "fake dispatch/独立复算/审计/三层下钻均在 830 passed 的控制面套件与 4 条集成旅程内实测通过",
+  "datasets_root_import": "BLOCKED(root 权限动作;CODE_RC 用临时镜像根验证,生产 /Library/Application Support/ABCR-Datasets 导入属部署步骤)"
+}

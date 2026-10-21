@@ -1,0 +1,16 @@
+{
+  "config_version": "1.0",
+  "protocol_ref": "W1-V0.9",
+  "model": {
+    "model_id": "/Users/superagent/.cache/modelscope/models/Qwen--Qwen2.5-3B-Instruct/snapshots/master",
+    "revision": "eed00b17e225",
+    "dtype": "float16",
+    "device": "mps",
+    "engine": "transformers"
+  },
+  "benchmark": {"family": "golden10", "split": null, "item_limit": null},
+  "condition": "vanilla",
+  "intervention": null,
+  "decoding": {"temperature": 0.0, "max_new_tokens": 128, "seeds": [1]},
+  "batch_id": "dev-local"
+}

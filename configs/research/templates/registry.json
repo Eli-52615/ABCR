@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "templates": {
+    "behavior_probe": {"status": "ready", "min_arms": 2},
+    "persona_control": {"status": "ready", "min_arms": 2},
+    "component_ablation": {"status": "ready", "min_arms": 3},
+    "dose_response": {"status": "ready", "min_arms": 3},
+    "robustness": {"status": "ready", "min_arms": 2},
+    "persona_task_match": {"status": "ready", "min_arms": 2},
+    "light_agentic": {"status": "ready", "min_arms": 2},
+    "internal_mediation": {"status": "ready", "min_arms": 3},
+    "confirmation": {"status": "ready", "min_arms": 2}
+  }
+}

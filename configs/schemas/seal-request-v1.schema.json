@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"abcr://seal-request-v1",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","operation","source_object_id","nonce","expected_tree_hash"],
+  "properties":{
+    "schema_version":{"const":1},
+    "operation":{"enum":["seal_dev_bundle","seal_test_result","seal_verification","seal_canary","seal_release","activate_release","restart_generation"]},
+    "source_object_id":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "nonce":{"type":"string","minLength":16,"maxLength":128},
+    "expected_tree_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  }
+}

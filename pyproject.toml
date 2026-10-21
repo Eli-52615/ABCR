@@ -1,0 +1,17 @@
+[project]
+name = "abcr"
+version = "0.1.0"
+description = "ABCR: AI Behavioral Controllability Research — W1 experiment infrastructure"
+requires-python = ">=3.11,<3.15"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# golden 标记并入自 pkg/b 的 pytest.ini（广播 20260715 拓扑裁决：不引入根 pytest.ini）
+markers = [
+    "golden: 慢测试（需加载真实模型；R1 无，R2 门前显式跑）",
+    "paid: 触达付费 API/凭据；无 APPROVE_COST=1 时由 tests/conftest.py 成本闸剔除",
+]
+# V17 成本闸装载点。testpaths=["tests"] 意味着仓库根裸 pytest 会收集全套件，
+# 闸必须在 collection 之前生效 —— 实现在 tests/conftest.py（pytest_configure /
+# pytest_ignore_collect），它是 tests/ 全子树的祖先 conftest，先于任何测试模块
+# import 被加载。放行开关：APPROVE_COST=1。自检：make cost-gate-check。

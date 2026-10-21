@@ -1,0 +1,7 @@
+(version 1)
+(deny default)
+(allow process*)
+(allow sysctl-read)
+(allow file-read* (subpath (param "RELEASE_ROOT")))
+(allow file-write* (subpath (param "CANARY_STAGING")) (subpath (param "TMPDIR")))
+; Live loopback probe rule is installed only during AUTONOMOUS_QUAL.

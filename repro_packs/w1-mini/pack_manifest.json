@@ -1,0 +1,435 @@
+{
+  "preset": "mini-loop",
+  "files": [
+    {
+      "path": "runs/20260711-110513-a80896912cae/steps.jsonl",
+      "sha256": "439417574afc36ee1360de2f8c9d650b6b353019e071fb894488afc8c935f3bb",
+      "source": "/Users/superagent/abcr/runs/20260711-110513-a80896912cae/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-110513-a80896912cae/config.yaml",
+      "sha256": "25442767199ba856d2a6f445d201ca86cc5041068ac06138716c81818f9486bb",
+      "source": "/Users/superagent/abcr/runs/20260711-110513-a80896912cae/config.yaml"
+    },
+    {
+      "path": "runs/20260711-110513-a80896912cae/env.lock",
+      "sha256": "eb0be6d636d52794e3ab5c50e7ef17aac1235da10f904ab59fbe8b9c73c30cf9",
+      "source": "/Users/superagent/abcr/runs/20260711-110513-a80896912cae/env.lock"
+    },
+    {
+      "path": "runs/20260711-110513-a80896912cae/manifest.json",
+      "sha256": "f4679e8351e77812fd210b79b8e5f65b14cef76c4287c27ec066ec7b82888369",
+      "source": "/Users/superagent/abcr/runs/20260711-110513-a80896912cae/manifest.json"
+    },
+    {
+      "path": "scores/20260711-110513-a80896912cae/summary.json",
+      "sha256": "59746dc10fcc3999c591059ad3588aaa512c1122c3cd8fc0e06fc9a80d9aa26f",
+      "source": "/Users/superagent/abcr/scores/20260711-110513-a80896912cae/summary.json"
+    },
+    {
+      "path": "scores/20260711-110513-a80896912cae/scores.jsonl",
+      "sha256": "bdeb94c3fd4b8d7b981ade9f7dd717d13749b487410113a1b719f9675b26fae8",
+      "source": "/Users/superagent/abcr/scores/20260711-110513-a80896912cae/scores.jsonl"
+    },
+    {
+      "path": "review/20260711-110513-a80896912cae/review_report.json",
+      "sha256": "739e22fc6503aad4121090264ab6050040486b7458027a80e0b29b7d4f4901ee",
+      "source": "/Users/superagent/abcr/review/20260711-110513-a80896912cae/review_report.json"
+    },
+    {
+      "path": "runs/20260711-122652-2ea3d71354a1/steps.jsonl",
+      "sha256": "caca02c1106c1f98986aa08a57b542ad3a21f34d16ec94da07b6e1b36963f91b",
+      "source": "/Users/superagent/abcr/runs/20260711-122652-2ea3d71354a1/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-122652-2ea3d71354a1/config.yaml",
+      "sha256": "354911857a25e1b217cf610cea5cf368dd0f511160e5322d037769c6e2349885",
+      "source": "/Users/superagent/abcr/runs/20260711-122652-2ea3d71354a1/config.yaml"
+    },
+    {
+      "path": "runs/20260711-122652-2ea3d71354a1/env.lock",
+      "sha256": "eb0be6d636d52794e3ab5c50e7ef17aac1235da10f904ab59fbe8b9c73c30cf9",
+      "source": "/Users/superagent/abcr/runs/20260711-122652-2ea3d71354a1/env.lock"
+    },
+    {
+      "path": "runs/20260711-122652-2ea3d71354a1/manifest.json",
+      "sha256": "4938c901231f00b84dba87585bbf396a8ec5fd3485f60a480c8968907aaff5ef",
+      "source": "/Users/superagent/abcr/runs/20260711-122652-2ea3d71354a1/manifest.json"
+    },
+    {
+      "path": "scores/20260711-122652-2ea3d71354a1/summary.json",
+      "sha256": "9ffb53e7c41a49485451ed964e2c258bd377f5ad46c2143f612ec78f330ac1ef",
+      "source": "/Users/superagent/abcr/scores/20260711-122652-2ea3d71354a1/summary.json"
+    },
+    {
+      "path": "scores/20260711-122652-2ea3d71354a1/scores.jsonl",
+      "sha256": "255dc217c4634bc9604eae13c2cfaa1f775260b01116776d0abe0febff054aa0",
+      "source": "/Users/superagent/abcr/scores/20260711-122652-2ea3d71354a1/scores.jsonl"
+    },
+    {
+      "path": "review/20260711-122652-2ea3d71354a1/review_report.json",
+      "sha256": "fd903ddfab84f90d841fea23b295150374f1ac6d1045edc11798c9e160e32c14",
+      "source": "/Users/superagent/abcr/review/20260711-122652-2ea3d71354a1/review_report.json"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/steps.jsonl",
+      "sha256": "4d0235182a271a0c6fae933650e4b3003292b306f6732b47665e970d0477fc4e",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/config.yaml",
+      "sha256": "cf0d5d3909c701397b42a487e8a428eee82a615c1289aa7aade57ab0b4a8afa5",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/config.yaml"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/env.lock",
+      "sha256": "eb0be6d636d52794e3ab5c50e7ef17aac1235da10f904ab59fbe8b9c73c30cf9",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/env.lock"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/manifest.json",
+      "sha256": "fc932d59741faf358a9429c8d92c757ebba7af73d6b686e4bc69902c12e4f657",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/manifest.json"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/activations/248a1f6149f18e85_17.npz",
+      "sha256": "31c23aba3d3b98ef14d4aedb20459e48a6529a8765b647d0a5f193afb3b113e6",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/activations/248a1f6149f18e85_17.npz"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/activations/4cd6ba7a067a3ee3_17.npz",
+      "sha256": "bdce33a6d967d9d4c05e988ed92b015abbb645a61a3fc3cd46545e2d24ec6a1c",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/activations/4cd6ba7a067a3ee3_17.npz"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/activations/248a1f6149f18e85_42.npz",
+      "sha256": "956ea026ea605545445045434a3c8fffbef79176f282764ddef6465c92457134",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/activations/248a1f6149f18e85_42.npz"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4/activations/4cd6ba7a067a3ee3_42.npz",
+      "sha256": "4a627992c652f263497c67111ddab287f0fe8cc90b3fb293edafd8e65006b7bc",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4/activations/4cd6ba7a067a3ee3_42.npz"
+    },
+    {
+      "path": "scores/20260711-123135-9bc442e5ccc4/summary.json",
+      "sha256": "eac5d7c8e4ee3679dbebeb9e6d84822ef34143cec792a363ff6f85f8d4924b4a",
+      "source": "/Users/superagent/abcr/scores/20260711-123135-9bc442e5ccc4/summary.json"
+    },
+    {
+      "path": "scores/20260711-123135-9bc442e5ccc4/scores.jsonl",
+      "sha256": "2df68803ea30b517c841a15b02ba642e5d0469c5d1951b2827ec06ff21a32be5",
+      "source": "/Users/superagent/abcr/scores/20260711-123135-9bc442e5ccc4/scores.jsonl"
+    },
+    {
+      "path": "review/20260711-123135-9bc442e5ccc4/review_report.json",
+      "sha256": "573f2a679f66487f413c93fa6d5435d2b6d7d54e55fa8cb311f75ef7a79cac14",
+      "source": "/Users/superagent/abcr/review/20260711-123135-9bc442e5ccc4/review_report.json"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/steps.jsonl",
+      "sha256": "141353fceed0fb98922b20882a63a27ea0c8560706c18e9224c5551111d4aea6",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/config.yaml",
+      "sha256": "2cb71611cfcd2fcc8e5d70865e0633af590812e6c1296aab0b2ccbc74d14e4fa",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/config.yaml"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/env.lock",
+      "sha256": "eb0be6d636d52794e3ab5c50e7ef17aac1235da10f904ab59fbe8b9c73c30cf9",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/env.lock"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/manifest.json",
+      "sha256": "1189050b3d01d44be00f920e706cdd68ae3dc10b8e8fdac1e3b5f7164aeafc7d",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/manifest.json"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/activations/248a1f6149f18e85_17.npz",
+      "sha256": "df1e025344ec54ce8279d457e0afaef687396356baac102e1bd7ba297cef9b34",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/activations/248a1f6149f18e85_17.npz"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/activations/4cd6ba7a067a3ee3_17.npz",
+      "sha256": "975f92b34f27dcecf21ff38a025d29fcb027c95b78984815bc14e67636a2af48",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/activations/4cd6ba7a067a3ee3_17.npz"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/activations/248a1f6149f18e85_42.npz",
+      "sha256": "aa7f5ceeb40203dd0d29e8eb4570c03ff652ac30f220d949b6802fc0471fdd97",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/activations/248a1f6149f18e85_42.npz"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8/activations/4cd6ba7a067a3ee3_42.npz",
+      "sha256": "e906ee4a70485ad5e081f67f6f50039a94b1821f861314a1f90cf67ddc75d6ba",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8/activations/4cd6ba7a067a3ee3_42.npz"
+    },
+    {
+      "path": "scores/20260711-123827-ff9de6957cf8/summary.json",
+      "sha256": "79d220255d975cf08b91bbcdbdb6965382a54f63c5b916ad7e2321d3462641fb",
+      "source": "/Users/superagent/abcr/scores/20260711-123827-ff9de6957cf8/summary.json"
+    },
+    {
+      "path": "scores/20260711-123827-ff9de6957cf8/scores.jsonl",
+      "sha256": "603caa34d44c0877630b4682ff2bcc0e5139fdf2d7198f5c4e5731f88beb5ebc",
+      "source": "/Users/superagent/abcr/scores/20260711-123827-ff9de6957cf8/scores.jsonl"
+    },
+    {
+      "path": "review/20260711-123827-ff9de6957cf8/review_report.json",
+      "sha256": "540ff08d224e7dec3f9a4f936866f2dde688067e663c8b4cd3f78900d491159c",
+      "source": "/Users/superagent/abcr/review/20260711-123827-ff9de6957cf8/review_report.json"
+    },
+    {
+      "path": "runs/20260711-110513-a80896912cae-t0/steps.jsonl",
+      "sha256": "7bdf1da9bca5e8401e9bd275718fee66d5fcdf22b575885875038e54906c686a",
+      "source": "/Users/superagent/abcr/runs/20260711-110513-a80896912cae-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-110513-a80896912cae-t0/manifest.json",
+      "sha256": "5bb760e6167c270b637513ef0df100e629529c0cd14eba6495c6ea8fa4c153f9",
+      "source": "/Users/superagent/abcr/runs/20260711-110513-a80896912cae-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260711-110513-a80896912cae-t0/summary.json",
+      "sha256": "1f6e0dfac59649f08ddd1e479fcff9639eacd27c38e1d964f959ccc747ac6103",
+      "source": "/Users/superagent/abcr/scores/20260711-110513-a80896912cae-t0/summary.json"
+    },
+    {
+      "path": "scores/20260711-110513-a80896912cae-t0/scores.jsonl",
+      "sha256": "82aa324ced16be2c8cccb94385e1336434ff174725ba6917912664e3aadd77e1",
+      "source": "/Users/superagent/abcr/scores/20260711-110513-a80896912cae-t0/scores.jsonl"
+    },
+    {
+      "path": "runs/20260711-122652-2ea3d71354a1-t0/steps.jsonl",
+      "sha256": "9979a928b450b6f453b7155e63bb89c123eb745d1c24202dc832eef4267d2222",
+      "source": "/Users/superagent/abcr/runs/20260711-122652-2ea3d71354a1-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-122652-2ea3d71354a1-t0/manifest.json",
+      "sha256": "0a3276be2d8856a91be0919f68b80d2af76a374a47994842d4b04182b2f123d0",
+      "source": "/Users/superagent/abcr/runs/20260711-122652-2ea3d71354a1-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260711-122652-2ea3d71354a1-t0/summary.json",
+      "sha256": "21bda1949d70653d8b32bcc2ba7107c38beecc89a9af6598d54dfaf55a9b0de8",
+      "source": "/Users/superagent/abcr/scores/20260711-122652-2ea3d71354a1-t0/summary.json"
+    },
+    {
+      "path": "scores/20260711-122652-2ea3d71354a1-t0/scores.jsonl",
+      "sha256": "a5c3989c6694759418854748dcae5ef7d6d735aa6754b8ca184f8280e839648c",
+      "source": "/Users/superagent/abcr/scores/20260711-122652-2ea3d71354a1-t0/scores.jsonl"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4-t0/steps.jsonl",
+      "sha256": "a5234cb47401486a7925ca742176255049bd944e209ceb04bdb8382c914a7e1b",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-123135-9bc442e5ccc4-t0/manifest.json",
+      "sha256": "e488106351b05821df2187c805394e8775b3c8e06a7c80fc65d4c95f66c77cbd",
+      "source": "/Users/superagent/abcr/runs/20260711-123135-9bc442e5ccc4-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260711-123135-9bc442e5ccc4-t0/summary.json",
+      "sha256": "2b59830019402fe5feb65ca975f5b626f28e3dbed7d2304cb849dfc0b8b0f7c1",
+      "source": "/Users/superagent/abcr/scores/20260711-123135-9bc442e5ccc4-t0/summary.json"
+    },
+    {
+      "path": "scores/20260711-123135-9bc442e5ccc4-t0/scores.jsonl",
+      "sha256": "c0f9bf53a332811bd1538753c55492fb99575af8c8ce06fc957cbcffde1a735e",
+      "source": "/Users/superagent/abcr/scores/20260711-123135-9bc442e5ccc4-t0/scores.jsonl"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8-t0/steps.jsonl",
+      "sha256": "73a2ad56767e128fac962efa5ba2d6b8ca84ef1a90c28398d1526713f657b75b",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260711-123827-ff9de6957cf8-t0/manifest.json",
+      "sha256": "9c62654d9a617e2afec1bb27f5ea989d082b536d4198250b406128f7239f169d",
+      "source": "/Users/superagent/abcr/runs/20260711-123827-ff9de6957cf8-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260711-123827-ff9de6957cf8-t0/summary.json",
+      "sha256": "b6fca9cb9e28e6bbe45cd13f2eb8ee8c96ae30d05f5f171cb698721b43ba31a7",
+      "source": "/Users/superagent/abcr/scores/20260711-123827-ff9de6957cf8-t0/summary.json"
+    },
+    {
+      "path": "scores/20260711-123827-ff9de6957cf8-t0/scores.jsonl",
+      "sha256": "2af1c02f20215db1291d3717f893f29b7652e4b783c86d05d9d479e2b118d66c",
+      "source": "/Users/superagent/abcr/scores/20260711-123827-ff9de6957cf8-t0/scores.jsonl"
+    },
+    {
+      "path": "data/items/ifeval_style/items.jsonl",
+      "sha256": "7d5d6426b953296251d6665d6639a9df10379d270bf9ce217d7bc0db7845babd",
+      "source": "/Users/superagent/abcr/data/items/ifeval_style/items.jsonl"
+    },
+    {
+      "path": "figures/judge_consistency.png",
+      "sha256": "3d0de390cbf24796f728c52c67b9e1ba36ddbe753ac65abaf49405d500719012",
+      "source": "/Users/superagent/abcr/figures/judge_consistency.png"
+    },
+    {
+      "path": "figures/exprcheck_conscientiousness.png",
+      "sha256": "f03a477d989d15af74a410e10e8f4f430426ce35bf1a255d657418de1fbc48be",
+      "source": "/Users/superagent/abcr/figures/exprcheck_conscientiousness.png"
+    },
+    {
+      "path": "figures/mini_loop.png",
+      "sha256": "d76ba843e82c946b6bdb3f9befbcf91e83db870b3c78752cfd0b43045e1cd87c",
+      "source": "/Users/superagent/abcr/figures/mini_loop.png"
+    },
+    {
+      "path": "review/judge_consistency_n50.json",
+      "sha256": "aa3d0c083c07e706be5eb3f2b285c004d68d1c3fd8f40cdc3d110d2ed0e7f166",
+      "source": "/Users/superagent/abcr/review/judge_consistency_n50.json"
+    },
+    {
+      "path": "review/exprcheck_conscientiousness_report.json",
+      "sha256": "18f66df522119e800f1578737f4d309aa18a67b21be4c7d5d833cceba8e4c32d",
+      "source": "/Users/superagent/abcr/review/exprcheck_conscientiousness_report.json"
+    },
+    {
+      "path": "review/judge_probe_report.json",
+      "sha256": "e10d161fe20e4763b1039ab06319c0ae35be03d9b8aaec51f8c0195c5bc76057",
+      "source": "/Users/superagent/abcr/review/judge_probe_report.json"
+    },
+    {
+      "path": "configs/models.yaml",
+      "sha256": "b8d8c4462c8acb704370d80a8b2c81e99da7fef0f0d8e61d7a81754a3c4ce1bd",
+      "source": "/Users/superagent/abcr/configs/models.yaml"
+    },
+    {
+      "path": "configs/protocol_ref.txt",
+      "sha256": "76f0bcbbc68cad15a926e7cc1f77692058ae7220f7ba1217547f54ddfcc029d1",
+      "source": "/Users/superagent/abcr/configs/protocol_ref.txt"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1工程包C-Scorer-Audit-ReproPack-V1.0.md",
+      "sha256": "2d2bf33b71000b1c1b832d06b1251bda578c81a06c46e6073d88eaec80ac3a2b",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1工程包C-Scorer-Audit-ReproPack-V1.0.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1执行方案-V1.1补丁-资源治理门与节奏修订.md",
+      "sha256": "5addf84a96365687b91b88b5324fe72993864f5d2027292a6e2202162f7b4608",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1执行方案-V1.1补丁-资源治理门与节奏修订.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1执行方案-V1.0.md",
+      "sha256": "b4d39632560b54dac663b9ce63b0180258fbd4764f1f0d76de7bc5a50c1df332",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1执行方案-V1.0.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1工程包A-Runner-Episode-Ledger-V1.0.md",
+      "sha256": "954d0cf779e38446372c4ee598004872b5b83ea6805ea476bfa9ff35a9f450d6",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1工程包A-Runner-Episode-Ledger-V1.0.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1工程包B-Hook-Intervention-PV复现-V1.0.md",
+      "sha256": "6d455a0eb39f06ffa8716c244c4e2a71becc2fac019934935d60d10ccb815ad9",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1工程包B-Hook-Intervention-PV复现-V1.0.md"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/chat_template.hash",
+      "sha256": "55ceb0fbe23607129fcea6af52ab04dd8e7f8ac9c0052d6feae41da11655f58a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/chat_template.hash"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/sample_2.txt",
+      "sha256": "9a6918b74609f45eeaaf23e5251411843927fceb8600a776c3da60a57d6e3f61",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/sample_2.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/sample_1.txt",
+      "sha256": "9e81213d4de343a355a81f4d65d73eb86ad15292b96b941b3195279f60a97d3a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/sample_1.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/sample_0.txt",
+      "sha256": "9b8284daf861216ccde450083e340cf1744d7f0856cfce61cd0c85052dc307b5",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/sample_0.txt"
+    },
+    {
+      "path": "configs/templates/tinyqwen/chat_template.hash",
+      "sha256": "ead2120687bdfef844993c7f1ba1c1c167502c3e49d32107ab131e8339b565d0",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/chat_template.hash"
+    },
+    {
+      "path": "configs/templates/tinyqwen/sample_2.txt",
+      "sha256": "9a6918b74609f45eeaaf23e5251411843927fceb8600a776c3da60a57d6e3f61",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/sample_2.txt"
+    },
+    {
+      "path": "configs/templates/tinyqwen/sample_1.txt",
+      "sha256": "9e81213d4de343a355a81f4d65d73eb86ad15292b96b941b3195279f60a97d3a",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/sample_1.txt"
+    },
+    {
+      "path": "configs/templates/tinyqwen/sample_0.txt",
+      "sha256": "28710c5a2eece9279cf68421fbc643bd12d9ce24975bf6ca6057eb08cdb04841",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/sample_0.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/chat_template.hash",
+      "sha256": "55ceb0fbe23607129fcea6af52ab04dd8e7f8ac9c0052d6feae41da11655f58a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/chat_template.hash"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/sample_2.txt",
+      "sha256": "9a6918b74609f45eeaaf23e5251411843927fceb8600a776c3da60a57d6e3f61",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/sample_2.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/sample_1.txt",
+      "sha256": "9e81213d4de343a355a81f4d65d73eb86ad15292b96b941b3195279f60a97d3a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/sample_1.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/sample_0.txt",
+      "sha256": "9b8284daf861216ccde450083e340cf1744d7f0856cfce61cd0c85052dc307b5",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/sample_0.txt"
+    },
+    {
+      "path": "configs/runs/mini_random.yaml",
+      "sha256": "fb516288eceaede12f609916e2d70b1198893840ec35222b8a4b0ad5ec8277fa",
+      "source": "/Users/superagent/abcr/configs/runs/mini_random.yaml"
+    },
+    {
+      "path": "configs/runs/mini_text.yaml",
+      "sha256": "2534cb1ece99ead8207113218da5273980cc45d2109edc2ae4546fe520ad0dfe",
+      "source": "/Users/superagent/abcr/configs/runs/mini_text.yaml"
+    },
+    {
+      "path": "configs/runs/mini_vector.yaml",
+      "sha256": "66d2c0dac69627c7d78f0b9e32c1948816d4fb1f2fa928007428a348e51da44b",
+      "source": "/Users/superagent/abcr/configs/runs/mini_vector.yaml"
+    },
+    {
+      "path": "configs/runs/mini_vanilla.yaml",
+      "sha256": "6e2405adef30438ecfe8f19d376f1cda94b0cec63b53d8d9c414dbd3612b45e6",
+      "source": "/Users/superagent/abcr/configs/runs/mini_vanilla.yaml"
+    },
+    {
+      "path": "configs/runs/example_fixture.yaml",
+      "sha256": "f42c04747dbde5467edd0efa201c20550bd1b40253375e066fe17a4c54436478",
+      "source": "/Users/superagent/abcr/configs/runs/example_fixture.yaml"
+    },
+    {
+      "path": "env.lock",
+      "sha256": "40d5064dd2b0f921560f06588b8fdd0b53426ad3e0954919e0c8a7e576902de8",
+      "source": "uv pip freeze (generated at pack time)"
+    }
+  ],
+  "n_files": 84,
+  "packed_at": "2026-07-12T09:15:28.719433+00:00",
+  "git_commit": "284983a39d78bf3f5754b4fd8c482f81389c08dd",
+  "protocol_refs": {
+    "ABCR-W1工程包C-Scorer-Audit-ReproPack-V1.0.md": "2d2bf33b71000b1c1b832d06b1251bda578c81a06c46e6073d88eaec80ac3a2b",
+    "ABCR-W1执行方案-V1.1补丁-资源治理门与节奏修订.md": "5addf84a96365687b91b88b5324fe72993864f5d2027292a6e2202162f7b4608",
+    "ABCR-W1执行方案-V1.0.md": "b4d39632560b54dac663b9ce63b0180258fbd4764f1f0d76de7bc5a50c1df332",
+    "ABCR-W1工程包A-Runner-Episode-Ledger-V1.0.md": "954d0cf779e38446372c4ee598004872b5b83ea6805ea476bfa9ff35a9f450d6",
+    "ABCR-W1工程包B-Hook-Intervention-PV复现-V1.0.md": "6d455a0eb39f06ffa8716c244c4e2a71becc2fac019934935d60d10ccb815ad9"
+  }
+}

@@ -1,0 +1,21 @@
+model_key: qwen2.5-0.5b-instruct
+condition: random_direction
+intervention:
+  method: random_direction
+  layer: 20
+  coefficient: 8.0
+  target_norm: 1.0
+  direction_seed: 1234
+data:
+  family: ifeval_style
+  items: data/items/ifeval_style/items.jsonl
+  split_file: data/splits/ifeval_style-7d5d6426.json
+  split: dev
+  limit: 30
+decoding:
+  temperature: 0.7
+  seeds: [17, 42]
+  max_new_tokens: 256
+  temp0_sanity: true
+activation_sampling_rate: 0.1
+run_name: mini-random

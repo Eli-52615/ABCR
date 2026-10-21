@@ -1,0 +1,133 @@
+{
+  "logprobs_supported": true,
+  "numeric_single_token": true,
+  "numeric_mass_ok": true,
+  "text_parse_reliable": true,
+  "recommended_mode": "logprob_weighted",
+  "evidence": [
+    {
+      "trial": 1,
+      "case": "Write a short sentence about the weather",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 19,
+      "numeric_mass": 1.0,
+      "weighted_score": 95.0,
+      "text_response": "95",
+      "text_parse_ok": true,
+      "text_parsed_value": 95
+    },
+    {
+      "trial": 2,
+      "case": "Write a short sentence about the weather",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 19,
+      "numeric_mass": 1.0,
+      "weighted_score": 95.0,
+      "text_response": "95",
+      "text_parse_ok": true,
+      "text_parsed_value": 95
+    },
+    {
+      "trial": 3,
+      "case": "Write a short sentence about the weather",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 19,
+      "numeric_mass": 1.0,
+      "weighted_score": 95.0,
+      "text_response": "95",
+      "text_parse_ok": true,
+      "text_parsed_value": 95
+    },
+    {
+      "trial": 4,
+      "case": "Write a short sentence about the weather",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 19,
+      "numeric_mass": 1.0,
+      "weighted_score": 95.0,
+      "text_response": "95",
+      "text_parse_ok": true,
+      "text_parsed_value": 95
+    },
+    {
+      "trial": 5,
+      "case": "Write a short sentence about the weather",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 19,
+      "numeric_mass": 1.0,
+      "weighted_score": 95.0,
+      "text_response": "95",
+      "text_parse_ok": true,
+      "text_parsed_value": 95
+    },
+    {
+      "trial": 6,
+      "case": "Describe your favorite hobby.",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 20,
+      "numeric_mass": 1.0,
+      "weighted_score": 65.0,
+      "text_response": "65",
+      "text_parse_ok": true,
+      "text_parsed_value": 65
+    },
+    {
+      "trial": 7,
+      "case": "Describe your favorite hobby.",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 20,
+      "numeric_mass": 1.0,
+      "weighted_score": 65.0,
+      "text_response": "65",
+      "text_parse_ok": true,
+      "text_parsed_value": 65
+    },
+    {
+      "trial": 8,
+      "case": "Describe your favorite hobby.",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 20,
+      "numeric_mass": 1.0,
+      "weighted_score": 65.0,
+      "text_response": "65",
+      "text_parse_ok": true,
+      "text_parsed_value": 65
+    },
+    {
+      "trial": 9,
+      "case": "Describe your favorite hobby.",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 20,
+      "numeric_mass": 1.0,
+      "weighted_score": 65.0,
+      "text_response": "65",
+      "text_parse_ok": true,
+      "text_parsed_value": 65
+    },
+    {
+      "trial": 10,
+      "case": "Describe your favorite hobby.",
+      "logprobs_present": true,
+      "n_top_logprobs": 20,
+      "numeric_token_count": 20,
+      "numeric_mass": 1.0,
+      "weighted_score": 65.0,
+      "text_response": "65",
+      "text_parse_ok": true,
+      "text_parsed_value": 65
+    }
+  ],
+  "total_probes": 10,
+  "probed_at": "2026-07-11T07:31:53.013460+00:00",
+  "model": "deepseek-chat",
+  "base_url": "https://api.deepseek.com"
+}

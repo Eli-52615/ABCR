@@ -1,0 +1,77 @@
+{
+  "protocol_ref": "W1-V0.9",
+  "schema_version": "1.0",
+  "note": "黄金十题：B 判分器与 A 复评器的共同真值（§3.9）。pass_sample 判 1、fail_sample 判 0。fixture 假任务对 g03/g07 输出 fail_sample 以制造已知错误分布。",
+  "items": [
+    {
+      "id": "g01",
+      "prompt": "请用恰好三行回答，每行以\"- \"开头，分别用一句话介绍红、黄、蓝三种颜色。",
+      "rule": "strip 后按 \\n 切分 == 3 行且每行 startswith(\"- \")",
+      "pass_sample": "- 红是热情奔放的暖色\n- 黄是明亮温暖的颜色\n- 蓝是沉静深远的冷色",
+      "fail_sample": "红是热情奔放的暖色\n黄是明亮温暖的颜色\n蓝是沉静深远的冷色"
+    },
+    {
+      "id": "g02",
+      "prompt": "计算 17×23，只输出数字。",
+      "rule": "strip 后 == \"391\"",
+      "pass_sample": "391",
+      "fail_sample": "答案是 391"
+    },
+    {
+      "id": "g03",
+      "prompt": "输出单词 hello 重复 5 次，用英文逗号分隔，不加任何其他内容。",
+      "rule": "strip 后 == \"hello,hello,hello,hello,hello\"",
+      "pass_sample": "hello,hello,hello,hello,hello",
+      "fail_sample": "hello, hello, hello, hello, hello"
+    },
+    {
+      "id": "g04",
+      "prompt": "谈谈实验记录的重要性，回答中必须包含词语\"可复现\"至少两次。",
+      "rule": "output_text.count(\"可复现\") >= 2",
+      "pass_sample": "实验记录必须可复现，只有可复现的记录才能被他人验证。",
+      "fail_sample": "实验记录必须可复现，这样才能被他人验证。"
+    },
+    {
+      "id": "g05",
+      "prompt": "以 JSON 对象输出，仅含键 a 和 b，值分别为整数 1 和 2。",
+      "rule": "剥 ```json 围栏后 json.loads == {\"a\":1,\"b\":2}",
+      "pass_sample": "{\"a\": 1, \"b\": 2}",
+      "fail_sample": "{\"a\": 1}"
+    },
+    {
+      "id": "g06",
+      "prompt": "只输出英文大写字母表的前五个字母，不加分隔与其他内容。",
+      "rule": "strip 后 == \"ABCDE\"",
+      "pass_sample": "ABCDE",
+      "fail_sample": "ABCDEF"
+    },
+    {
+      "id": "g07",
+      "prompt": "\"实验\"一词在下句中出现几次？只输出数字：\"实验是科学的基础，好的实验需要设计，实验记录要完整。\"",
+      "rule": "strip 后 == \"3\"",
+      "pass_sample": "3",
+      "fail_sample": "2"
+    },
+    {
+      "id": "g08",
+      "prompt": "将字符串 abcr 逆序输出，只输出结果。",
+      "rule": "strip 后 == \"rcba\"",
+      "pass_sample": "rcba",
+      "fail_sample": "abcr"
+    },
+    {
+      "id": "g09",
+      "prompt": "地球的天然卫星是什么？A. 月球 B. 太阳 C. 火星。只输出选项字母。",
+      "rule": "strip 后取首字符 == \"A\"",
+      "pass_sample": "A",
+      "fail_sample": "B"
+    },
+    {
+      "id": "g10",
+      "prompt": "输出一句不超过 20 个字的话，必须以\"数据\"开头、以\"。\"结尾。",
+      "rule": "strip 后 startswith(\"数据\") 且 endswith(\"。\") 且 len<=20",
+      "pass_sample": "数据是实验的基石。",
+      "fail_sample": "实验的基石是数据。"
+    }
+  ]
+}

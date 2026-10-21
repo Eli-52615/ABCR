@@ -1,0 +1,6 @@
+{
+  "name": "qwen25_7b",
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "revision": "PIN-AT-CLOUD-PROVISION",
+  "note": "云日首次 hf-mirror 下载后把 snapshots/<commit> 钉入 revision（§7.1 第6步）"
+}

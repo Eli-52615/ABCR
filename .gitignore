@@ -1,0 +1,48 @@
+.venv*/
+third_party/
+__pycache__/
+.bootstrap.lock
+.pytest_cache/
+*.pyc
+tests/fixtures/tinyqwen/
+pv_bridge/out/
+logs/
+.resource/
+.recovery/
+src/abcr.egg-info/
+
+# ---- 自动化控制面运行时目录（fable 广播 20260715 · 疑议#14；根锚定写法防误吞 src/abcr/ledger——B 仓 7722152 教训）----
+/ledger/
+/queue/
+/state/
+/plans/
+/data/runs/
+.DS_Store
+
+# ---- 云日证据（未跟踪大件；已仓外备份并核对 sha256，勿 git clean）----
+/cloud-results/
+/cloud-results.tar.gz
+
+# ---- 密钥政策：真实密钥永不入 git；唯一豁免 fixtures/test_approval.key（AMENDMENT-34 测试专用确定性密钥）----
+/.env
+state/approval.key
+/cloud-results.sha256
+# /reports/ 内一切运行时产物忽略；唯一例外 = C2-4 周证据模板（源交付物）。
+# 用 /reports/* 而非 /reports/ 以便 git 能递归进子目录再对单文件反忽略（目录被整体
+# 排除则无法反忽略其中文件——git 规则）。sync-*/triage-*/audit/ 仍全部忽略。
+/reports/*
+!/reports/weekly/
+/reports/weekly/*
+!/reports/weekly/TEMPLATE-weekly-evidence.md
+# 0719 人格控制面硬门产物 = 源交付物(清单 hard_preconditions 要求入库),仅放行三份
+!/reports/implementation/
+/reports/implementation/*
+!/reports/implementation/adoption-matrix.json
+!/reports/implementation/path-ownership-validation.json
+!/reports/implementation/preflight.json
+
+# 运行/测试产物(信任根锚存储、跑批信封、复现包 demo)——不纳入版本
+/anchors/seals.jsonl
+/anchors/*.lock
+/configs/envelopes/
+/demos/

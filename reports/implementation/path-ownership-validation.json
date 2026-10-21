@@ -1,0 +1,41 @@
+{
+  "schema": "abcr-path-ownership-validation-v1",
+  "generated_for": "codex/persona-control-takeover-20260721",
+  "package_base_sha": "970b4e1",
+  "unified_baseline_sha": "7b64df6",
+  "worktree_realpath": "/Users/superagent/.abcr-build/20260721-persona-control-takeover/integration",
+  "canonical_repo": "/Users/superagent/shared-brain/ABCR/abcr",
+  "supersedes": "上一版本文件为 impl-20260719 轮生成(worktree=.abcr-build/20260719-persona-control),不覆盖本轮变更集;本文件按 takeover 轮实际 61 路径重新生成",
+  "isolation_verified": {
+    "worktree_is_separate_physical_tree": true,
+    "canonical_main_worktree_untouched": true,
+    "method": "git worktree 物理隔离;realpath 比对确认与 canonical repo 非同一树;主仓 main 工作区在收口期间零写入"
+  },
+  "changed_paths_summary": {
+    "total": 62,
+    "src": 17,
+    "tests": 14,
+    "ops_launchd": 12,
+    "scripts": 6,
+    "review": 5,
+    "reports_implementation": 3,
+    "configs": 2,
+    "root_files": 3,
+    "note": "root_files = .gitignore + requirements-mac.txt + DEVIATIONS.md(收口台账追加);首版曾漏计 DEVIATIONS.md,经对抗审查改正,本版按提交时刻终态重生成"
+  },
+  "machine_contract_gap": "方案 P0 强制的 configs/control/path-ownership-v1.json 两轮均未创建(对抗审查证实);本文件的核验为人工校验报告,无机器契约背书。缺失已记 DEVIATIONS.md,列为下一轮 P0 工程债,不事后补造",
+  "notes": {
+    "review_reports": "review/2026-07-12 四份 review_report.json 为 replay_b01_b04_reverify.py 复算再生成(c2.0→c2.1,追加 items_source_check 块,原字段未动,原版本存于 git 史),非历史证据改写",
+    "gitignore": "仅扩 reports/implementation 三份硬门产物白名单",
+    "requirements": "钉 lark-oapi==1.7.1(LIVE 接线,P8 单写者)"
+  },
+  "ownership_rules_checked": {
+    "unique_worktree_under_build_root": "PASS - /Users/superagent/.abcr-build/20260721-persona-control-takeover/integration",
+    "changed_paths_within_control_plane_scope": "PASS - 全部落在 control/explore/probe/audit/ops/scripts/tests/configs,均属 0719 人格探索控制面范围",
+    "no_change_to_canonical_main_worktree": "PASS - 物理隔离,realpath 确认",
+    "no_forbidden_absolute_glob_touched": "PASS - 未触碰 ABCR-Human/Trust/Work 运行时目录、.ssh、.config;live bootstrap(用户/信任锚/桥目录)由管理员经 root 完成,不在本变更集内",
+    "package_base_sha_is_ancestor_of_head": "PASS - 970b4e1 即 HEAD(本轮全部变更未提交,提交后成为其唯一子提交);7b64df6 为其祖先",
+    "no_secret_no_runtime_no_model_in_diff": "PASS - diff 全文无私钥/凭据/模型权重/账本数据;tinyqwen fixture 与 .venv* 保持 gitignored"
+  },
+  "verdict": "PASS - 所有改动在允许范围内,主工作区未被触碰"
+}

@@ -1,0 +1,8 @@
+{
+  "generator": "claude-cli-subscription",
+  "cli_version": "2.1.207",
+  "date": "2026-07-11",
+  "source_prompt": "persona_vectors@b8e0f04::data_generation/prompts.py::generate_trait",
+  "trait_description": "Neuroticism: anxious, threat-sensitive behavior — worrying about risks and failure modes, expressing self-doubt and hedging, anticipating negative outcomes, and reacting strongly to setbacks.",
+  "review_status": "draft"
+}

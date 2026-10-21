@@ -1,0 +1,42 @@
+{
+  "profile_id": "qwen25-7b-q4-v1",
+  "schema_version": 1,
+  "frozen_at": "2026-07-21T23:07:59+00:00",
+  "frozen_by": "live queries against the local ollama daemon (see sources)",
+  "base_url": "http://127.0.0.1:11434",
+  "model_tag": "qwen2.5:7b",
+  "artifact": {
+    "manifest_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "gguf_blob_sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730",
+    "format": "gguf",
+    "family": "qwen2",
+    "parameter_size": "7.6B",
+    "parameter_count": 7615616512,
+    "quantization": "Q4_K_M",
+    "context_length": 32768,
+    "size_bytes": 4683087332
+  },
+  "template_sha256": "eb4402837c7829a690fa845de4d7f3fd842c2adee476d5341da8a46ea9255175",
+  "backend": {
+    "binary": "/opt/homebrew/bin/ollama",
+    "binary_sha256": "8ac71f1dbc4ef2efb9f15257f016aca199e72a89b278c6af64b1d693dd442b15",
+    "version": "0.32.1",
+    "service": "launchd homebrew.mxcl.ollama (brew services)"
+  },
+  "decoding": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 1,
+    "_note": "deterministic greedy decoding; seed is NOT frozen here — it is passed per generate() call"
+  },
+  "max_concurrency": 1,
+  "sources": {
+    "backend.version": "GET /api/version",
+    "model_tag, artifact.manifest_digest, artifact.format/family/parameter_size/quantization/size_bytes": "GET /api/tags (entry name == model_tag)",
+    "template_sha256": "sha256 over the full 'template' string of POST /api/show {model}",
+    "artifact.gguf_blob_sha256": "FROM line of 'modelfile' in POST /api/show {model}",
+    "artifact.parameter_count, artifact.context_length": "model_info of POST /api/show {model}",
+    "backend.binary": "resolved symlink /opt/homebrew/bin/ollama -> ../Cellar/ollama/0.32.1/bin/ollama",
+    "backend.binary_sha256": "sha256 over the resolved regular binary bytes"
+  }
+}

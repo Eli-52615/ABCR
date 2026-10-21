@@ -1,0 +1,30 @@
+{
+  "run_id": "20260712-142226-bdcb51755747",
+  "scorer_version": "c1.0",
+  "n_steps": 28,
+  "arm_summaries": {
+    "random_direction|17": {
+      "condition": "random_direction",
+      "random_seed": 17,
+      "n": 14,
+      "is_correct_rate": 0.8571428571428571,
+      "score_mean": 0.8809523809523809
+    },
+    "random_direction|42": {
+      "condition": "random_direction",
+      "random_seed": 42,
+      "n": 14,
+      "is_correct_rate": 0.7142857142857143,
+      "score_mean": 0.7380952380952381
+    }
+  },
+  "output_token_stats": {
+    "count": 28,
+    "mean": 310.85714285714283,
+    "median": 345.5,
+    "p25": 180,
+    "p75": 458,
+    "min": 47,
+    "max": 512
+  }
+}

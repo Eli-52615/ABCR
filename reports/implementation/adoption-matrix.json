@@ -1,0 +1,77 @@
+{
+  "schema": "abcr-adoption-matrix-v1",
+  "generated_for": "codex/persona-control-impl-20260719",
+  "carried_forward_by": "codex/persona-control-takeover-20260721 收口(2026-07-22):本文件是 impl 轮 Gate 0 的历史记录,原文保留;base/current_pass_count(676/823)为该轮口径,不作为 takeover 轮回归证明。takeover 轮的同命令对照数字(基线 859 vs 本支 1232)见同目录 preflight.json",
+  "authority_manifest": "ABCR-0719-三小时工程包执行清单-V1.0.yaml",
+  "unified_baseline_sha": "7b64df6",
+  "base_pass_count": 676,
+  "current_pass_count": 823,
+  "note": "所有节点状态由统一基线上的真实测试运行得出,非静态推断。三小时承诺按清单规则自动撤销(见 verdict)。",
+  "required_nodes": {
+    "goal_validate_compile": {
+      "status": "adapt",
+      "evidence": "src/abcr/explore/{goal,compiler,workflow}.py + tests/explore/test_goal_persona.py, test_itempool_workflow.py",
+      "hardened": "compile_goal 增加必填 bundle_sealer_public_key(P0-1);freeze_goal 强制验签(P0-2)"
+    },
+    "probe_fake_notebook_promote": {
+      "status": "adapt",
+      "evidence": "src/abcr/probe/{engine,notebook,promote}.py + tests/probe/test_probe.py, tests/explore/test_dev_bundle_isolation.py",
+      "hardened": "run_probe 经封印验签的 verify_dev_bundle 读题包(P0-1);产物全 citable=false"
+    },
+    "approval_fixture_panel_snapshot": {
+      "status": "adapt",
+      "evidence": "src/abcr/control/{ed25519,approval_agent,human_gateway,frontdoor}.py + tests/control/test_ed25519.py",
+      "hardened": "anchor 证明真验证 + 15 字段绑定 + envelope 锚定 goal(P0-5/F1);审批 CAS 保留"
+    },
+    "r2_real_runner": {
+      "status": "reuse",
+      "evidence": "统一基线 main(7b64df6)已含 R2 硬门 + 四轮对抗加固;tests/rig 全绿",
+      "hardened": "本轮未改动,零退化(rig 测试并入 823)"
+    },
+    "benchmark_250_and_split": {
+      "status": "reuse",
+      "evidence": "既有 R2 基线;split 隔离经 verify_dev_bundle 封印强制(P0-1)"
+    },
+    "dynamic_audit_and_independent_rescore": {
+      "status": "adapt",
+      "evidence": "src/abcr/audit/evidence.py + tests/control/test_misc.py, tests/explore/test_round_report.py",
+      "hardened": "auditor attestation 域分隔签名(P0-2);报告叙事结构性隔离(B4)"
+    },
+    "five_round_token_cost_recovery": {
+      "status": "reuse",
+      "evidence": "既有 R2 基线 token/cost 账本;本轮未改动"
+    },
+    "reconciler_fixture": {
+      "status": "adapt",
+      "evidence": "src/abcr/control/reconciler.py + tests/control/test_reconciler.py, 集成旅程 4",
+      "hardened": "旅程 4 补齐「同一事件仅一次恢复副作用」无重复断言"
+    },
+    "mission_lease_fake_worker": {
+      "status": "adapt",
+      "evidence": "src/abcr/control/{mission_store,mission_worker}.py + tests/control/test_mission_store.py"
+    },
+    "sealed_test_verify_release_canary_rollback": {
+      "status": "adapt",
+      "evidence": "src/abcr/control/{test_controller,verifier,release,seal_broker,canary_controller,black_box_oracle}.py + tests/control/{test_candidate_result_forgery,test_release,test_black_box_oracle}.py",
+      "hardened": "四主体信任链签名化(P0-3);activate 从磁盘解析封印(P0-4);沙箱隔离强制(P0-6);坏补丁不发布+回滚(判据12)真实 sandbox-exec 验证"
+    },
+    "service_spool_acl_smoke": {
+      "status": "adapt",
+      "evidence": "src/abcr/control/work_spool.py + tests/control/{test_work_spool,test_deployment_contract}.py;12 plist / 7 沙箱 / 9 队列契约",
+      "residual": "ops/sandbox/abcr-candidate.sb 的 deny-default 当前挡住解释器 dylib,真沙箱需修 profile(见交付报告)"
+    }
+  },
+  "all_required_pass": true,
+  "final_control_plane_nodes_are_reuse_or_adapt": true,
+  "evidence_gap_acknowledged": "清单 L95 要求逐节点 result/elapsed_s 与三组墙钟随本文件记录;impl 轮生成时未记,该轮耗时已不可追溯重建(诚实缺口,不补造)。takeover 收口(2026-07-22)以全量回归重证 11 节点全绿(1232 passed,0 failed),并补记收口轮墙钟于下",
+  "takeover_wall_clocks_20260722": {
+    "full_nongolden_s": 60.8,
+    "full_nongolden_budget_s": 480,
+    "six_fixture_journeys_s": 0.63,
+    "six_fixture_journeys_budget_s": 240,
+    "launchd_fake_smoke_canary_rollback_s": 1.2,
+    "launchd_fake_smoke_canary_rollback_budget_s": 180,
+    "note": "第三组 = tests/control/test_deployment_contract.py(launchd 契约 smoke)+ 旅程5(sealed release/canary/坏补丁回滚)实测耗时之和;三组均远低于预算。180 分钟承诺本身已随 impl 轮结束,不因此回溯恢复"
+  },
+  "verdict": "所有 11 个必需节点为 reuse 或 adapt,无 missing。goal/probe/approval + 四个最终控制面节点均满足清单要求。"
+}

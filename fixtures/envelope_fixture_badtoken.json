@@ -1,0 +1,224 @@
+{
+  "envelope_version": "1.0",
+  "batch_id": "B-20260714T090000Z-0001",
+  "protocol_ref": "W1-V0.9",
+  "scope": {
+    "benchmark_families": [
+      "golden10"
+    ],
+    "conditions": [
+      "vanilla",
+      "persona_text"
+    ],
+    "splits": [
+      "none"
+    ],
+    "item_limit_per_run": 10,
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "trait_whitelist": []
+  },
+  "budget": {
+    "gpu_hours_max": 0.0,
+    "cost_cap_cny": 0.0
+  },
+  "deadline_utc": "2027-01-01T00:00:00+00:00",
+  "run_configs": [
+    {
+      "config_version": "1.0",
+      "protocol_ref": "W1-V0.9",
+      "model": {
+        "model_id": "fake/deterministic-v1",
+        "revision": "fixture",
+        "dtype": "none",
+        "device": "none",
+        "engine": "fake"
+      },
+      "benchmark": {
+        "family": "golden10",
+        "split": "none",
+        "item_limit": 10
+      },
+      "condition": "vanilla",
+      "intervention": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_new_tokens": 0,
+        "seeds": [
+          1
+        ]
+      },
+      "batch_id": "B-20260714T090000Z-0001"
+    },
+    {
+      "config_version": "1.0",
+      "protocol_ref": "W1-V0.9",
+      "model": {
+        "model_id": "fake/deterministic-v1",
+        "revision": "fixture",
+        "dtype": "none",
+        "device": "none",
+        "engine": "fake"
+      },
+      "benchmark": {
+        "family": "golden10",
+        "split": "none",
+        "item_limit": 10
+      },
+      "condition": "vanilla",
+      "intervention": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_new_tokens": 0,
+        "seeds": [
+          2
+        ]
+      },
+      "batch_id": "B-20260714T090000Z-0001"
+    },
+    {
+      "config_version": "1.0",
+      "protocol_ref": "W1-V0.9",
+      "model": {
+        "model_id": "fake/deterministic-v1",
+        "revision": "fixture",
+        "dtype": "none",
+        "device": "none",
+        "engine": "fake"
+      },
+      "benchmark": {
+        "family": "golden10",
+        "split": "none",
+        "item_limit": 10
+      },
+      "condition": "vanilla",
+      "intervention": null,
+      "decoding": {
+        "temperature": 0.0,
+        "max_new_tokens": 0,
+        "seeds": [
+          3
+        ]
+      },
+      "batch_id": "B-20260714T090000Z-0001"
+    },
+    {
+      "config_version": "1.0",
+      "protocol_ref": "W1-V0.9",
+      "model": {
+        "model_id": "fake/deterministic-v1",
+        "revision": "fixture",
+        "dtype": "none",
+        "device": "none",
+        "engine": "fake"
+      },
+      "benchmark": {
+        "family": "golden10",
+        "split": "none",
+        "item_limit": 10
+      },
+      "condition": "persona_text",
+      "intervention": {
+        "method": "prompt",
+        "trait": null,
+        "trait_pole": null,
+        "vector_path": null,
+        "layer": null,
+        "coefficient": null,
+        "steering_position": "response"
+      },
+      "decoding": {
+        "temperature": 0.0,
+        "max_new_tokens": 0,
+        "seeds": [
+          1
+        ]
+      },
+      "batch_id": "B-20260714T090000Z-0001"
+    },
+    {
+      "config_version": "1.0",
+      "protocol_ref": "W1-V0.9",
+      "model": {
+        "model_id": "fake/deterministic-v1",
+        "revision": "fixture",
+        "dtype": "none",
+        "device": "none",
+        "engine": "fake"
+      },
+      "benchmark": {
+        "family": "golden10",
+        "split": "none",
+        "item_limit": 10
+      },
+      "condition": "persona_text",
+      "intervention": {
+        "method": "prompt",
+        "trait": null,
+        "trait_pole": null,
+        "vector_path": null,
+        "layer": null,
+        "coefficient": null,
+        "steering_position": "response"
+      },
+      "decoding": {
+        "temperature": 0.0,
+        "max_new_tokens": 0,
+        "seeds": [
+          2
+        ]
+      },
+      "batch_id": "B-20260714T090000Z-0001"
+    },
+    {
+      "config_version": "1.0",
+      "protocol_ref": "W1-V0.9",
+      "model": {
+        "model_id": "fake/deterministic-v1",
+        "revision": "fixture",
+        "dtype": "none",
+        "device": "none",
+        "engine": "fake"
+      },
+      "benchmark": {
+        "family": "golden10",
+        "split": "none",
+        "item_limit": 10
+      },
+      "condition": "persona_text",
+      "intervention": {
+        "method": "prompt",
+        "trait": null,
+        "trait_pole": null,
+        "vector_path": null,
+        "layer": null,
+        "coefficient": null,
+        "steering_position": "response"
+      },
+      "decoding": {
+        "temperature": 0.0,
+        "max_new_tokens": 0,
+        "seeds": [
+          3
+        ]
+      },
+      "batch_id": "B-20260714T090000Z-0001"
+    }
+  ],
+  "drafted_by": "human",
+  "approval": {
+    "token": {
+      "token_id": "6e1bccd0ca44dfad",
+      "scope": "batch_approve",
+      "task_id": "B-20260714T090000Z-0001",
+      "changeset_sha256": "436cface41dd6fe25dc5e2d8db9d8ae022a7fe5ea453e0caf977e347f095ac7b",
+      "expires_at": "2036-07-12T01:02:59.908573+00:00",
+      "persona_change": false,
+      "sig": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "approved_at": null
+  }
+}

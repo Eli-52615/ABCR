@@ -1,0 +1,16 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"abcr://approval-request-bundle-v1",
+  "type":"object","additionalProperties":false,
+  "required":["request_id","goal_bytes_b64","goal_sha256","research_commit","artifact_frozen_receipt","envelope","envelope_sha256","anchor_prefix_proof"],
+  "properties":{
+    "request_id":{"type":"string","minLength":1},
+    "goal_bytes_b64":{"type":"string","minLength":1},
+    "goal_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "research_commit":{"type":"string","pattern":"^(?:[0-9a-f]{40}|[0-9a-f]{64})$"},
+    "artifact_frozen_receipt":{"type":"object"},
+    "envelope":{"type":"object"},
+    "envelope_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "anchor_prefix_proof":{"type":"array","minItems":1,"items":{"type":"string","minLength":1}}
+  }
+}

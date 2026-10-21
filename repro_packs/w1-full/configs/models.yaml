@@ -1,0 +1,13 @@
+models:
+  tinyqwen:
+    model_id: tests/fixtures/tinyqwen
+    revision: local-fixture-seed0
+  qwen2.5-0.5b-instruct:
+    model_id: /Users/superagent/.cache/modelscope/models/Qwen--Qwen2.5-0.5B-Instruct/snapshots/master
+    revision: 18e18afcacca
+  qwen2.5-3b-instruct:
+    model_id: /Users/superagent/.cache/modelscope/models/Qwen--Qwen2.5-3B-Instruct/snapshots/master
+    revision: eed00b17e225
+  qwen2.5-7b-instruct:
+    model_id: Qwen/Qwen2.5-7B-Instruct
+    revision: PIN-AT-CLOUD-PROVISION

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "services": [
+    {"label":"com.abcr.human-gateway","uid":"abcr-human","module":"abcr.control.human_gateway","mode":"keepalive"},
+    {"label":"com.abcr.operator-reconciler","uid":"abcr-operator","module":"abcr.control.operator","mode":"keepalive"},
+    {"label":"com.abcr.probe-worker","uid":"abcr-probe","module":"abcr.probe.service","queue":"probe"},
+    {"label":"com.abcr.itempool","uid":"abcr-itempool","module":"abcr.explore.itempool_service","queue":"itempool"},
+    {"label":"com.abcr.auditor","uid":"abcr-auditor","module":"abcr.audit.service","queue":"audit"},
+    {"label":"com.abcr.mission-builder","uid":"abcr-builder","module":"abcr.control.mission_worker","queue":"mission-build"},
+    {"label":"com.abcr.test-controller","uid":"root","module":"abcr.control.test_controller","queue":"test","child_uid":"abcr-candidate"},
+    {"label":"com.abcr.verifier","uid":"abcr-verifier","module":"abcr.control.verifier","queue":"verify"},
+    {"label":"com.abcr.canary-controller","uid":"abcr-canary","module":"abcr.control.canary_controller","queue":"canary"},
+    {"label":"com.abcr.release-activator","uid":"abcr-activator","module":"abcr.control.release","queues":["release-prepare","activate"]},
+    {"label":"com.abcr.panel","uid":"abcr-panel","module":"abcr.control.panel","mode":"keepalive"},
+    {"label":"com.abcr.seal-broker","uid":"root","module":"abcr.control.seal_broker","mode":"socket"}
+  ],
+  "ephemeral_children": [{"uid":"abcr-candidate","parent":"com.abcr.test-controller","result_spool_access":false}]
+}

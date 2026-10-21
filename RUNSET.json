@@ -1,0 +1,98 @@
+{
+  "main_runs": [
+    {
+      "run_id": "20260712-130600-f9cc074895de",
+      "condition": "vanilla",
+      "run_name": "mini-vanilla",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        17,
+        42
+      ],
+      "method": "none"
+    },
+    {
+      "run_id": "20260712-133352-0a5a38ac8bf7",
+      "condition": "prompt_persona",
+      "run_name": "mini-text",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        17,
+        42
+      ],
+      "method": "prompt_persona"
+    },
+    {
+      "run_id": "20260712-134715-c52d9d7295b3",
+      "condition": "residual_vector",
+      "run_name": "mini-vector",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        17,
+        42
+      ],
+      "method": "residual_vector"
+    },
+    {
+      "run_id": "20260712-142226-bdcb51755747",
+      "condition": "random_direction",
+      "run_name": "mini-random",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        17,
+        42
+      ],
+      "method": "random_direction"
+    }
+  ],
+  "t0_runs": [
+    {
+      "run_id": "20260712-130600-f9cc074895de-t0",
+      "condition": "vanilla",
+      "run_name": "mini-vanilla-t0",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        0
+      ],
+      "method": "none"
+    },
+    {
+      "run_id": "20260712-133352-0a5a38ac8bf7-t0",
+      "condition": "prompt_persona",
+      "run_name": "mini-text-t0",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        0
+      ],
+      "method": "prompt_persona"
+    },
+    {
+      "run_id": "20260712-134715-c52d9d7295b3-t0",
+      "condition": "residual_vector",
+      "run_name": "mini-vector-t0",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        0
+      ],
+      "method": "residual_vector"
+    },
+    {
+      "run_id": "20260712-142226-bdcb51755747-t0",
+      "condition": "random_direction",
+      "run_name": "mini-random-t0",
+      "model": "qwen2.5-3b-instruct",
+      "citable": false,
+      "seeds": [
+        0
+      ],
+      "method": "random_direction"
+    }
+  ]
+}

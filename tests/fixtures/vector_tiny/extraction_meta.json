@@ -1,0 +1,12 @@
+{
+  "n_instructions": 0,
+  "n_questions": 0,
+  "n_responses_per_q": 0,
+  "filter_threshold": 0,
+  "pos_csv_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "neg_csv_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "questions_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "bridge_version": "fixture",
+  "device": "cpu",
+  "dtype": "float32"
+}

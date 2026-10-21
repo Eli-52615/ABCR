@@ -1,0 +1,930 @@
+{
+  "preset": "mini-loop",
+  "files": [
+    {
+      "path": "runs/MINILOOP-RUNSET.json",
+      "sha256": "b4aaac5215244f8538abc731e1d7497b0dca8c3f1afc6a245314971eb2016160",
+      "source": "/Users/superagent/abcr/runs/MINILOOP-RUNSET.json"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de/steps.jsonl",
+      "sha256": "f39ae86deb2dcd8f2acdacbe3c4af6ca69163eea202045c28410ca8959d0df46",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de/config.yaml",
+      "sha256": "43b4844f49fe418863521eb15464b466479814e5e1570c4dd7ddc6aa5d06aa5e",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de/config.yaml"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de/env.lock"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de/manifest.json",
+      "sha256": "92c128f86ad0d70ca473cab4033b5bf9de644cb9057ba117da986eefe4373c42",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de/manifest.json"
+    },
+    {
+      "path": "scores/20260712-130600-f9cc074895de/summary.json",
+      "sha256": "d628f4b9f3f82eb677123358743bb977fb4857eff9ae531a35b85abc3721d95f",
+      "source": "/Users/superagent/abcr/scores/20260712-130600-f9cc074895de/summary.json"
+    },
+    {
+      "path": "scores/20260712-130600-f9cc074895de/scores.jsonl",
+      "sha256": "c517e82fc191dabf206a29dfd665a4c8691bf5b84cd239c54b84265d361cbe55",
+      "source": "/Users/superagent/abcr/scores/20260712-130600-f9cc074895de/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-130600-f9cc074895de/review_report.json",
+      "sha256": "99386acaa21c34524ab56dba6f486ff73272293e0ce25c9cee66c29849508a7f",
+      "source": "/Users/superagent/abcr/review/20260712-130600-f9cc074895de/review_report.json"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7/steps.jsonl",
+      "sha256": "8d0b5626522587fed21b1655159233e2f53e544f416e2f7088bb563b2664878d",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7/config.yaml",
+      "sha256": "5c944a17fb56adba06367e182d1d6b52929eb9bc8a1b60619162c95422fc2235",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7/config.yaml"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7/env.lock"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7/manifest.json",
+      "sha256": "eb96a2163311df11315e66f85a3bc3f3629d13a83060f49629ac746ddac4faad",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7/manifest.json"
+    },
+    {
+      "path": "scores/20260712-133352-0a5a38ac8bf7/summary.json",
+      "sha256": "b1b4832689f9c733ddccce31bfaf32230fd72f11c2613960c8e419985e6d1415",
+      "source": "/Users/superagent/abcr/scores/20260712-133352-0a5a38ac8bf7/summary.json"
+    },
+    {
+      "path": "scores/20260712-133352-0a5a38ac8bf7/scores.jsonl",
+      "sha256": "b2f10229b4e0c63a22b1d73889615404f610cb7a0c5d28d6e797fb99b3b78378",
+      "source": "/Users/superagent/abcr/scores/20260712-133352-0a5a38ac8bf7/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-133352-0a5a38ac8bf7/review_report.json",
+      "sha256": "bb69c3eb329329546f8ca5413cfea22163a3d384c7132c16cf0fa38e6c289279",
+      "source": "/Users/superagent/abcr/review/20260712-133352-0a5a38ac8bf7/review_report.json"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/steps.jsonl",
+      "sha256": "1998b51ad243801c83aaa0939be33efe5e15da67646baf6cbbef8667abefff14",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/config.yaml",
+      "sha256": "4e733273f84009b5eab04b4a8e520356d3ff546781e60749150f048bb92d3eb1",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/config.yaml"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/env.lock"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/manifest.json",
+      "sha256": "7523f787ae0d6c2b28c6a4d0d4e4a28777b0dc83033da45f7c8ca4989a4b1655",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/manifest.json"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/activations/248a1f6149f18e85_17.npz",
+      "sha256": "15c3956584019e9c981f68b49522a32efa46342f43796336c0b60c4205810b3e",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/activations/248a1f6149f18e85_17.npz"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/activations/4cd6ba7a067a3ee3_17.npz",
+      "sha256": "cd5ba8d9f9a653251adbebc18dfae5741ca8fe5f6fdb2713e422aef86c9c8996",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/activations/4cd6ba7a067a3ee3_17.npz"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/activations/248a1f6149f18e85_42.npz",
+      "sha256": "0a668b1a54a4a727daa5af4074bafc0cdc50430321468beea9d2d28b7b7bb597",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/activations/248a1f6149f18e85_42.npz"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3/activations/4cd6ba7a067a3ee3_42.npz",
+      "sha256": "1f0d4705e2da657e1c1180a0bbdc622fef595503ee44989ee9a95700b2d27f08",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3/activations/4cd6ba7a067a3ee3_42.npz"
+    },
+    {
+      "path": "scores/20260712-134715-c52d9d7295b3/summary.json",
+      "sha256": "db48b345b88b8d6893da6fbb9dc6fe66dda8108cd681910187894bb7cb393a6e",
+      "source": "/Users/superagent/abcr/scores/20260712-134715-c52d9d7295b3/summary.json"
+    },
+    {
+      "path": "scores/20260712-134715-c52d9d7295b3/scores.jsonl",
+      "sha256": "475427564211f9e5adbf4179788d4a0a67dcf4aebf4256d6e57533fd981668c7",
+      "source": "/Users/superagent/abcr/scores/20260712-134715-c52d9d7295b3/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-134715-c52d9d7295b3/review_report.json",
+      "sha256": "740c949424112473644c4669cfd7fda1fb58fbd9f1310171015bc3c5d6d47105",
+      "source": "/Users/superagent/abcr/review/20260712-134715-c52d9d7295b3/review_report.json"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/steps.jsonl",
+      "sha256": "90340d0daa4e9e439095c9836774c6fab1704f694f03ba848ad34b37360aeff8",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/config.yaml",
+      "sha256": "565be1898ad8d92bea1bebd0785c761b833598b6d8d5ba4a3e994eed61551677",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/config.yaml"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/env.lock"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/manifest.json",
+      "sha256": "0523d8418a176feef3ae04ea447a1ad0ed3a743c55a7442e7e8b0004dda2f6f5",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/manifest.json"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/activations/248a1f6149f18e85_17.npz",
+      "sha256": "bbee57f3c534224b43e59e5d32c0ddc976dabe55a6d6bd634777189cd70a7f85",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/activations/248a1f6149f18e85_17.npz"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/activations/4cd6ba7a067a3ee3_17.npz",
+      "sha256": "564b0ea22adbe5b76ef198b84c2f17b5ddea299b5bdbfb089b6e1d899e87beb7",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/activations/4cd6ba7a067a3ee3_17.npz"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/activations/248a1f6149f18e85_42.npz",
+      "sha256": "f634a6225458ade45ff5c2fd61b13253a1ad520807b0021145a4934d7cb8c80b",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/activations/248a1f6149f18e85_42.npz"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747/activations/4cd6ba7a067a3ee3_42.npz",
+      "sha256": "c87e035889db99cf63a6d1ecc49c8358699cfd8d72af1fe902f0934ea3b04226",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747/activations/4cd6ba7a067a3ee3_42.npz"
+    },
+    {
+      "path": "scores/20260712-142226-bdcb51755747/summary.json",
+      "sha256": "b2bdd5202fb5a825f211056fece2693cb6368ce918b7f090c02cbcd0199842e5",
+      "source": "/Users/superagent/abcr/scores/20260712-142226-bdcb51755747/summary.json"
+    },
+    {
+      "path": "scores/20260712-142226-bdcb51755747/scores.jsonl",
+      "sha256": "9fd2c0ad5f53e02d3aa12cc9c9d331b3d55f55a96017148c9fb1ac4c33431b45",
+      "source": "/Users/superagent/abcr/scores/20260712-142226-bdcb51755747/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-142226-bdcb51755747/review_report.json",
+      "sha256": "3f1c64ce08fb64bed1b2d19415ebd341dc52054dd0611cf9f70e031b426261f3",
+      "source": "/Users/superagent/abcr/review/20260712-142226-bdcb51755747/review_report.json"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de-t0/steps.jsonl",
+      "sha256": "64b6b5a5c81c95b120efc4a966a2b6f273aafd3bf2b91963cd200305d69e831e",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de-t0/config.yaml",
+      "sha256": "c50dc56f2b330ddccfb42518a9356f940dcd45dac235a5cb329fc7ac2bc44f78",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de-t0/config.yaml"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de-t0/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de-t0/env.lock"
+    },
+    {
+      "path": "runs/20260712-130600-f9cc074895de-t0/manifest.json",
+      "sha256": "07565159e611cff2dd1a3519928a8cc18dcad4df691d8c0e9ee73fb13c513394",
+      "source": "/Users/superagent/abcr/runs/20260712-130600-f9cc074895de-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260712-130600-f9cc074895de-t0/summary.json",
+      "sha256": "b837f994eac7010387fa94f80fcd9bd6d815fb903d267b436da867a2f68fdd69",
+      "source": "/Users/superagent/abcr/scores/20260712-130600-f9cc074895de-t0/summary.json"
+    },
+    {
+      "path": "scores/20260712-130600-f9cc074895de-t0/scores.jsonl",
+      "sha256": "8694ce6fe35db58b03c18fdd3f99152e445af6d589c25a34a42e4f07585ef682",
+      "source": "/Users/superagent/abcr/scores/20260712-130600-f9cc074895de-t0/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-130600-f9cc074895de-t0/review_report.json",
+      "sha256": "379fbe16455a806e8e2f7dc9964b51b74395229e87051635a17c21f6f6053b28",
+      "source": "/Users/superagent/abcr/review/20260712-130600-f9cc074895de-t0/review_report.json"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7-t0/steps.jsonl",
+      "sha256": "4cc9d9d53941a15957ac10794de7cdb06fb23fe54b19cb012f1a218a87f0cdb0",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7-t0/config.yaml",
+      "sha256": "a496ef491917bcd43c283e5fe2c8a8531e12d445f69ab6e4c5f36ec82cb0fbfd",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7-t0/config.yaml"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7-t0/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7-t0/env.lock"
+    },
+    {
+      "path": "runs/20260712-133352-0a5a38ac8bf7-t0/manifest.json",
+      "sha256": "97f0680ff53c385179dc38f601901996a987e2d41e59d65dcc287643c58924a6",
+      "source": "/Users/superagent/abcr/runs/20260712-133352-0a5a38ac8bf7-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260712-133352-0a5a38ac8bf7-t0/summary.json",
+      "sha256": "8f7417b9c9506f27a79119986c117814305e05f9dda837ed0d0d263eaa1e6710",
+      "source": "/Users/superagent/abcr/scores/20260712-133352-0a5a38ac8bf7-t0/summary.json"
+    },
+    {
+      "path": "scores/20260712-133352-0a5a38ac8bf7-t0/scores.jsonl",
+      "sha256": "1564ab5e9dead3101aee6139eaa856e346232a3227e604ffa2a17897d27a2eca",
+      "source": "/Users/superagent/abcr/scores/20260712-133352-0a5a38ac8bf7-t0/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-133352-0a5a38ac8bf7-t0/review_report.json",
+      "sha256": "c02a1d2d4272b2adecfbb7d38c0a9398875397d1a979d7fd35b0c1b2ff488db9",
+      "source": "/Users/superagent/abcr/review/20260712-133352-0a5a38ac8bf7-t0/review_report.json"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3-t0/steps.jsonl",
+      "sha256": "04e96761a3f133bfab9cc7fbd924cdf6024caf72187469910894b446aef92664",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3-t0/config.yaml",
+      "sha256": "61d32b02c06adddf44c419768d76b552bcd3d83bf22bf8b17197a518dcaee4c2",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3-t0/config.yaml"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3-t0/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3-t0/env.lock"
+    },
+    {
+      "path": "runs/20260712-134715-c52d9d7295b3-t0/manifest.json",
+      "sha256": "a306f9e5e67b9d6a45e68afbb9bed3d839a4f8c26bbf2d947ec9a5acaa62652f",
+      "source": "/Users/superagent/abcr/runs/20260712-134715-c52d9d7295b3-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260712-134715-c52d9d7295b3-t0/summary.json",
+      "sha256": "6bf819276cb2bc20ed35095de87f38e35d900a8952735b6cb9f83dfda8f6eda7",
+      "source": "/Users/superagent/abcr/scores/20260712-134715-c52d9d7295b3-t0/summary.json"
+    },
+    {
+      "path": "scores/20260712-134715-c52d9d7295b3-t0/scores.jsonl",
+      "sha256": "a0633d87a393128c5aafda3e8864554e6c125622899e30679907af5c8ef8c9f9",
+      "source": "/Users/superagent/abcr/scores/20260712-134715-c52d9d7295b3-t0/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-134715-c52d9d7295b3-t0/review_report.json",
+      "sha256": "cbc2a2f3c14fc883ba1f98f5c09073f4e2193584f35d70e8e25daec97ad2f76b",
+      "source": "/Users/superagent/abcr/review/20260712-134715-c52d9d7295b3-t0/review_report.json"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747-t0/steps.jsonl",
+      "sha256": "6667d76452a128dc789c89fa3b2b17ba8d70f7d56f983ed1a3df2d918250d8b9",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747-t0/steps.jsonl"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747-t0/config.yaml",
+      "sha256": "7bc48e5d30b8b57ef45f32aab7b9581236a0d61a436fb284cb86694b7f791634",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747-t0/config.yaml"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747-t0/env.lock",
+      "sha256": "14c3594ac8fa006309de990d757542ff73f412733c40b21c404533a2abaffa2d",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747-t0/env.lock"
+    },
+    {
+      "path": "runs/20260712-142226-bdcb51755747-t0/manifest.json",
+      "sha256": "0a12419e559a7299113ead669206c99153bd60ec3245668010a436e17bebe7dc",
+      "source": "/Users/superagent/abcr/runs/20260712-142226-bdcb51755747-t0/manifest.json"
+    },
+    {
+      "path": "scores/20260712-142226-bdcb51755747-t0/summary.json",
+      "sha256": "3d820a58b9e731e9af623cc3600a0f73fb40ca77cc133b55499c735664b42a81",
+      "source": "/Users/superagent/abcr/scores/20260712-142226-bdcb51755747-t0/summary.json"
+    },
+    {
+      "path": "scores/20260712-142226-bdcb51755747-t0/scores.jsonl",
+      "sha256": "634f315a412afe241dc8c750c9511c611b5812a0a158272d0e61abd8298e2e22",
+      "source": "/Users/superagent/abcr/scores/20260712-142226-bdcb51755747-t0/scores.jsonl"
+    },
+    {
+      "path": "review/20260712-142226-bdcb51755747-t0/review_report.json",
+      "sha256": "8081a802ecb819fd645ffa8711dd7fc4de5be2cf0eae922ca74df12500d55aaf",
+      "source": "/Users/superagent/abcr/review/20260712-142226-bdcb51755747-t0/review_report.json"
+    },
+    {
+      "path": "data/items/ifeval_style/items.jsonl",
+      "sha256": "7d5d6426b953296251d6665d6639a9df10379d270bf9ce217d7bc0db7845babd",
+      "source": "/Users/superagent/abcr/data/items/ifeval_style/items.jsonl"
+    },
+    {
+      "path": "data/splits/ifeval_style-7d5d6426.json.sha256",
+      "sha256": "06dce6ab1d4026c475c0aeb010a8b3b70ca0aca87f4e18d9911edbdfb357e486",
+      "source": "/Users/superagent/abcr/data/splits/ifeval_style-7d5d6426.json.sha256"
+    },
+    {
+      "path": "data/splits/ifeval_style-7d5d6426.json",
+      "sha256": "6934a00d98571cc07b08db8602b12c5e2a7531ed8e3df665d7aaa3c7f0876875",
+      "source": "/Users/superagent/abcr/data/splits/ifeval_style-7d5d6426.json"
+    },
+    {
+      "path": "figures/judge_consistency.png",
+      "sha256": "3d0de390cbf24796f728c52c67b9e1ba36ddbe753ac65abaf49405d500719012",
+      "source": "/Users/superagent/abcr/figures/judge_consistency.png"
+    },
+    {
+      "path": "figures/exprcheck_conscientiousness.png",
+      "sha256": "f03a477d989d15af74a410e10e8f4f430426ce35bf1a255d657418de1fbc48be",
+      "source": "/Users/superagent/abcr/figures/exprcheck_conscientiousness.png"
+    },
+    {
+      "path": "figures/mini_loop.png",
+      "sha256": "3510fd0af3cb2326e1f52c0620000e98f9299778b189a1d618fc8b3b5fa08dea",
+      "source": "/Users/superagent/abcr/figures/mini_loop.png"
+    },
+    {
+      "path": "review/judge_consistency_n50.json",
+      "sha256": "6d21fa928864caf14f83b4b54a51b8e43d6e2c60f7bd82940a87dc8690507334",
+      "source": "/Users/superagent/abcr/review/judge_consistency_n50.json"
+    },
+    {
+      "path": "review/exprcheck_conscientiousness_report.json",
+      "sha256": "18f66df522119e800f1578737f4d309aa18a67b21be4c7d5d833cceba8e4c32d",
+      "source": "/Users/superagent/abcr/review/exprcheck_conscientiousness_report.json"
+    },
+    {
+      "path": "review/judge_probe_report.json",
+      "sha256": "e10d161fe20e4763b1039ab06319c0ae35be03d9b8aaec51f8c0195c5bc76057",
+      "source": "/Users/superagent/abcr/review/judge_probe_report.json"
+    },
+    {
+      "path": "pv_bridge/out/direction_check_conscientiousness_3b.json",
+      "sha256": "b37a48f32f9d24a2482848805a4d151100ac74c1d8fb616ef6803ecbd8cfd278",
+      "source": "/Users/superagent/abcr/pv_bridge/out/direction_check_conscientiousness_3b.json"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness_3b_neg.csv.judge_raw.jsonl",
+      "sha256": "21da9286a19443dc61721892b075c4bf4c687059d3c5c5da88d042cb2ceffdb1",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness_3b_neg.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/optimistic_3b_pos.csv.judge_raw.jsonl",
+      "sha256": "830b80bf41cd2775631672146db269d5aa99c72bb618df557aa0969e57c9745e",
+      "source": "/Users/superagent/abcr/pv_bridge/out/optimistic_3b_pos.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/flip_preview.log",
+      "sha256": "d1c667fdf0824120ec842fca31c7cf0a55d3d7d3507b47d7be22819e36e820bb",
+      "source": "/Users/superagent/abcr/pv_bridge/out/flip_preview.log"
+    },
+    {
+      "path": "pv_bridge/out/exprcheck_conscientiousness.log",
+      "sha256": "52d81e3cbda224d8b8b73253aeac9404cd1158cf650b3d48f01a588f3b363d52",
+      "source": "/Users/superagent/abcr/pv_bridge/out/exprcheck_conscientiousness.log"
+    },
+    {
+      "path": "pv_bridge/out/3b_extract.log",
+      "sha256": "719de966581f21febd4ad75e6ecf28ae46efb81ef7d7e11da5b92bc092c3c7bf",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b_extract.log"
+    },
+    {
+      "path": "pv_bridge/out/optimistic_3b_neg.csv.judge_raw.jsonl",
+      "sha256": "216cee2a4d24b1afde961b5b8fb8e107ad97c896fa83988dd5a780e6f61d0148",
+      "source": "/Users/superagent/abcr/pv_bridge/out/optimistic_3b_neg.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness_3b_pos.csv",
+      "sha256": "bdd68688790c27edaf4cf80d9edbd78069ab4f43fb9e0b4b0e53dd57f1575b99",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness_3b_pos.csv"
+    },
+    {
+      "path": "pv_bridge/out/optimistic_3b_neg.csv",
+      "sha256": "b4ed487b9075ad92a33bb45bac2c3f9970075ee12c3493fb60aaa251c32d6a9b",
+      "source": "/Users/superagent/abcr/pv_bridge/out/optimistic_3b_neg.csv"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness_3b_pos.csv.judge_raw.jsonl",
+      "sha256": "9bbe194419c932d2983f161e743dd5c7ff53613b0c4256f01a8de0b9638b33d9",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness_3b_pos.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/optimistic_3b_pos.csv",
+      "sha256": "07d824c776edb98263ec3913cb958df0028aea71112b49b01561a947321415a9",
+      "source": "/Users/superagent/abcr/pv_bridge/out/optimistic_3b_pos.csv"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness_3b_neg.csv",
+      "sha256": "7d20e1341f86c6005cb68954f1662d726b8675d5ee3a7974b6f435052759a407",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness_3b_neg.csv"
+    },
+    {
+      "path": "pv_bridge/out/direction_check_conscientiousness.log",
+      "sha256": "c07dae40edd85999018f5adbcddffda5558d56d761cd969f817b552af1c627e2",
+      "source": "/Users/superagent/abcr/pv_bridge/out/direction_check_conscientiousness.log"
+    },
+    {
+      "path": "pv_bridge/out/direction_check_3b.json",
+      "sha256": "c72b8138a89519aa3bde9460a3785ea595d96c678f0df139bd530c8ce2426103",
+      "source": "/Users/superagent/abcr/pv_bridge/out/direction_check_3b.json"
+    },
+    {
+      "path": "pv_bridge/out/generate_vec_conscientiousness.log",
+      "sha256": "9d64b2f151e034e0eaf24a11ba32a63041bdf79ed2f539c2b0922dcaae51e07d",
+      "source": "/Users/superagent/abcr/pv_bridge/out/generate_vec_conscientiousness.log"
+    },
+    {
+      "path": "pv_bridge/out/3b_conscientiousness_extract.log",
+      "sha256": "9842f3ab5502ac8e74b8e24c12cb22942e8cd35e87d713a3dd3259689de9c7df",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b_conscientiousness_extract.log"
+    },
+    {
+      "path": "pv_bridge/out/direction_check.log",
+      "sha256": "1f3dbada286cb6c0e3f99ebf80fade2c174a73388f0d099bf36c732762172c72",
+      "source": "/Users/superagent/abcr/pv_bridge/out/direction_check.log"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness_3b_dev/conscientiousness_prompt_last_diff.pt",
+      "sha256": "97e12bbabdc436502d5cfa729b6bb4ddad9fefefa4010790835ed6e68dd45bd1",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness_3b_dev/conscientiousness_prompt_last_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness_3b_dev/conscientiousness_response_avg_diff.pt",
+      "sha256": "223643f953f13abd5c79cc1012bf34fe841afa00c2ae45f159eb0d3491be89e8",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness_3b_dev/conscientiousness_response_avg_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness_3b_dev/conscientiousness_prompt_avg_diff.pt",
+      "sha256": "ea310b3a097970d2106ec373b8677323d9c6fbf0730fd286c8396a6c1b0ff6a2",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness_3b_dev/conscientiousness_prompt_avg_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q15-20.csv",
+      "sha256": "3452fa85be9c3bde0b44165f517af1e5c6d9c3a5dd00350abe2bb245206b162b",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q15-20.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q10-15.csv",
+      "sha256": "2adcadcfcfcce0c78b043b6d7fd37d9207f84fe97ef54963f8ff9015f1717328",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q10-15.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q5-10.csv",
+      "sha256": "10a8e13cca63ce6d99421d3addf1d84afcd241f42ae53f0c4f6fc4adcd20bc15",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q5-10.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q15-20.csv",
+      "sha256": "97067ade8a860df2d925e428be8c0a194f58cf5140517fe46bba40e69591e588",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q15-20.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q0-5.csv",
+      "sha256": "e44de8219bc28d5ab4280d8eec25c1d47286fa3e6b280d831e7a6b46bbf45add",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q0-5.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q10-15.csv",
+      "sha256": "45e6ae59fe826a094ce15c7cb27e424c8d7907795d6fabd0dcca907eda860b37",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q10-15.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q10-15.csv.judge_raw.jsonl",
+      "sha256": "4e3f0e361506f5e8d6cc33ed445a427ef7b03cfcd347a3809643dc74480a213c",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q10-15.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q0-5.csv.judge_raw.jsonl",
+      "sha256": "3260e01325fa3ca9d67656061657bf0df243b0fc9443cfb3666331749e46a944",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q0-5.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q0-5.csv",
+      "sha256": "58e7dba0923f83683adc4f763896bfc6d31c8150d6ad52b9d92905b1c84606e3",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q0-5.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q5-10.csv.judge_raw.jsonl",
+      "sha256": "2662413025a2f05c69dbe5978c451d528072ce0f588a4ff7b76bc9b1975fe57e",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q5-10.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q10-15.csv.judge_raw.jsonl",
+      "sha256": "0b32437d8745c2578f72d0ba3fc17cc601062019598fc2a6ff87aa1100e3c5a5",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q10-15.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q5-10.csv",
+      "sha256": "d49d9a0ced6ff7e0fa8fb8d180fe8fda6f19bcdc7e2749af80a73174d39d3a05",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q5-10.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q15-20.csv.judge_raw.jsonl",
+      "sha256": "fb2ba1b3bd20773d8905153c83f488d407a4e0695ee8a447eb87711a5722362b",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q15-20.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q5-10.csv.judge_raw.jsonl",
+      "sha256": "7cd469fb7227e9e672b1f856b132bdc05e399846c5691b990cdc682b4883efa4",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q5-10.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/pos_q0-5.csv.judge_raw.jsonl",
+      "sha256": "258507d77a936f213573ceded3891da79d575e35e9ac6f83d4a81a26dd26ae3c",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/pos_q0-5.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-conscientiousness-ckpt/neg_q15-20.csv.judge_raw.jsonl",
+      "sha256": "3fa49388e3158938f3310701091bb3af0b898debe319daba56f88d52979fd867",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-conscientiousness-ckpt/neg_q15-20.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness/exprcheck_key.csv",
+      "sha256": "4fc12fbee7acc49df1fe7be1ecdc802c0426b3750c029f0bfbf9550905e1d725",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness/exprcheck_key.csv"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness/exprcheck_deblinded.jsonl",
+      "sha256": "5cd09b5d5dcac4b1ddf1210dbac33fcf4d8918d0d77a4fd4db5e45e69e4ab11c",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness/exprcheck_deblinded.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness/exprcheck_report.json",
+      "sha256": "0cb11845673ce624ff0efc30d000c5d1180916a0a877d5d80a99030f52ed693a",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness/exprcheck_report.json"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness/exprcheck_scores.jsonl",
+      "sha256": "ecfcfc9ffbefc45d97499db928c957729db899d8439046f821ceab318a1ac5ae",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness/exprcheck_scores.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness/exprcheck_pool.csv",
+      "sha256": "f45595181dbf992e9844c10eae8adb2c1847db3e98a23c80798c26fa4a6f0cad",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness/exprcheck_pool.csv"
+    },
+    {
+      "path": "pv_bridge/out/conscientiousness/judge_raw/exprcheck_scores.jsonl",
+      "sha256": "f1175e25bab7d990bf1a2f196fda510573b45152d682c5b92d236f7851b55e25",
+      "source": "/Users/superagent/abcr/pv_bridge/out/conscientiousness/judge_raw/exprcheck_scores.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/optimistic_3b_dev/optimistic_response_avg_diff.pt",
+      "sha256": "9879a0bc24b164129c15886fabede9d9f9539df5a16a0d73d92856e4df09fd1f",
+      "source": "/Users/superagent/abcr/pv_bridge/out/optimistic_3b_dev/optimistic_response_avg_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/optimistic_3b_dev/optimistic_prompt_avg_diff.pt",
+      "sha256": "7e415e4df9db3fc48cab77efd9e626dbab47f04c73d1c468bd198b810f6f5591",
+      "source": "/Users/superagent/abcr/pv_bridge/out/optimistic_3b_dev/optimistic_prompt_avg_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/optimistic_3b_dev/optimistic_prompt_last_diff.pt",
+      "sha256": "f183bcdee209c2392313db7fa928c338cb8b48afc30a2f55f5ccddcce6240b56",
+      "source": "/Users/superagent/abcr/pv_bridge/out/optimistic_3b_dev/optimistic_prompt_last_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q15-20.csv",
+      "sha256": "f91057687fa01b3f57cefb4bbc0aab31bd57bb77955c96b09403fef4531ef366",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q15-20.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q10-15.csv",
+      "sha256": "26105c9949578a2a6de7dfbf461519d6cdd7440e3bea41ef4a79ada75c00084d",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q10-15.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q5-10.csv",
+      "sha256": "76ea200c0cc364709792afc2172a07734a11b48d1d9f798bf71521f6c7928f7b",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q5-10.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q15-20.csv",
+      "sha256": "778c47a3d0fea52b5a7c16996aaa5dc89ae09e1506ff8afb28d593e2c0b1d071",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q15-20.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q0-5.csv",
+      "sha256": "40c41f5337465f037358f1253849d11c0822a8ec105feac9f9a94a0ed481a592",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q0-5.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q10-15.csv",
+      "sha256": "ade73bceb363b77ab764f0859140c849f5c8f4ad184424a86cf96d4cb89127f7",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q10-15.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q10-15.csv.judge_raw.jsonl",
+      "sha256": "d6baa434a0bc7870eefc74bc9c6a570e5ab91e0ff95e9a4dec6a5a9023507b44",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q10-15.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q0-5.csv.judge_raw.jsonl",
+      "sha256": "c6eefb6951309262240925949c1c72c604c661ecf0e32b848520cc50e5a8e36b",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q0-5.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q0-5.csv",
+      "sha256": "79c6eb7a2a9b4b0833c0827cfbd6a56a218b6334378f91c99c648c0afbcc0f1e",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q0-5.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q5-10.csv.judge_raw.jsonl",
+      "sha256": "edf55065b946afda1d7f12dd18e6b79fe3124d4b36a71a294a3fb3e491abc6e0",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q5-10.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q10-15.csv.judge_raw.jsonl",
+      "sha256": "a20837e5fda7d6db1b9891a4cd5037bf978b4e56b0840ecd82ebd20bf82743d5",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q10-15.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q5-10.csv",
+      "sha256": "3324968d29654631dd8a66c3f08da9be2fc924aead8bb049e9312892615c4ca5",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q5-10.csv"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q15-20.csv.judge_raw.jsonl",
+      "sha256": "70171a7f065c40c8dfd978134129703097887da3541a156302dbf4272bd3f40a",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q15-20.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q5-10.csv.judge_raw.jsonl",
+      "sha256": "d8977d9a2b79214dfd6681bbaeeadb993164a3b6c046cc5c7b22dac46de3ecd9",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q5-10.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/pos_q0-5.csv.judge_raw.jsonl",
+      "sha256": "3e22ca61813bf79a203e66a6417ec6d194ccb558c8f10baced846dd3da68dd75",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/pos_q0-5.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/3b-optimistic-ckpt/neg_q15-20.csv.judge_raw.jsonl",
+      "sha256": "971b8dd744a9441b3cf9ee75f565788227a46546d0e4a84775b643dbf6e9e7e2",
+      "source": "/Users/superagent/abcr/pv_bridge/out/3b-optimistic-ckpt/neg_q15-20.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/test_e2e_05b/optimistic_pos.csv.judge_raw.jsonl",
+      "sha256": "c9dd79c922c0a83809370889782d18cadd6edef5d6de0f24b2cb6610ece8b9e5",
+      "source": "/Users/superagent/abcr/pv_bridge/out/test_e2e_05b/optimistic_pos.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/test_e2e_05b/optimistic_neg.csv",
+      "sha256": "2fcdcb146f0cb572de8d459456405e509ac5cc47db159102ae52c95f7cffe10a",
+      "source": "/Users/superagent/abcr/pv_bridge/out/test_e2e_05b/optimistic_neg.csv"
+    },
+    {
+      "path": "pv_bridge/out/test_e2e_05b/optimistic_pos.csv",
+      "sha256": "8d54a104b0372ee9925f7ec318ba0c84298b9db0e6f30829cce248485165b2e2",
+      "source": "/Users/superagent/abcr/pv_bridge/out/test_e2e_05b/optimistic_pos.csv"
+    },
+    {
+      "path": "pv_bridge/out/test_e2e_05b/optimistic_neg.csv.judge_raw.jsonl",
+      "sha256": "29a6665340bb522aa822a7a69cbc0da688a110b5493028b43256f9de3e722130",
+      "source": "/Users/superagent/abcr/pv_bridge/out/test_e2e_05b/optimistic_neg.csv.judge_raw.jsonl"
+    },
+    {
+      "path": "pv_bridge/out/test_e2e_05b/vectors/optimistic_response_avg_diff.pt",
+      "sha256": "7b396c010656f7ef5257c0e54689abd3974151034bb40cc6075de9bdebaea459",
+      "source": "/Users/superagent/abcr/pv_bridge/out/test_e2e_05b/vectors/optimistic_response_avg_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/test_e2e_05b/vectors/optimistic_prompt_avg_diff.pt",
+      "sha256": "440e9c340c4aa089b7ce39140f6896427c80ef07608df35f290c1e8f88b57209",
+      "source": "/Users/superagent/abcr/pv_bridge/out/test_e2e_05b/vectors/optimistic_prompt_avg_diff.pt"
+    },
+    {
+      "path": "pv_bridge/out/test_e2e_05b/vectors/optimistic_prompt_last_diff.pt",
+      "sha256": "1c4f2b56c839ab7fa1b4d69f5714bd84519c2c6f9ac65b327207d6c60f7efc42",
+      "source": "/Users/superagent/abcr/pv_bridge/out/test_e2e_05b/vectors/optimistic_prompt_last_diff.pt"
+    },
+    {
+      "path": "configs/models.yaml",
+      "sha256": "b8d8c4462c8acb704370d80a8b2c81e99da7fef0f0d8e61d7a81754a3c4ce1bd",
+      "source": "/Users/superagent/abcr/configs/models.yaml"
+    },
+    {
+      "path": "configs/protocol_ref.txt",
+      "sha256": "931e76562ba325d4f5cfac85d3f935f7dd3fe8486e3c5cf2ff2a24421904fb36",
+      "source": "/Users/superagent/abcr/configs/protocol_ref.txt"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1工程包C-Scorer-Audit-ReproPack-V1.0.md",
+      "sha256": "2d2bf33b71000b1c1b832d06b1251bda578c81a06c46e6073d88eaec80ac3a2b",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1工程包C-Scorer-Audit-ReproPack-V1.0.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1执行方案-V1.1补丁-资源治理门与节奏修订.md",
+      "sha256": "5addf84a96365687b91b88b5324fe72993864f5d2027292a6e2202162f7b4608",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1执行方案-V1.1补丁-资源治理门与节奏修订.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1执行方案-V1.0.md",
+      "sha256": "b4d39632560b54dac663b9ce63b0180258fbd4764f1f0d76de7bc5a50c1df332",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1执行方案-V1.0.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1工程包A-Runner-Episode-Ledger-V1.0.md",
+      "sha256": "954d0cf779e38446372c4ee598004872b5b83ea6805ea476bfa9ff35a9f450d6",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1工程包A-Runner-Episode-Ledger-V1.0.md"
+    },
+    {
+      "path": "configs/protocol/ABCR-W1工程包B-Hook-Intervention-PV复现-V1.0.md",
+      "sha256": "6d455a0eb39f06ffa8716c244c4e2a71becc2fac019934935d60d10ccb815ad9",
+      "source": "/Users/superagent/abcr/configs/protocol/ABCR-W1工程包B-Hook-Intervention-PV复现-V1.0.md"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/chat_template.hash",
+      "sha256": "55ceb0fbe23607129fcea6af52ab04dd8e7f8ac9c0052d6feae41da11655f58a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/chat_template.hash"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/sample_2.txt",
+      "sha256": "9a6918b74609f45eeaaf23e5251411843927fceb8600a776c3da60a57d6e3f61",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/sample_2.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/sample_1.txt",
+      "sha256": "9e81213d4de343a355a81f4d65d73eb86ad15292b96b941b3195279f60a97d3a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/sample_1.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-0.5b-instruct/sample_0.txt",
+      "sha256": "9b8284daf861216ccde450083e340cf1744d7f0856cfce61cd0c85052dc307b5",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-0.5b-instruct/sample_0.txt"
+    },
+    {
+      "path": "configs/templates/tinyqwen/chat_template.hash",
+      "sha256": "ead2120687bdfef844993c7f1ba1c1c167502c3e49d32107ab131e8339b565d0",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/chat_template.hash"
+    },
+    {
+      "path": "configs/templates/tinyqwen/sample_2.txt",
+      "sha256": "9a6918b74609f45eeaaf23e5251411843927fceb8600a776c3da60a57d6e3f61",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/sample_2.txt"
+    },
+    {
+      "path": "configs/templates/tinyqwen/sample_1.txt",
+      "sha256": "9e81213d4de343a355a81f4d65d73eb86ad15292b96b941b3195279f60a97d3a",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/sample_1.txt"
+    },
+    {
+      "path": "configs/templates/tinyqwen/sample_0.txt",
+      "sha256": "28710c5a2eece9279cf68421fbc643bd12d9ce24975bf6ca6057eb08cdb04841",
+      "source": "/Users/superagent/abcr/configs/templates/tinyqwen/sample_0.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/chat_template.hash",
+      "sha256": "55ceb0fbe23607129fcea6af52ab04dd8e7f8ac9c0052d6feae41da11655f58a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/chat_template.hash"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/sample_2.txt",
+      "sha256": "9a6918b74609f45eeaaf23e5251411843927fceb8600a776c3da60a57d6e3f61",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/sample_2.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/sample_1.txt",
+      "sha256": "9e81213d4de343a355a81f4d65d73eb86ad15292b96b941b3195279f60a97d3a",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/sample_1.txt"
+    },
+    {
+      "path": "configs/templates/qwen2.5-3b-instruct/sample_0.txt",
+      "sha256": "9b8284daf861216ccde450083e340cf1744d7f0856cfce61cd0c85052dc307b5",
+      "source": "/Users/superagent/abcr/configs/templates/qwen2.5-3b-instruct/sample_0.txt"
+    },
+    {
+      "path": "configs/runs/mini_random.yaml",
+      "sha256": "b3b922eb5af326d2e8e1aae6ec9bb0b0fbe1ef3b202d5444cfdf35c5fdec78f8",
+      "source": "/Users/superagent/abcr/configs/runs/mini_random.yaml"
+    },
+    {
+      "path": "configs/runs/mini_text.yaml",
+      "sha256": "8b16fc744c560b3be18e0e9a37207b4fbd04cd2a8c3a9bc7c45d3a94fc41a8c5",
+      "source": "/Users/superagent/abcr/configs/runs/mini_text.yaml"
+    },
+    {
+      "path": "configs/runs/mini_vanilla_t0.yaml",
+      "sha256": "e693fb417d96b9ffcea90ecfa6612f5c19707294c2f0f015a2b0ec3fe5109f77",
+      "source": "/Users/superagent/abcr/configs/runs/mini_vanilla_t0.yaml"
+    },
+    {
+      "path": "configs/runs/mini_vector.yaml",
+      "sha256": "cd97c82fc9c9dc0beaa6d94a60607ea8f329f32fe27eab4a60f8aa08579b4017",
+      "source": "/Users/superagent/abcr/configs/runs/mini_vector.yaml"
+    },
+    {
+      "path": "configs/runs/mini_vanilla.yaml",
+      "sha256": "44f996af7417d102fe61a021677f020aa777a4ffe57b1881353e81ca7670e150",
+      "source": "/Users/superagent/abcr/configs/runs/mini_vanilla.yaml"
+    },
+    {
+      "path": "configs/runs/example_fixture.yaml",
+      "sha256": "f42c04747dbde5467edd0efa201c20550bd1b40253375e066fe17a4c54436478",
+      "source": "/Users/superagent/abcr/configs/runs/example_fixture.yaml"
+    },
+    {
+      "path": "patches/PV-PIN.txt",
+      "sha256": "fdbbb8a79c8456cf20531a7bd29937b9c21a982b837b853889c9f8fdf8ae8d48",
+      "source": "/Users/superagent/abcr/patches/PV-PIN.txt"
+    },
+    {
+      "path": "patches/pv-config-hftoken-optional.patch",
+      "sha256": "865edfc813732c0c58a60b77cd8c79a3645991dd26344babf2c5cf24b4c9f0c8",
+      "source": "/Users/superagent/abcr/patches/pv-config-hftoken-optional.patch"
+    },
+    {
+      "path": "patches/pv-generate-vec-dtype.patch",
+      "sha256": "29a2b020f8947f25338fb50c4f254231009064f1c8f01a3469806a36b9d5f8dd",
+      "source": "/Users/superagent/abcr/patches/pv-generate-vec-dtype.patch"
+    },
+    {
+      "path": "vectors/qwen2.5-3b-instruct/optimistic-dev/response_avg_diff.pt",
+      "sha256": "9879a0bc24b164129c15886fabede9d9f9539df5a16a0d73d92856e4df09fd1f",
+      "source": "/Users/superagent/abcr/vectors/qwen2.5-3b-instruct/optimistic-dev/response_avg_diff.pt"
+    },
+    {
+      "path": "vectors/qwen2.5-3b-instruct/optimistic-dev/extraction_meta.json",
+      "sha256": "61b15ab7287dc9bb42794af874b964aa6de41933d1f68b426379b8f1d2a6d850",
+      "source": "/Users/superagent/abcr/vectors/qwen2.5-3b-instruct/optimistic-dev/extraction_meta.json"
+    },
+    {
+      "path": "vectors/qwen2.5-3b-instruct/optimistic-dev/card.json",
+      "sha256": "df0800144507b28a6f9f7cbebe925684b8d0ecdfa771bc7cba23c54f83a31869",
+      "source": "/Users/superagent/abcr/vectors/qwen2.5-3b-instruct/optimistic-dev/card.json"
+    },
+    {
+      "path": "vectors/qwen2.5-3b-instruct/optimistic-dev/flip_preview.md",
+      "sha256": "7230ba7bc3901d04a8ca4e6b19d61c1b2f9e20feb3443a9b7bd8498639207111",
+      "source": "/Users/superagent/abcr/vectors/qwen2.5-3b-instruct/optimistic-dev/flip_preview.md"
+    },
+    {
+      "path": "vectors/qwen2.5-3b-instruct/conscientiousness-dev/response_avg_diff.pt",
+      "sha256": "223643f953f13abd5c79cc1012bf34fe841afa00c2ae45f159eb0d3491be89e8",
+      "source": "/Users/superagent/abcr/vectors/qwen2.5-3b-instruct/conscientiousness-dev/response_avg_diff.pt"
+    },
+    {
+      "path": "vectors/qwen2.5-3b-instruct/conscientiousness-dev/extraction_meta.json",
+      "sha256": "6e6555a4e603da261c70d610ba1c62989268225cb8527fd2924c705028474208",
+      "source": "/Users/superagent/abcr/vectors/qwen2.5-3b-instruct/conscientiousness-dev/extraction_meta.json"
+    },
+    {
+      "path": "vectors/qwen2.5-3b-instruct/conscientiousness-dev/card.json",
+      "sha256": "33b7d26cf60d781d923c4fc2644ddc102a75418afdf9540dbcd722087b0d2a62",
+      "source": "/Users/superagent/abcr/vectors/qwen2.5-3b-instruct/conscientiousness-dev/card.json"
+    },
+    {
+      "path": "env.lock",
+      "sha256": "40d5064dd2b0f921560f06588b8fdd0b53426ad3e0954919e0c8a7e576902de8",
+      "source": "uv pip freeze (generated at pack time)"
+    },
+    {
+      "path": "rescore/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "generate_rescore (stdlib-only bundle)"
+    },
+    {
+      "path": "rescore/checkers.py",
+      "sha256": "ecb198ce615ef17a0d7cdcdf2a3d1bcb2b159faa5c9792689e7dec8710a5e921",
+      "source": "generate_rescore (stdlib-only bundle)"
+    },
+    {
+      "path": "rescore/registry.py",
+      "sha256": "c43a365fcb8888ba663d0679b3f9d33257aa415e3d12f37a16e38855348f1683",
+      "source": "generate_rescore (stdlib-only bundle)"
+    },
+    {
+      "path": "rescore/rescore.py",
+      "sha256": "4ea91165a6bd27f9aa9d092c4cf05fd91f5600d3e8a89f267961e307e0c0adb2",
+      "source": "generate_rescore (stdlib-only bundle)"
+    },
+    {
+      "path": "README.md",
+      "sha256": "4ce5488be35b8b9c41d65e619122aa81582b5f2ee65cafb9d382d88f1028052d",
+      "source": "generated"
+    }
+  ],
+  "n_files": 183,
+  "packed_at": "2026-07-12T23:37:45.565729+00:00",
+  "git_commit": "5fc90d6cd8da9666038a62e883b64d67740b59e6",
+  "protocol_refs": {
+    "ABCR-W1工程包C-Scorer-Audit-ReproPack-V1.0.md": "2d2bf33b71000b1c1b832d06b1251bda578c81a06c46e6073d88eaec80ac3a2b",
+    "ABCR-W1执行方案-V1.1补丁-资源治理门与节奏修订.md": "5addf84a96365687b91b88b5324fe72993864f5d2027292a6e2202162f7b4608",
+    "ABCR-W1执行方案-V1.0.md": "b4d39632560b54dac663b9ce63b0180258fbd4764f1f0d76de7bc5a50c1df332",
+    "ABCR-W1工程包A-Runner-Episode-Ledger-V1.0.md": "954d0cf779e38446372c4ee598004872b5b83ea6805ea476bfa9ff35a9f450d6",
+    "ABCR-W1工程包B-Hook-Intervention-PV复现-V1.0.md": "6d455a0eb39f06ffa8716c244c4e2a71becc2fac019934935d60d10ccb815ad9"
+  }
+}

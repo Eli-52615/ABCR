@@ -1,0 +1,18 @@
+{
+  "trait": "conscientiousness",
+  "model_id": "/Users/superagent/.cache/modelscope/models/Qwen--Qwen2.5-3B-Instruct/snapshots/master",
+  "model_revision": "eed00b17e225",
+  "source_commit": "b8e0f044fe2410a6fad579f38324f03f13b4e917",
+  "extraction_date": "2026-07-12",
+  "grade": "dev",
+  "judge_model": "deepseek-chat",
+  "judge_lineage": "replaced(official gpt-4.1-mini-2025-04-14)",
+  "recommended": {
+    "layer": 24,
+    "coef": 3.5
+  },
+  "n_pos_effective": 3,
+  "n_neg_effective": 3,
+  "pt_sha256": "223643f953f13abd5c79cc1012bf34fe841afa00c2ae45f159eb0d3491be89e8",
+  "notes": "Mac MPS fp16, dev grade, non-citable. Only 3 effective samples (neg conscientiousness mean=75.3, insufficient polarity). Direction check sub-threshold (best L24/3.5: d+=7.5, d-=-7.8, threshold ±10 not met) but trend correct; selected as best available for dev exprcheck. DO NOT use as vector arm reference (n_effective=3). dtype=fp16 vs F6 float32 spec mismatch; production grade deferred to cloud day #2. vanilla/prompt_persona arms: W1 ruling capture_path=None (text-arm projection collection deferred to W2 dose calibration)."
+}

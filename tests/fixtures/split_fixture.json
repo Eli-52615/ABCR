@@ -1,0 +1,20 @@
+{
+  "family": "fixture",
+  "items_source_sha256": "d794176572bf9fbd2b7914883cb3f10438b726d0534825410fef40724478dfba",
+  "assignment": {
+    "fix_001": "dev",
+    "fix_002": "dev",
+    "fix_003": "dev",
+    "fix_004": "dev",
+    "fix_005": "dev",
+    "fix_006": "dev",
+    "fix_007": "dev",
+    "fix_008": "dev",
+    "fix_009": "dev",
+    "fix_010": "dev"
+  },
+  "counts": {
+    "dev": 10
+  },
+  "tool_version": "1.0"
+}

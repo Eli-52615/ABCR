@@ -1,0 +1,548 @@
+{
+  "baseline": [
+    {
+      "trait": 20.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    }
+  ],
+  "L16_c2.0": [
+    {
+      "trait": 50.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 45.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 60.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    }
+  ],
+  "L16_c3.5": [
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 65.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 95.0
+    }
+  ],
+  "L16_c-2.0": [
+    {
+      "trait": 30.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 60.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    }
+  ],
+  "L16_c-3.5": [
+    {
+      "trait": 20.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 0.0
+    },
+    {
+      "trait": 45.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 50.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 75.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 85.0
+    }
+  ],
+  "L20_c2.0": [
+    {
+      "trait": 50.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 65.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 60.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": null,
+      "coherence": null
+    },
+    {
+      "trait": 85.0,
+      "coherence": 100.0
+    }
+  ],
+  "L20_c3.5": [
+    {
+      "trait": 85.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 85.0
+    }
+  ],
+  "L20_c-2.0": [
+    {
+      "trait": 0.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 80.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 65.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 100.0
+    }
+  ],
+  "L20_c-3.5": [
+    {
+      "trait": 20.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 75.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 75.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 45.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 45.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 75.0
+    }
+  ],
+  "L24_c2.0": [
+    {
+      "trait": 100.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 65.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 50.0,
+      "coherence": 95.0
+    }
+  ],
+  "L24_c3.5": [
+    {
+      "trait": 100.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 75.0
+    },
+    {
+      "trait": 100.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 75.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 85.0,
+      "coherence": 85.0
+    }
+  ],
+  "L24_c-2.0": [
+    {
+      "trait": 0.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 85.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 95.0
+    },
+    {
+      "trait": 30.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 100.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 75.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 85.0
+    }
+  ],
+  "L24_c-3.5": [
+    {
+      "trait": 0.0,
+      "coherence": 15.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 0.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 0.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 45.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 45.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 0.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 0.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 0.0
+    },
+    {
+      "trait": 0.0,
+      "coherence": 0.0
+    },
+    {
+      "trait": 20.0,
+      "coherence": 0.0
+    }
+  ]
+}

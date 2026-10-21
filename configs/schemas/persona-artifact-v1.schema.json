@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "abcr://persona-artifact-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["persona_id", "version", "parent_ref", "components", "changed_component", "manipulation_checks"],
+  "properties": {
+    "persona_id": {"type": "string"}, "version": {"type": "integer", "minimum": 1},
+    "parent_ref": {"type": ["string", "null"]}, "components": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "minLength": 1}},
+    "changed_component": {"type": ["string", "null"]},
+    "manipulation_checks": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}

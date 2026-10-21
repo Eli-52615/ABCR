@@ -1,0 +1,4 @@
+persona_vectors pinned commit: b8e0f044fe2410a6fad579f38324f03f13b4e917
+date: 2026-04-22
+clone command: git clone https://github.com/safety-research/persona_vectors /Users/superagent/abcr/third_party/persona_vectors && cd $_ && git checkout b8e0f044fe2410a6fad579f38324f03f13b4e917
+pinned by: Package B, 2026-07-11

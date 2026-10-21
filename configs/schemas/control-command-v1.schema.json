@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"abcr://control-command-v1",
+  "type":"object","additionalProperties":false,
+  "required":["command_id","message_id","actor","intent","payload"],
+  "properties":{
+    "command_id":{"type":"string","pattern":"^CMD-"},
+    "message_id":{"type":"string","minLength":1},
+    "actor":{"type":"object","additionalProperties":false,"required":["open_id","tenant_key","chat_id","chat_type"],"properties":{"open_id":{"type":"string"},"tenant_key":{"type":"string"},"chat_id":{"type":"string"},"chat_type":{"const":"p2p"}}},
+    "intent":{"type":"string","minLength":1},
+    "payload":{"type":"object"}
+  }
+}

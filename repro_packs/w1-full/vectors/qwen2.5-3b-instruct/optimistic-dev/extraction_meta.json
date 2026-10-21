@@ -1,0 +1,12 @@
+{
+  "n_instructions": 5,
+  "n_questions": 20,
+  "n_responses_per_q": 2,
+  "filter_threshold": 50,
+  "pos_csv_sha256": "07d824c776edb98263ec3913cb958df0028aea71112b49b01561a947321415a9",
+  "neg_csv_sha256": "b4ed487b9075ad92a33bb45bac2c3f9970075ee12c3493fb60aaa251c32d6a9b",
+  "questions_sha256": "3b89607bb459402d89bfcc3a3112c91ea46afe63ec42cea0d3e56138a4e4ba18",
+  "bridge_version": "extract_mac.py v2 (chunked)",
+  "device": "mps",
+  "dtype": "float16"
+}

@@ -1,0 +1,7 @@
+(version 1)
+(deny default)
+(allow process-fork)
+(allow process-exec (literal (param "PYTHON")))
+(allow sysctl-read)
+(allow file-read* (subpath (param "RELEASE_ROOT")) (subpath (param "CANDIDATE_ROOT")) (subpath (param "PROFILE_ROOT")))
+(allow file-write* (subpath (param "RESULT_STAGING")) (subpath (param "TMPDIR")))

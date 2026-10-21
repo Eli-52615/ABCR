@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>com.abcr.test-controller</string>
+<key>ProgramArguments</key><array><string>/usr/local/libexec/abcr-launch</string><string>com.abcr.test-controller</string></array>
+<key>QueueDirectories</key><array><string>/Library/Application Support/ABCR-Work/test/ready</string></array>
+</dict></plist>

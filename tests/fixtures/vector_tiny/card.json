@@ -1,0 +1,18 @@
+{
+  "trait": "tinyqwen-fixture",
+  "model_id": "tinyqwen",
+  "model_revision": "local-fixture-seed0",
+  "source_commit": "n/a",
+  "extraction_date": "2026-07-11",
+  "grade": "dev",
+  "judge_model": "n/a",
+  "judge_lineage": "n/a",
+  "recommended": {
+    "layer": 2,
+    "coef": 3.0
+  },
+  "n_pos_effective": 0,
+  "n_neg_effective": 0,
+  "pt_sha256": "bdf4480faeb5a5d350c5e2f6d17a8714871c4d52849b4932aaf366149070bed5",
+  "notes": "S1 \u5951\u7ea6\u6d4b\u8bd5\u4e13\u7528. vanilla/prompt_persona arms: W1 ruling capture_path=None (text-arm projection collection deferred to W2 dose calibration)."
+}

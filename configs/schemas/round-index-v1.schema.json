@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"abcr://round-index-v1",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","round_id","goal_id","parent_round_id","report_hash","citable"],
+  "properties":{
+    "schema_version":{"const":1},
+    "round_id":{"type":"string","minLength":1},
+    "goal_id":{"type":"string","minLength":1},
+    "parent_round_id":{"type":["string","null"]},
+    "report_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "citable":{"type":"boolean"}
+  }
+}

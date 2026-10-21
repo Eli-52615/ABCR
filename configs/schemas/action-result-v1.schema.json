@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"abcr://action-result-v1",
+  "type":"object","additionalProperties":false,
+  "required":["effect_id","state","code","human_message","data","updated_at"],
+  "properties":{
+    "effect_id":{"type":"string","minLength":1},
+    "state":{"enum":["received","validated","queued","executing","succeeded","failed","needs_clarification"]},
+    "code":{"type":"string","minLength":1},
+    "human_message":{"type":"string","minLength":1},
+    "data":{"type":"object"},
+    "updated_at":{"type":"string","format":"date-time"}
+  }
+}

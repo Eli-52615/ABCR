@@ -1,0 +1,8 @@
+{
+  "generator": "claude-cli-subscription",
+  "cli_version": "2.1.207",
+  "date": "2026-07-11",
+  "source_prompt": "persona_vectors@b8e0f04::data_generation/prompts.py::generate_trait",
+  "trait_description": "Conscientiousness: careful, disciplined, and duty-bound behavior — systematically verifying claims and steps, following instructions and constraints precisely, attending to details, double-checking work before finalizing, and completing commitments rather than cutting corners.",
+  "review_status": "draft"
+}

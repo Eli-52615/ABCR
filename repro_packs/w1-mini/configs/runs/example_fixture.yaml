@@ -1,0 +1,16 @@
+model_key: tinyqwen
+condition: vanilla
+intervention:
+  method: none
+data:
+  family: fixture
+  items: tests/fixtures/items_fixture.jsonl
+  split_file: tests/fixtures/split_fixture.json
+  split: dev
+decoding:
+  temperature: 0.7
+  seeds: [17, 42]
+  max_new_tokens: 512
+  temp0_sanity: true
+activation_sampling_rate: 0.1
+run_name: fixture-test

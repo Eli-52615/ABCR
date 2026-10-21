@@ -1,0 +1,23 @@
+{
+  "run_id": "20260712-134715-c52d9d7295b3-t0",
+  "scorer_version": "c1.0",
+  "n_steps": 14,
+  "arm_summaries": {
+    "residual_vector|0": {
+      "condition": "residual_vector",
+      "random_seed": 0,
+      "n": 14,
+      "is_correct_rate": 0.7857142857142857,
+      "score_mean": 0.8095238095238095
+    }
+  },
+  "output_token_stats": {
+    "count": 14,
+    "mean": 290.2857142857143,
+    "median": 330.5,
+    "p25": 155,
+    "p75": 376,
+    "min": 46,
+    "max": 512
+  }
+}

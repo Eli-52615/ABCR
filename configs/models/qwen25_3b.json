@@ -1,0 +1,7 @@
+{
+  "name": "qwen25_3b",
+  "model_id": "Qwen/Qwen2.5-3B-Instruct",
+  "revision": "PIN-AT-DOWNLOAD",
+  "local_cache_hint": "/Users/superagent/.cache/modelscope/models/Qwen--Qwen2.5-3B-Instruct/snapshots/master",
+  "note": "Mac dev 用本地 modelscope 缓存（is_local 时 revision 豁免）；云 CUDA 首次 HF 下载后钉真实 commit"
+}

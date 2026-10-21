@@ -1,0 +1,3008 @@
+{
+  "family": "ifeval_zh_v1",
+  "schema_version": "1.0",
+  "n_items": 250,
+  "note": "8 类可验证指令 250 题（B 定义权，b_gen_ifeval.py 确定性生成）",
+  "items": [
+    {
+      "item_id": "ifzh-0001",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 21+47，只输出数字。",
+      "check_args": {
+        "expected": "68"
+      },
+      "pass_sample": "68",
+      "fail_sample": "答案是68"
+    },
+    {
+      "item_id": "ifzh-0002",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 57-17，只输出数字。",
+      "check_args": {
+        "expected": "40"
+      },
+      "pass_sample": "40",
+      "fail_sample": "答案是40"
+    },
+    {
+      "item_id": "ifzh-0003",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 70+17，只输出数字。",
+      "check_args": {
+        "expected": "87"
+      },
+      "pass_sample": "87",
+      "fail_sample": "答案是87"
+    },
+    {
+      "item_id": "ifzh-0004",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 30+23，只输出数字。",
+      "check_args": {
+        "expected": "53"
+      },
+      "pass_sample": "53",
+      "fail_sample": "答案是53"
+    },
+    {
+      "item_id": "ifzh-0005",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 80-54，只输出数字。",
+      "check_args": {
+        "expected": "26"
+      },
+      "pass_sample": "26",
+      "fail_sample": "答案是26"
+    },
+    {
+      "item_id": "ifzh-0006",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 20-13，只输出数字。",
+      "check_args": {
+        "expected": "7"
+      },
+      "pass_sample": "7",
+      "fail_sample": "答案是7"
+    },
+    {
+      "item_id": "ifzh-0007",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 84+19，只输出数字。",
+      "check_args": {
+        "expected": "103"
+      },
+      "pass_sample": "103",
+      "fail_sample": "答案是103"
+    },
+    {
+      "item_id": "ifzh-0008",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 68+34，只输出数字。",
+      "check_args": {
+        "expected": "102"
+      },
+      "pass_sample": "102",
+      "fail_sample": "答案是102"
+    },
+    {
+      "item_id": "ifzh-0009",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 29×81，只输出数字。",
+      "check_args": {
+        "expected": "2349"
+      },
+      "pass_sample": "2349",
+      "fail_sample": "答案是2349"
+    },
+    {
+      "item_id": "ifzh-0010",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 81-74，只输出数字。",
+      "check_args": {
+        "expected": "7"
+      },
+      "pass_sample": "7",
+      "fail_sample": "答案是7"
+    },
+    {
+      "item_id": "ifzh-0011",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 88-42，只输出数字。",
+      "check_args": {
+        "expected": "46"
+      },
+      "pass_sample": "46",
+      "fail_sample": "答案是46"
+    },
+    {
+      "item_id": "ifzh-0012",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 56×83，只输出数字。",
+      "check_args": {
+        "expected": "4648"
+      },
+      "pass_sample": "4648",
+      "fail_sample": "答案是4648"
+    },
+    {
+      "item_id": "ifzh-0013",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 25×74，只输出数字。",
+      "check_args": {
+        "expected": "1850"
+      },
+      "pass_sample": "1850",
+      "fail_sample": "答案是1850"
+    },
+    {
+      "item_id": "ifzh-0014",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 47×45，只输出数字。",
+      "check_args": {
+        "expected": "2115"
+      },
+      "pass_sample": "2115",
+      "fail_sample": "答案是2115"
+    },
+    {
+      "item_id": "ifzh-0015",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 25×72，只输出数字。",
+      "check_args": {
+        "expected": "1800"
+      },
+      "pass_sample": "1800",
+      "fail_sample": "答案是1800"
+    },
+    {
+      "item_id": "ifzh-0016",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 60-14，只输出数字。",
+      "check_args": {
+        "expected": "46"
+      },
+      "pass_sample": "46",
+      "fail_sample": "答案是46"
+    },
+    {
+      "item_id": "ifzh-0017",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 20+24，只输出数字。",
+      "check_args": {
+        "expected": "44"
+      },
+      "pass_sample": "44",
+      "fail_sample": "答案是44"
+    },
+    {
+      "item_id": "ifzh-0018",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 28×32，只输出数字。",
+      "check_args": {
+        "expected": "896"
+      },
+      "pass_sample": "896",
+      "fail_sample": "答案是896"
+    },
+    {
+      "item_id": "ifzh-0019",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 13+30，只输出数字。",
+      "check_args": {
+        "expected": "43"
+      },
+      "pass_sample": "43",
+      "fail_sample": "答案是43"
+    },
+    {
+      "item_id": "ifzh-0020",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "计算 98-23，只输出数字。",
+      "check_args": {
+        "expected": "75"
+      },
+      "pass_sample": "75",
+      "fail_sample": "答案是75"
+    },
+    {
+      "item_id": "ifzh-0021",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 jyqjf 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "fjqyj"
+      },
+      "pass_sample": "fjqyj",
+      "fail_sample": "逆序是fjqyj"
+    },
+    {
+      "item_id": "ifzh-0022",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 eocsir 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "riscoe"
+      },
+      "pass_sample": "riscoe",
+      "fail_sample": "逆序是riscoe"
+    },
+    {
+      "item_id": "ifzh-0023",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 bodao 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "oadob"
+      },
+      "pass_sample": "oadob",
+      "fail_sample": "逆序是oadob"
+    },
+    {
+      "item_id": "ifzh-0024",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 qwgfo 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "ofgwq"
+      },
+      "pass_sample": "ofgwq",
+      "fail_sample": "逆序是ofgwq"
+    },
+    {
+      "item_id": "ifzh-0025",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 pal 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "lap"
+      },
+      "pass_sample": "lap",
+      "fail_sample": "逆序是lap"
+    },
+    {
+      "item_id": "ifzh-0026",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 ftwth 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "htwtf"
+      },
+      "pass_sample": "htwtf",
+      "fail_sample": "逆序是htwtf"
+    },
+    {
+      "item_id": "ifzh-0027",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 pxvkg 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "gkvxp"
+      },
+      "pass_sample": "gkvxp",
+      "fail_sample": "逆序是gkvxp"
+    },
+    {
+      "item_id": "ifzh-0028",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 pumwhp 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "phwmup"
+      },
+      "pass_sample": "phwmup",
+      "fail_sample": "逆序是phwmup"
+    },
+    {
+      "item_id": "ifzh-0029",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 lew 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "wel"
+      },
+      "pass_sample": "wel",
+      "fail_sample": "逆序是wel"
+    },
+    {
+      "item_id": "ifzh-0030",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 bsymch 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "hcmysb"
+      },
+      "pass_sample": "hcmysb",
+      "fail_sample": "逆序是hcmysb"
+    },
+    {
+      "item_id": "ifzh-0031",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 dhjo 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "ojhd"
+      },
+      "pass_sample": "ojhd",
+      "fail_sample": "逆序是ojhd"
+    },
+    {
+      "item_id": "ifzh-0032",
+      "family": "ifeval_zh_v1",
+      "check_type": "exact_output",
+      "prompt": "将字符串 qgz 逆序输出，只输出结果。",
+      "check_args": {
+        "expected": "zgq"
+      },
+      "pass_sample": "zgq",
+      "fail_sample": "逆序是zgq"
+    },
+    {
+      "item_id": "ifzh-0033",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 done 值为布尔 false。",
+      "check_args": {
+        "expected": {
+          "done": false
+        }
+      },
+      "pass_sample": "{\"done\": false}",
+      "fail_sample": "{\"done\": true}"
+    },
+    {
+      "item_id": "ifzh-0034",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 name 值为字符串 \"beta\"。",
+      "check_args": {
+        "expected": {
+          "name": "beta"
+        }
+      },
+      "pass_sample": "{\"name\": \"beta\"}",
+      "fail_sample": "{\"name\": \"betax\"}"
+    },
+    {
+      "item_id": "ifzh-0035",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 ok 值为布尔 true。",
+      "check_args": {
+        "expected": {
+          "ok": true
+        }
+      },
+      "pass_sample": "{\"ok\": true}",
+      "fail_sample": "{\"ok\": false}"
+    },
+    {
+      "item_id": "ifzh-0036",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 ok 值为布尔 false。",
+      "check_args": {
+        "expected": {
+          "ok": false
+        }
+      },
+      "pass_sample": "{\"ok\": false}",
+      "fail_sample": "{\"ok\": true}"
+    },
+    {
+      "item_id": "ifzh-0037",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 name 值为字符串 \"abcr\"。",
+      "check_args": {
+        "expected": {
+          "name": "abcr"
+        }
+      },
+      "pass_sample": "{\"name\": \"abcr\"}",
+      "fail_sample": "{\"name\": \"abcrx\"}"
+    },
+    {
+      "item_id": "ifzh-0038",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 x 值为整数 37。",
+      "check_args": {
+        "expected": {
+          "x": 37
+        }
+      },
+      "pass_sample": "{\"x\": 37}",
+      "fail_sample": "{\"x\": 37, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0039",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 tag 值为字符串 \"delta\"。",
+      "check_args": {
+        "expected": {
+          "tag": "delta"
+        }
+      },
+      "pass_sample": "{\"tag\": \"delta\"}",
+      "fail_sample": "{\"tag\": \"deltax\"}"
+    },
+    {
+      "item_id": "ifzh-0040",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 num 值为整数 95。",
+      "check_args": {
+        "expected": {
+          "num": 95
+        }
+      },
+      "pass_sample": "{\"num\": 95}",
+      "fail_sample": "{\"num\": 95, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0041",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 flag 值为布尔 false。",
+      "check_args": {
+        "expected": {
+          "flag": false
+        }
+      },
+      "pass_sample": "{\"flag\": false}",
+      "fail_sample": "{\"flag\": true}"
+    },
+    {
+      "item_id": "ifzh-0042",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 size 值为整数 46。",
+      "check_args": {
+        "expected": {
+          "size": 46
+        }
+      },
+      "pass_sample": "{\"size\": 46}",
+      "fail_sample": "{\"size\": 46, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0043",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 flag 值为布尔 true。",
+      "check_args": {
+        "expected": {
+          "flag": true
+        }
+      },
+      "pass_sample": "{\"flag\": true}",
+      "fail_sample": "{\"flag\": false}"
+    },
+    {
+      "item_id": "ifzh-0044",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 label 值为字符串 \"alpha\"。",
+      "check_args": {
+        "expected": {
+          "label": "alpha"
+        }
+      },
+      "pass_sample": "{\"label\": \"alpha\"}",
+      "fail_sample": "{\"label\": \"alphax\"}"
+    },
+    {
+      "item_id": "ifzh-0045",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 x 值为整数 20。",
+      "check_args": {
+        "expected": {
+          "x": 20
+        }
+      },
+      "pass_sample": "{\"x\": 20}",
+      "fail_sample": "{\"x\": 20, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0046",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 tag 值为字符串 \"beta\"。",
+      "check_args": {
+        "expected": {
+          "tag": "beta"
+        }
+      },
+      "pass_sample": "{\"tag\": \"beta\"}",
+      "fail_sample": "{\"tag\": \"betax\"}"
+    },
+    {
+      "item_id": "ifzh-0047",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 name 值为字符串 \"alpha\"。",
+      "check_args": {
+        "expected": {
+          "name": "alpha"
+        }
+      },
+      "pass_sample": "{\"name\": \"alpha\"}",
+      "fail_sample": "{\"name\": \"alphax\"}"
+    },
+    {
+      "item_id": "ifzh-0048",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 n 值为整数 64。",
+      "check_args": {
+        "expected": {
+          "n": 64
+        }
+      },
+      "pass_sample": "{\"n\": 64}",
+      "fail_sample": "{\"n\": 64, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0049",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 done 值为布尔 true。",
+      "check_args": {
+        "expected": {
+          "done": true
+        }
+      },
+      "pass_sample": "{\"done\": true}",
+      "fail_sample": "{\"done\": false}"
+    },
+    {
+      "item_id": "ifzh-0050",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 tag 值为字符串 \"gamma\"。",
+      "check_args": {
+        "expected": {
+          "tag": "gamma"
+        }
+      },
+      "pass_sample": "{\"tag\": \"gamma\"}",
+      "fail_sample": "{\"tag\": \"gammax\"}"
+    },
+    {
+      "item_id": "ifzh-0051",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 code 值为字符串 \"alpha\"。",
+      "check_args": {
+        "expected": {
+          "code": "alpha"
+        }
+      },
+      "pass_sample": "{\"code\": \"alpha\"}",
+      "fail_sample": "{\"code\": \"alphax\"}"
+    },
+    {
+      "item_id": "ifzh-0052",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 x 值为整数 32。",
+      "check_args": {
+        "expected": {
+          "x": 32
+        }
+      },
+      "pass_sample": "{\"x\": 32}",
+      "fail_sample": "{\"x\": 32, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0053",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 valid 值为布尔 true。",
+      "check_args": {
+        "expected": {
+          "valid": true
+        }
+      },
+      "pass_sample": "{\"valid\": true}",
+      "fail_sample": "{\"valid\": false}"
+    },
+    {
+      "item_id": "ifzh-0054",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 code 值为字符串 \"abcr\"。",
+      "check_args": {
+        "expected": {
+          "code": "abcr"
+        }
+      },
+      "pass_sample": "{\"code\": \"abcr\"}",
+      "fail_sample": "{\"code\": \"abcrx\"}"
+    },
+    {
+      "item_id": "ifzh-0055",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 val 值为整数 51。",
+      "check_args": {
+        "expected": {
+          "val": 51
+        }
+      },
+      "pass_sample": "{\"val\": 51}",
+      "fail_sample": "{\"val\": 51, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0056",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 num 值为整数 11。",
+      "check_args": {
+        "expected": {
+          "num": 11
+        }
+      },
+      "pass_sample": "{\"num\": 11}",
+      "fail_sample": "{\"num\": 11, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0057",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 n 值为整数 82。",
+      "check_args": {
+        "expected": {
+          "n": 82
+        }
+      },
+      "pass_sample": "{\"n\": 82}",
+      "fail_sample": "{\"n\": 82, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0058",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 label 值为字符串 \"delta\"。",
+      "check_args": {
+        "expected": {
+          "label": "delta"
+        }
+      },
+      "pass_sample": "{\"label\": \"delta\"}",
+      "fail_sample": "{\"label\": \"deltax\"}"
+    },
+    {
+      "item_id": "ifzh-0059",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 code 值为字符串 \"gamma\"。",
+      "check_args": {
+        "expected": {
+          "code": "gamma"
+        }
+      },
+      "pass_sample": "{\"code\": \"gamma\"}",
+      "fail_sample": "{\"code\": \"gammax\"}"
+    },
+    {
+      "item_id": "ifzh-0060",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 count 值为整数 6。",
+      "check_args": {
+        "expected": {
+          "count": 6
+        }
+      },
+      "pass_sample": "{\"count\": 6}",
+      "fail_sample": "{\"count\": 6, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0061",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 code 值为字符串 \"beta\"。",
+      "check_args": {
+        "expected": {
+          "code": "beta"
+        }
+      },
+      "pass_sample": "{\"code\": \"beta\"}",
+      "fail_sample": "{\"code\": \"betax\"}"
+    },
+    {
+      "item_id": "ifzh-0062",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 val 值为整数 40。",
+      "check_args": {
+        "expected": {
+          "val": 40
+        }
+      },
+      "pass_sample": "{\"val\": 40}",
+      "fail_sample": "{\"val\": 40, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0063",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 label 值为字符串 \"beta\"。",
+      "check_args": {
+        "expected": {
+          "label": "beta"
+        }
+      },
+      "pass_sample": "{\"label\": \"beta\"}",
+      "fail_sample": "{\"label\": \"betax\"}"
+    },
+    {
+      "item_id": "ifzh-0064",
+      "family": "ifeval_zh_v1",
+      "check_type": "json_object",
+      "prompt": "以 JSON 对象输出，仅含键 idx 值为整数 99。",
+      "check_args": {
+        "expected": {
+          "idx": 99
+        }
+      },
+      "pass_sample": "{\"idx\": 99}",
+      "fail_sample": "{\"idx\": 99, \"extra\": 0}"
+    },
+    {
+      "item_id": "ifzh-0065",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 22+30 等于多少？A. 52 B. 56 C. 51。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0066",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 28+44 等于多少？A. 72 B. 71 C. 76。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0067",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 39+25 等于多少？A. 62 B. 64 C. 68。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0068",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 31+35 等于多少？A. 70 B. 66 C. 67。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0069",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 44+22 等于多少？A. 66 B. 67 C. 70。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0070",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 49+11 等于多少？A. 66 B. 60 C. 63。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0071",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 11+49 等于多少？A. 60 B. 63 C. 55。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0072",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 48+27 等于多少？A. 75 B. 76 C. 79。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0073",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 38+13 等于多少？A. 51 B. 56 C. 54。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0074",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 48+28 等于多少？A. 80 B. 74 C. 76。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0075",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 36+31 等于多少？A. 67 B. 62 C. 69。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0076",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 42+47 等于多少？A. 95 B. 90 C. 89。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0077",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 11+29 等于多少？A. 45 B. 42 C. 40。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0078",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 19+41 等于多少？A. 60 B. 61 C. 55。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0079",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 18+36 等于多少？A. 56 B. 58 C. 54。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0080",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 48+24 等于多少？A. 69 B. 78 C. 72。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0081",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 45+40 等于多少？A. 91 B. 85 C. 83。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0082",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 27+47 等于多少？A. 74 B. 72 C. 69。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0083",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 48+33 等于多少？A. 86 B. 81 C. 79。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0084",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 35+11 等于多少？A. 45 B. 46 C. 41。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0085",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 42+22 等于多少？A. 67 B. 70 C. 64。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0086",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 31+28 等于多少？A. 57 B. 64 C. 59。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0087",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 33+25 等于多少？A. 64 B. 56 C. 58。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0088",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 31+49 等于多少？A. 80 B. 75 C. 81。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0089",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 41+26 等于多少？A. 73 B. 67 C. 64。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0090",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 33+41 等于多少？A. 76 B. 74 C. 80。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0091",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 30+45 等于多少？A. 75 B. 78 C. 80。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0092",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 24+47 等于多少？A. 77 B. 74 C. 71。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0093",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 27+18 等于多少？A. 45 B. 49 C. 43。只输出选项字母。",
+      "check_args": {
+        "expected": "A"
+      },
+      "pass_sample": "A",
+      "fail_sample": "答案是A"
+    },
+    {
+      "item_id": "ifzh-0094",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 50+17 等于多少？A. 72 B. 67 C. 65。只输出选项字母。",
+      "check_args": {
+        "expected": "B"
+      },
+      "pass_sample": "B",
+      "fail_sample": "答案是B"
+    },
+    {
+      "item_id": "ifzh-0095",
+      "family": "ifeval_zh_v1",
+      "check_type": "option_letter",
+      "prompt": "计算 49+25 等于多少？A. 77 B. 80 C. 74。只输出选项字母。",
+      "check_args": {
+        "expected": "C"
+      },
+      "pass_sample": "C",
+      "fail_sample": "答案是C"
+    },
+    {
+      "item_id": "ifzh-0096",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 3 个各不相同的一位数字，用顿号分隔，不加其他内容。",
+      "check_args": {
+        "sep": "、",
+        "n": 3
+      },
+      "pass_sample": "1、9、5",
+      "fail_sample": "1、9"
+    },
+    {
+      "item_id": "ifzh-0097",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 3 个各不相同的一位数字，用分号分隔，不加其他内容。（例1）",
+      "check_args": {
+        "sep": "；",
+        "n": 3
+      },
+      "pass_sample": "9；3；2",
+      "fail_sample": "9；3"
+    },
+    {
+      "item_id": "ifzh-0098",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例2）",
+      "check_args": {
+        "sep": "，",
+        "n": 5
+      },
+      "pass_sample": "4，6，7，0，8",
+      "fail_sample": "4，6，7，0"
+    },
+    {
+      "item_id": "ifzh-0099",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用英文分号分隔，不加其他内容。（例3）",
+      "check_args": {
+        "sep": ";",
+        "n": 6
+      },
+      "pass_sample": "5;3;4;7;8;1",
+      "fail_sample": "5;3;4;7;8"
+    },
+    {
+      "item_id": "ifzh-0100",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 3 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例4）",
+      "check_args": {
+        "sep": "，",
+        "n": 3
+      },
+      "pass_sample": "4，7，1",
+      "fail_sample": "4，7"
+    },
+    {
+      "item_id": "ifzh-0101",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 3 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例5）",
+      "check_args": {
+        "sep": ",",
+        "n": 3
+      },
+      "pass_sample": "6,4,8",
+      "fail_sample": "6,4"
+    },
+    {
+      "item_id": "ifzh-0102",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例6）",
+      "check_args": {
+        "sep": "，",
+        "n": 5
+      },
+      "pass_sample": "3，0，2，5，9",
+      "fail_sample": "3，0，2，5"
+    },
+    {
+      "item_id": "ifzh-0103",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用英文分号分隔，不加其他内容。（例7）",
+      "check_args": {
+        "sep": ";",
+        "n": 6
+      },
+      "pass_sample": "3;0;4;8;9;7",
+      "fail_sample": "3;0;4;8;9"
+    },
+    {
+      "item_id": "ifzh-0104",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例8）",
+      "check_args": {
+        "sep": "，",
+        "n": 6
+      },
+      "pass_sample": "2，8，3，7，5，6",
+      "fail_sample": "2，8，3，7，5"
+    },
+    {
+      "item_id": "ifzh-0105",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例9）",
+      "check_args": {
+        "sep": ",",
+        "n": 5
+      },
+      "pass_sample": "8,1,0,5,9",
+      "fail_sample": "8,1,0,5"
+    },
+    {
+      "item_id": "ifzh-0106",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 3 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例10）",
+      "check_args": {
+        "sep": "，",
+        "n": 3
+      },
+      "pass_sample": "5，9，8",
+      "fail_sample": "5，9"
+    },
+    {
+      "item_id": "ifzh-0107",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用顿号分隔，不加其他内容。（例11）",
+      "check_args": {
+        "sep": "、",
+        "n": 6
+      },
+      "pass_sample": "5、0、8、3、7、4",
+      "fail_sample": "5、0、8、3、7"
+    },
+    {
+      "item_id": "ifzh-0108",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用顿号分隔，不加其他内容。（例12）",
+      "check_args": {
+        "sep": "、",
+        "n": 5
+      },
+      "pass_sample": "8、2、3、1、0",
+      "fail_sample": "8、2、3、1"
+    },
+    {
+      "item_id": "ifzh-0109",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 4 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例13）",
+      "check_args": {
+        "sep": ",",
+        "n": 4
+      },
+      "pass_sample": "9,5,0,8",
+      "fail_sample": "9,5,0"
+    },
+    {
+      "item_id": "ifzh-0110",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例14）",
+      "check_args": {
+        "sep": ",",
+        "n": 6
+      },
+      "pass_sample": "7,3,2,4,1,6",
+      "fail_sample": "7,3,2,4,1"
+    },
+    {
+      "item_id": "ifzh-0111",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例15）",
+      "check_args": {
+        "sep": "，",
+        "n": 5
+      },
+      "pass_sample": "6，8，2，9，1",
+      "fail_sample": "6，8，2，9"
+    },
+    {
+      "item_id": "ifzh-0112",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例16）",
+      "check_args": {
+        "sep": "，",
+        "n": 6
+      },
+      "pass_sample": "7，3，9，4，6，2",
+      "fail_sample": "7，3，9，4，6"
+    },
+    {
+      "item_id": "ifzh-0113",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用顿号分隔，不加其他内容。（例17）",
+      "check_args": {
+        "sep": "、",
+        "n": 5
+      },
+      "pass_sample": "8、6、0、5、7",
+      "fail_sample": "8、6、0、5"
+    },
+    {
+      "item_id": "ifzh-0114",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 4 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例18）",
+      "check_args": {
+        "sep": "，",
+        "n": 4
+      },
+      "pass_sample": "5，0，9，7",
+      "fail_sample": "5，0，9"
+    },
+    {
+      "item_id": "ifzh-0115",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例19）",
+      "check_args": {
+        "sep": ",",
+        "n": 5
+      },
+      "pass_sample": "8,3,2,6,5",
+      "fail_sample": "8,3,2,6"
+    },
+    {
+      "item_id": "ifzh-0116",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 5 个各不相同的一位数字，用顿号分隔，不加其他内容。（例20）",
+      "check_args": {
+        "sep": "、",
+        "n": 5
+      },
+      "pass_sample": "4、1、5、8、0",
+      "fail_sample": "4、1、5、8"
+    },
+    {
+      "item_id": "ifzh-0117",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 4 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例21）",
+      "check_args": {
+        "sep": "，",
+        "n": 4
+      },
+      "pass_sample": "9，0，3，4",
+      "fail_sample": "9，0，3"
+    },
+    {
+      "item_id": "ifzh-0118",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例22）",
+      "check_args": {
+        "sep": "，",
+        "n": 6
+      },
+      "pass_sample": "7，9，1，3，2，0",
+      "fail_sample": "7，9，1，3，2"
+    },
+    {
+      "item_id": "ifzh-0119",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 4 个各不相同的一位数字，用顿号分隔，不加其他内容。（例23）",
+      "check_args": {
+        "sep": "、",
+        "n": 4
+      },
+      "pass_sample": "8、7、9、2",
+      "fail_sample": "8、7、9"
+    },
+    {
+      "item_id": "ifzh-0120",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例24）",
+      "check_args": {
+        "sep": "，",
+        "n": 6
+      },
+      "pass_sample": "7，4，1，2，8，0",
+      "fail_sample": "7，4，1，2，8"
+    },
+    {
+      "item_id": "ifzh-0121",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 4 个各不相同的一位数字，用英文分号分隔，不加其他内容。（例25）",
+      "check_args": {
+        "sep": ";",
+        "n": 4
+      },
+      "pass_sample": "9;4;2;0",
+      "fail_sample": "9;4;2"
+    },
+    {
+      "item_id": "ifzh-0122",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例26）",
+      "check_args": {
+        "sep": ",",
+        "n": 6
+      },
+      "pass_sample": "7,8,6,2,0,5",
+      "fail_sample": "7,8,6,2,0"
+    },
+    {
+      "item_id": "ifzh-0123",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 3 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例27）",
+      "check_args": {
+        "sep": ",",
+        "n": 3
+      },
+      "pass_sample": "2,3,1",
+      "fail_sample": "2,3"
+    },
+    {
+      "item_id": "ifzh-0124",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 3 个各不相同的一位数字，用英文逗号分隔，不加其他内容。（例28）",
+      "check_args": {
+        "sep": ",",
+        "n": 3
+      },
+      "pass_sample": "6,0,3",
+      "fail_sample": "6,0"
+    },
+    {
+      "item_id": "ifzh-0125",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 6 个各不相同的一位数字，用英文分号分隔，不加其他内容。（例29）",
+      "check_args": {
+        "sep": ";",
+        "n": 6
+      },
+      "pass_sample": "2;7;9;3;1;0",
+      "fail_sample": "2;7;9;3;1"
+    },
+    {
+      "item_id": "ifzh-0126",
+      "family": "ifeval_zh_v1",
+      "check_type": "separator_items",
+      "prompt": "输出 4 个各不相同的一位数字，用中文逗号分隔，不加其他内容。（例30）",
+      "check_args": {
+        "sep": "，",
+        "n": 4
+      },
+      "pass_sample": "7，8，1，4",
+      "fail_sample": "7，8，1"
+    },
+    {
+      "item_id": "ifzh-0127",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于四季的要点，每行以\"- \"开头。",
+      "check_args": {
+        "n": 2,
+        "prefix": "- "
+      },
+      "pass_sample": "- 春天万物复苏\n- 夏天骄阳似火",
+      "fail_sample": "- 春天万物复苏"
+    },
+    {
+      "item_id": "ifzh-0128",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于方向的要点，每行以\"* \"开头。",
+      "check_args": {
+        "n": 3,
+        "prefix": "* "
+      },
+      "pass_sample": "* 东方是日出之地\n* 南方气候温暖\n* 西方多有高山",
+      "fail_sample": "* 东方是日出之地\n* 南方气候温暖"
+    },
+    {
+      "item_id": "ifzh-0129",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于三餐的要点，每行以\"· \"开头。",
+      "check_args": {
+        "n": 4,
+        "prefix": "· "
+      },
+      "pass_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足\n· 晚餐要吃得清淡\n· 加餐可补充能量",
+      "fail_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足\n· 晚餐要吃得清淡"
+    },
+    {
+      "item_id": "ifzh-0130",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 5 行列出关于学习方法的要点，每行以\"> \"开头。",
+      "check_args": {
+        "n": 5,
+        "prefix": "> "
+      },
+      "pass_sample": "> 制定明确计划\n> 专注单一任务\n> 及时复习巩固\n> 主动提出疑问\n> 定期自我检测",
+      "fail_sample": "> 制定明确计划\n> 专注单一任务\n> 及时复习巩固\n> 主动提出疑问"
+    },
+    {
+      "item_id": "ifzh-0131",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于备份原则的要点，每行以\"- \"开头。",
+      "check_args": {
+        "n": 2,
+        "prefix": "- "
+      },
+      "pass_sample": "- 定期执行备份\n- 异地保存副本",
+      "fail_sample": "- 定期执行备份"
+    },
+    {
+      "item_id": "ifzh-0132",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于运动好处的要点，每行以\"* \"开头。",
+      "check_args": {
+        "n": 3,
+        "prefix": "* "
+      },
+      "pass_sample": "* 增强心肺功能\n* 改善睡眠质量\n* 缓解精神压力",
+      "fail_sample": "* 增强心肺功能\n* 改善睡眠质量"
+    },
+    {
+      "item_id": "ifzh-0133",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于阅读步骤的要点，每行以\"· \"开头。",
+      "check_args": {
+        "n": 4,
+        "prefix": "· "
+      },
+      "pass_sample": "· 浏览全文结构\n· 标注关键要点\n· 梳理逻辑脉络\n· 记录个人思考",
+      "fail_sample": "· 浏览全文结构\n· 标注关键要点\n· 梳理逻辑脉络"
+    },
+    {
+      "item_id": "ifzh-0134",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 5 行列出关于四季的要点，每行以\"- \"开头。（第2组）",
+      "check_args": {
+        "n": 5,
+        "prefix": "- "
+      },
+      "pass_sample": "- 春天万物复苏\n- 夏天骄阳似火\n- 秋天硕果累累\n- 冬天银装素裹\n- 四季各有风景",
+      "fail_sample": "- 春天万物复苏\n- 夏天骄阳似火\n- 秋天硕果累累\n- 冬天银装素裹"
+    },
+    {
+      "item_id": "ifzh-0135",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于方向的要点，每行以\"* \"开头。（第2组）",
+      "check_args": {
+        "n": 2,
+        "prefix": "* "
+      },
+      "pass_sample": "* 东方是日出之地\n* 南方气候温暖",
+      "fail_sample": "* 东方是日出之地"
+    },
+    {
+      "item_id": "ifzh-0136",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于三餐的要点，每行以\"· \"开头。（第2组）",
+      "check_args": {
+        "n": 3,
+        "prefix": "· "
+      },
+      "pass_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足\n· 晚餐要吃得清淡",
+      "fail_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足"
+    },
+    {
+      "item_id": "ifzh-0137",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于学习方法的要点，每行以\"> \"开头。（第2组）",
+      "check_args": {
+        "n": 4,
+        "prefix": "> "
+      },
+      "pass_sample": "> 制定明确计划\n> 专注单一任务\n> 及时复习巩固\n> 主动提出疑问",
+      "fail_sample": "> 制定明确计划\n> 专注单一任务\n> 及时复习巩固"
+    },
+    {
+      "item_id": "ifzh-0138",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 5 行列出关于备份原则的要点，每行以\"- \"开头。（第2组）",
+      "check_args": {
+        "n": 5,
+        "prefix": "- "
+      },
+      "pass_sample": "- 定期执行备份\n- 异地保存副本\n- 校验数据完整\n- 记录备份日志\n- 演练恢复流程",
+      "fail_sample": "- 定期执行备份\n- 异地保存副本\n- 校验数据完整\n- 记录备份日志"
+    },
+    {
+      "item_id": "ifzh-0139",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于运动好处的要点，每行以\"* \"开头。（第2组）",
+      "check_args": {
+        "n": 2,
+        "prefix": "* "
+      },
+      "pass_sample": "* 增强心肺功能\n* 改善睡眠质量",
+      "fail_sample": "* 增强心肺功能"
+    },
+    {
+      "item_id": "ifzh-0140",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于阅读步骤的要点，每行以\"· \"开头。（第2组）",
+      "check_args": {
+        "n": 3,
+        "prefix": "· "
+      },
+      "pass_sample": "· 浏览全文结构\n· 标注关键要点\n· 梳理逻辑脉络",
+      "fail_sample": "· 浏览全文结构\n· 标注关键要点"
+    },
+    {
+      "item_id": "ifzh-0141",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于四季的要点，每行以\"- \"开头。（第3组）",
+      "check_args": {
+        "n": 4,
+        "prefix": "- "
+      },
+      "pass_sample": "- 春天万物复苏\n- 夏天骄阳似火\n- 秋天硕果累累\n- 冬天银装素裹",
+      "fail_sample": "- 春天万物复苏\n- 夏天骄阳似火\n- 秋天硕果累累"
+    },
+    {
+      "item_id": "ifzh-0142",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 5 行列出关于方向的要点，每行以\"* \"开头。（第3组）",
+      "check_args": {
+        "n": 5,
+        "prefix": "* "
+      },
+      "pass_sample": "* 东方是日出之地\n* 南方气候温暖\n* 西方多有高山\n* 北方冬季漫长\n* 中央为交汇处",
+      "fail_sample": "* 东方是日出之地\n* 南方气候温暖\n* 西方多有高山\n* 北方冬季漫长"
+    },
+    {
+      "item_id": "ifzh-0143",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于三餐的要点，每行以\"· \"开头。（第3组）",
+      "check_args": {
+        "n": 2,
+        "prefix": "· "
+      },
+      "pass_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足",
+      "fail_sample": "· 早餐要吃得营养"
+    },
+    {
+      "item_id": "ifzh-0144",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于学习方法的要点，每行以\"> \"开头。（第3组）",
+      "check_args": {
+        "n": 3,
+        "prefix": "> "
+      },
+      "pass_sample": "> 制定明确计划\n> 专注单一任务\n> 及时复习巩固",
+      "fail_sample": "> 制定明确计划\n> 专注单一任务"
+    },
+    {
+      "item_id": "ifzh-0145",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于备份原则的要点，每行以\"- \"开头。（第3组）",
+      "check_args": {
+        "n": 4,
+        "prefix": "- "
+      },
+      "pass_sample": "- 定期执行备份\n- 异地保存副本\n- 校验数据完整\n- 记录备份日志",
+      "fail_sample": "- 定期执行备份\n- 异地保存副本\n- 校验数据完整"
+    },
+    {
+      "item_id": "ifzh-0146",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 5 行列出关于运动好处的要点，每行以\"* \"开头。（第3组）",
+      "check_args": {
+        "n": 5,
+        "prefix": "* "
+      },
+      "pass_sample": "* 增强心肺功能\n* 改善睡眠质量\n* 缓解精神压力\n* 提升身体协调\n* 促进新陈代谢",
+      "fail_sample": "* 增强心肺功能\n* 改善睡眠质量\n* 缓解精神压力\n* 提升身体协调"
+    },
+    {
+      "item_id": "ifzh-0147",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于阅读步骤的要点，每行以\"· \"开头。（第3组）",
+      "check_args": {
+        "n": 2,
+        "prefix": "· "
+      },
+      "pass_sample": "· 浏览全文结构\n· 标注关键要点",
+      "fail_sample": "· 浏览全文结构"
+    },
+    {
+      "item_id": "ifzh-0148",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于四季的要点，每行以\"- \"开头。（第4组）",
+      "check_args": {
+        "n": 3,
+        "prefix": "- "
+      },
+      "pass_sample": "- 春天万物复苏\n- 夏天骄阳似火\n- 秋天硕果累累",
+      "fail_sample": "- 春天万物复苏\n- 夏天骄阳似火"
+    },
+    {
+      "item_id": "ifzh-0149",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于方向的要点，每行以\"* \"开头。（第4组）",
+      "check_args": {
+        "n": 4,
+        "prefix": "* "
+      },
+      "pass_sample": "* 东方是日出之地\n* 南方气候温暖\n* 西方多有高山\n* 北方冬季漫长",
+      "fail_sample": "* 东方是日出之地\n* 南方气候温暖\n* 西方多有高山"
+    },
+    {
+      "item_id": "ifzh-0150",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 5 行列出关于三餐的要点，每行以\"· \"开头。（第4组）",
+      "check_args": {
+        "n": 5,
+        "prefix": "· "
+      },
+      "pass_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足\n· 晚餐要吃得清淡\n· 加餐可补充能量\n· 夜宵尽量避免",
+      "fail_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足\n· 晚餐要吃得清淡\n· 加餐可补充能量"
+    },
+    {
+      "item_id": "ifzh-0151",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于学习方法的要点，每行以\"> \"开头。（第4组）",
+      "check_args": {
+        "n": 2,
+        "prefix": "> "
+      },
+      "pass_sample": "> 制定明确计划\n> 专注单一任务",
+      "fail_sample": "> 制定明确计划"
+    },
+    {
+      "item_id": "ifzh-0152",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于备份原则的要点，每行以\"- \"开头。（第4组）",
+      "check_args": {
+        "n": 3,
+        "prefix": "- "
+      },
+      "pass_sample": "- 定期执行备份\n- 异地保存副本\n- 校验数据完整",
+      "fail_sample": "- 定期执行备份\n- 异地保存副本"
+    },
+    {
+      "item_id": "ifzh-0153",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于运动好处的要点，每行以\"* \"开头。（第4组）",
+      "check_args": {
+        "n": 4,
+        "prefix": "* "
+      },
+      "pass_sample": "* 增强心肺功能\n* 改善睡眠质量\n* 缓解精神压力\n* 提升身体协调",
+      "fail_sample": "* 增强心肺功能\n* 改善睡眠质量\n* 缓解精神压力"
+    },
+    {
+      "item_id": "ifzh-0154",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 5 行列出关于阅读步骤的要点，每行以\"· \"开头。（第4组）",
+      "check_args": {
+        "n": 5,
+        "prefix": "· "
+      },
+      "pass_sample": "· 浏览全文结构\n· 标注关键要点\n· 梳理逻辑脉络\n· 记录个人思考\n· 复述核心观点",
+      "fail_sample": "· 浏览全文结构\n· 标注关键要点\n· 梳理逻辑脉络\n· 记录个人思考"
+    },
+    {
+      "item_id": "ifzh-0155",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 2 行列出关于四季的要点，每行以\"- \"开头。（第5组）",
+      "check_args": {
+        "n": 2,
+        "prefix": "- "
+      },
+      "pass_sample": "- 春天万物复苏\n- 夏天骄阳似火",
+      "fail_sample": "- 春天万物复苏"
+    },
+    {
+      "item_id": "ifzh-0156",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 3 行列出关于方向的要点，每行以\"* \"开头。（第5组）",
+      "check_args": {
+        "n": 3,
+        "prefix": "* "
+      },
+      "pass_sample": "* 东方是日出之地\n* 南方气候温暖\n* 西方多有高山",
+      "fail_sample": "* 东方是日出之地\n* 南方气候温暖"
+    },
+    {
+      "item_id": "ifzh-0157",
+      "family": "ifeval_zh_v1",
+      "check_type": "line_count_prefix",
+      "prompt": "用恰好 4 行列出关于三餐的要点，每行以\"· \"开头。（第5组）",
+      "check_args": {
+        "n": 4,
+        "prefix": "· "
+      },
+      "pass_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足\n· 晚餐要吃得清淡\n· 加餐可补充能量",
+      "fail_sample": "· 早餐要吃得营养\n· 午餐要吃得饱足\n· 晚餐要吃得清淡"
+    },
+    {
+      "item_id": "ifzh-0158",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈备份的意义，回答中必须包含\"冗余\"至少2次。",
+      "check_args": {
+        "keyword": "冗余",
+        "n": 2
+      },
+      "pass_sample": "冗余很关键，冗余很关键。",
+      "fail_sample": "冗余很关键。"
+    },
+    {
+      "item_id": "ifzh-0159",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈猫的习性，回答中必须包含\"独立\"至少2次。",
+      "check_args": {
+        "keyword": "独立",
+        "n": 2
+      },
+      "pass_sample": "独立很关键，独立很关键。",
+      "fail_sample": "独立很关键。"
+    },
+    {
+      "item_id": "ifzh-0160",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈清晨的氛围，回答中必须包含\"安静\"至少2次。",
+      "check_args": {
+        "keyword": "安静",
+        "n": 2
+      },
+      "pass_sample": "安静很关键，安静很关键。",
+      "fail_sample": "安静很关键。"
+    },
+    {
+      "item_id": "ifzh-0161",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈坚持的价值，回答中必须包含\"坚持\"至少2次。",
+      "check_args": {
+        "keyword": "坚持",
+        "n": 2
+      },
+      "pass_sample": "坚持很关键，坚持很关键。",
+      "fail_sample": "坚持很关键。"
+    },
+    {
+      "item_id": "ifzh-0162",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈校对的重要，回答中必须包含\"仔细\"至少2次。",
+      "check_args": {
+        "keyword": "仔细",
+        "n": 2
+      },
+      "pass_sample": "仔细很关键，仔细很关键。",
+      "fail_sample": "仔细很关键。"
+    },
+    {
+      "item_id": "ifzh-0163",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈团队协作，回答中必须包含\"配合\"至少2次。",
+      "check_args": {
+        "keyword": "配合",
+        "n": 2
+      },
+      "pass_sample": "配合很关键，配合很关键。",
+      "fail_sample": "配合很关键。"
+    },
+    {
+      "item_id": "ifzh-0164",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈节约用电，回答中必须包含\"节约\"至少2次。",
+      "check_args": {
+        "keyword": "节约",
+        "n": 2
+      },
+      "pass_sample": "节约很关键，节约很关键。",
+      "fail_sample": "节约很关键。"
+    },
+    {
+      "item_id": "ifzh-0165",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈诚信为本，回答中必须包含\"诚信\"至少2次。",
+      "check_args": {
+        "keyword": "诚信",
+        "n": 2
+      },
+      "pass_sample": "诚信很关键，诚信很关键。",
+      "fail_sample": "诚信很关键。"
+    },
+    {
+      "item_id": "ifzh-0166",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈专注工作，回答中必须包含\"专注\"至少2次。",
+      "check_args": {
+        "keyword": "专注",
+        "n": 2
+      },
+      "pass_sample": "专注很关键，专注很关键。",
+      "fail_sample": "专注很关键。"
+    },
+    {
+      "item_id": "ifzh-0167",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈锻炼身体，回答中必须包含\"健康\"至少2次。",
+      "check_args": {
+        "keyword": "健康",
+        "n": 2
+      },
+      "pass_sample": "健康很关键，健康很关键。",
+      "fail_sample": "健康很关键。"
+    },
+    {
+      "item_id": "ifzh-0168",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈时间管理，回答中必须包含\"计划\"至少2次。",
+      "check_args": {
+        "keyword": "计划",
+        "n": 2
+      },
+      "pass_sample": "计划很关键，计划很关键。",
+      "fail_sample": "计划很关键。"
+    },
+    {
+      "item_id": "ifzh-0169",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈环境保护，回答中必须包含\"绿色\"至少2次。",
+      "check_args": {
+        "keyword": "绿色",
+        "n": 2
+      },
+      "pass_sample": "绿色很关键，绿色很关键。",
+      "fail_sample": "绿色很关键。"
+    },
+    {
+      "item_id": "ifzh-0170",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈备份的意义，回答中必须包含\"冗余\"至少3次。",
+      "check_args": {
+        "keyword": "冗余",
+        "n": 3
+      },
+      "pass_sample": "冗余很关键，冗余很关键，冗余很关键。",
+      "fail_sample": "冗余很关键，冗余很关键。"
+    },
+    {
+      "item_id": "ifzh-0171",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈猫的习性，回答中必须包含\"独立\"至少3次。",
+      "check_args": {
+        "keyword": "独立",
+        "n": 3
+      },
+      "pass_sample": "独立很关键，独立很关键，独立很关键。",
+      "fail_sample": "独立很关键，独立很关键。"
+    },
+    {
+      "item_id": "ifzh-0172",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈清晨的氛围，回答中必须包含\"安静\"至少3次。",
+      "check_args": {
+        "keyword": "安静",
+        "n": 3
+      },
+      "pass_sample": "安静很关键，安静很关键，安静很关键。",
+      "fail_sample": "安静很关键，安静很关键。"
+    },
+    {
+      "item_id": "ifzh-0173",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈坚持的价值，回答中必须包含\"坚持\"至少3次。",
+      "check_args": {
+        "keyword": "坚持",
+        "n": 3
+      },
+      "pass_sample": "坚持很关键，坚持很关键，坚持很关键。",
+      "fail_sample": "坚持很关键，坚持很关键。"
+    },
+    {
+      "item_id": "ifzh-0174",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈校对的重要，回答中必须包含\"仔细\"至少3次。",
+      "check_args": {
+        "keyword": "仔细",
+        "n": 3
+      },
+      "pass_sample": "仔细很关键，仔细很关键，仔细很关键。",
+      "fail_sample": "仔细很关键，仔细很关键。"
+    },
+    {
+      "item_id": "ifzh-0175",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈团队协作，回答中必须包含\"配合\"至少3次。",
+      "check_args": {
+        "keyword": "配合",
+        "n": 3
+      },
+      "pass_sample": "配合很关键，配合很关键，配合很关键。",
+      "fail_sample": "配合很关键，配合很关键。"
+    },
+    {
+      "item_id": "ifzh-0176",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈节约用电，回答中必须包含\"节约\"至少3次。",
+      "check_args": {
+        "keyword": "节约",
+        "n": 3
+      },
+      "pass_sample": "节约很关键，节约很关键，节约很关键。",
+      "fail_sample": "节约很关键，节约很关键。"
+    },
+    {
+      "item_id": "ifzh-0177",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈诚信为本，回答中必须包含\"诚信\"至少3次。",
+      "check_args": {
+        "keyword": "诚信",
+        "n": 3
+      },
+      "pass_sample": "诚信很关键，诚信很关键，诚信很关键。",
+      "fail_sample": "诚信很关键，诚信很关键。"
+    },
+    {
+      "item_id": "ifzh-0178",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈专注工作，回答中必须包含\"专注\"至少3次。",
+      "check_args": {
+        "keyword": "专注",
+        "n": 3
+      },
+      "pass_sample": "专注很关键，专注很关键，专注很关键。",
+      "fail_sample": "专注很关键，专注很关键。"
+    },
+    {
+      "item_id": "ifzh-0179",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈锻炼身体，回答中必须包含\"健康\"至少3次。",
+      "check_args": {
+        "keyword": "健康",
+        "n": 3
+      },
+      "pass_sample": "健康很关键，健康很关键，健康很关键。",
+      "fail_sample": "健康很关键，健康很关键。"
+    },
+    {
+      "item_id": "ifzh-0180",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈时间管理，回答中必须包含\"计划\"至少3次。",
+      "check_args": {
+        "keyword": "计划",
+        "n": 3
+      },
+      "pass_sample": "计划很关键，计划很关键，计划很关键。",
+      "fail_sample": "计划很关键，计划很关键。"
+    },
+    {
+      "item_id": "ifzh-0181",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈环境保护，回答中必须包含\"绿色\"至少3次。",
+      "check_args": {
+        "keyword": "绿色",
+        "n": 3
+      },
+      "pass_sample": "绿色很关键，绿色很关键，绿色很关键。",
+      "fail_sample": "绿色很关键，绿色很关键。"
+    },
+    {
+      "item_id": "ifzh-0182",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈备份的意义，回答中必须包含\"冗余\"至少2次。（其2）",
+      "check_args": {
+        "keyword": "冗余",
+        "n": 2
+      },
+      "pass_sample": "冗余很关键，冗余很关键。",
+      "fail_sample": "冗余很关键。"
+    },
+    {
+      "item_id": "ifzh-0183",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈猫的习性，回答中必须包含\"独立\"至少2次。（其2）",
+      "check_args": {
+        "keyword": "独立",
+        "n": 2
+      },
+      "pass_sample": "独立很关键，独立很关键。",
+      "fail_sample": "独立很关键。"
+    },
+    {
+      "item_id": "ifzh-0184",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈清晨的氛围，回答中必须包含\"安静\"至少2次。（其2）",
+      "check_args": {
+        "keyword": "安静",
+        "n": 2
+      },
+      "pass_sample": "安静很关键，安静很关键。",
+      "fail_sample": "安静很关键。"
+    },
+    {
+      "item_id": "ifzh-0185",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈坚持的价值，回答中必须包含\"坚持\"至少2次。（其2）",
+      "check_args": {
+        "keyword": "坚持",
+        "n": 2
+      },
+      "pass_sample": "坚持很关键，坚持很关键。",
+      "fail_sample": "坚持很关键。"
+    },
+    {
+      "item_id": "ifzh-0186",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈校对的重要，回答中必须包含\"仔细\"至少2次。（其2）",
+      "check_args": {
+        "keyword": "仔细",
+        "n": 2
+      },
+      "pass_sample": "仔细很关键，仔细很关键。",
+      "fail_sample": "仔细很关键。"
+    },
+    {
+      "item_id": "ifzh-0187",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈团队协作，回答中必须包含\"配合\"至少2次。（其2）",
+      "check_args": {
+        "keyword": "配合",
+        "n": 2
+      },
+      "pass_sample": "配合很关键，配合很关键。",
+      "fail_sample": "配合很关键。"
+    },
+    {
+      "item_id": "ifzh-0188",
+      "family": "ifeval_zh_v1",
+      "check_type": "keyword_min_count",
+      "prompt": "谈谈节约用电，回答中必须包含\"节约\"至少2次。（其2）",
+      "check_args": {
+        "keyword": "节约",
+        "n": 2
+      },
+      "pass_sample": "节约很关键，节约很关键。",
+      "fail_sample": "节约很关键。"
+    },
+    {
+      "item_id": "ifzh-0189",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍电子计算机，全文不得出现\"电脑\"字，不少于10字。",
+      "check_args": {
+        "word": "电脑",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。电脑"
+    },
+    {
+      "item_id": "ifzh-0190",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述雨天景象，全文不得出现\"水\"字，不少于10字。",
+      "check_args": {
+        "word": "水",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。水"
+    },
+    {
+      "item_id": "ifzh-0191",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "解释什么是友谊，全文不得出现\"光\"字，不少于10字。",
+      "check_args": {
+        "word": "光",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。光"
+    },
+    {
+      "item_id": "ifzh-0192",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "谈谈城市生活，全文不得出现\"火\"字，不少于10字。",
+      "check_args": {
+        "word": "火",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。火"
+    },
+    {
+      "item_id": "ifzh-0193",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述一片森林，全文不得出现\"钱\"字，不少于10字。",
+      "check_args": {
+        "word": "钱",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。钱"
+    },
+    {
+      "item_id": "ifzh-0194",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍一种乐器，全文不得出现\"车\"字，不少于10字。",
+      "check_args": {
+        "word": "车",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。车"
+    },
+    {
+      "item_id": "ifzh-0195",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "谈谈时间的价值，全文不得出现\"书\"字，不少于10字。",
+      "check_args": {
+        "word": "书",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。书"
+    },
+    {
+      "item_id": "ifzh-0196",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述夜晚的天空，全文不得出现\"花\"字，不少于10字。",
+      "check_args": {
+        "word": "花",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。花"
+    },
+    {
+      "item_id": "ifzh-0197",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍电子计算机，全文不得出现\"云\"字，不少于10字。",
+      "check_args": {
+        "word": "云",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。云"
+    },
+    {
+      "item_id": "ifzh-0198",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述雨天景象，全文不得出现\"风\"字，不少于10字。",
+      "check_args": {
+        "word": "风",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。风"
+    },
+    {
+      "item_id": "ifzh-0199",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "解释什么是友谊，全文不得出现\"电脑\"字，不少于10字。",
+      "check_args": {
+        "word": "电脑",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。电脑"
+    },
+    {
+      "item_id": "ifzh-0200",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "谈谈城市生活，全文不得出现\"光\"字，不少于10字。",
+      "check_args": {
+        "word": "光",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。光"
+    },
+    {
+      "item_id": "ifzh-0201",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述一片森林，全文不得出现\"火\"字，不少于10字。",
+      "check_args": {
+        "word": "火",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。火"
+    },
+    {
+      "item_id": "ifzh-0202",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍一种乐器，全文不得出现\"钱\"字，不少于10字。",
+      "check_args": {
+        "word": "钱",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。钱"
+    },
+    {
+      "item_id": "ifzh-0203",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "谈谈时间的价值，全文不得出现\"车\"字，不少于10字。",
+      "check_args": {
+        "word": "车",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。车"
+    },
+    {
+      "item_id": "ifzh-0204",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述夜晚的天空，全文不得出现\"书\"字，不少于10字。",
+      "check_args": {
+        "word": "书",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。书"
+    },
+    {
+      "item_id": "ifzh-0205",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍电子计算机，全文不得出现\"花\"字，不少于10字。",
+      "check_args": {
+        "word": "花",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。花"
+    },
+    {
+      "item_id": "ifzh-0206",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述雨天景象，全文不得出现\"云\"字，不少于10字。",
+      "check_args": {
+        "word": "云",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。云"
+    },
+    {
+      "item_id": "ifzh-0207",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "解释什么是友谊，全文不得出现\"风\"字，不少于10字。",
+      "check_args": {
+        "word": "风",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。风"
+    },
+    {
+      "item_id": "ifzh-0208",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "谈谈城市生活，全文不得出现\"电脑\"字，不少于10字。",
+      "check_args": {
+        "word": "电脑",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。电脑"
+    },
+    {
+      "item_id": "ifzh-0209",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述一片森林，全文不得出现\"光\"字，不少于10字。",
+      "check_args": {
+        "word": "光",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。光"
+    },
+    {
+      "item_id": "ifzh-0210",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍一种乐器，全文不得出现\"火\"字，不少于10字。",
+      "check_args": {
+        "word": "火",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。火"
+    },
+    {
+      "item_id": "ifzh-0211",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "谈谈时间的价值，全文不得出现\"钱\"字，不少于10字。",
+      "check_args": {
+        "word": "钱",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。钱"
+    },
+    {
+      "item_id": "ifzh-0212",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述夜晚的天空，全文不得出现\"车\"字，不少于10字。",
+      "check_args": {
+        "word": "车",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。车"
+    },
+    {
+      "item_id": "ifzh-0213",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍电子计算机，全文不得出现\"书\"字，不少于10字。",
+      "check_args": {
+        "word": "书",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。书"
+    },
+    {
+      "item_id": "ifzh-0214",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述雨天景象，全文不得出现\"花\"字，不少于10字。",
+      "check_args": {
+        "word": "花",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。花"
+    },
+    {
+      "item_id": "ifzh-0215",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "解释什么是友谊，全文不得出现\"云\"字，不少于10字。",
+      "check_args": {
+        "word": "云",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。云"
+    },
+    {
+      "item_id": "ifzh-0216",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "谈谈城市生活，全文不得出现\"风\"字，不少于10字。",
+      "check_args": {
+        "word": "风",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。风"
+    },
+    {
+      "item_id": "ifzh-0217",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述夜晚的天空，全文不得出现\"电脑\"字，不少于10字。",
+      "check_args": {
+        "word": "电脑",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。电脑"
+    },
+    {
+      "item_id": "ifzh-0218",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "介绍电子计算机，全文不得出现\"水\"字，不少于10字。",
+      "check_args": {
+        "word": "水",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。水"
+    },
+    {
+      "item_id": "ifzh-0219",
+      "family": "ifeval_zh_v1",
+      "check_type": "forbidden_word",
+      "prompt": "描述雨天景象，全文不得出现\"光\"字，不少于10字。",
+      "check_args": {
+        "word": "光",
+        "min_len": 10
+      },
+      "pass_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。",
+      "fail_sample": "这段示范文字长度足够满足题目规定要求，内容仅用于演示格式合规。光"
+    },
+    {
+      "item_id": "ifzh-0220",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 15 字的话，以\"今天\"开头、以\"。\"结尾。（示例0）",
+      "check_args": {
+        "prefix": "今天",
+        "suffix": "。",
+        "max_len": 15
+      },
+      "pass_sample": "今天天气很好。",
+      "fail_sample": "天气很好。"
+    },
+    {
+      "item_id": "ifzh-0221",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 25 字的话，以\"如果\"开头、以\"？\"结尾。（示例0）",
+      "check_args": {
+        "prefix": "如果",
+        "suffix": "？",
+        "max_len": 25
+      },
+      "pass_sample": "如果明天下雨怎么办？",
+      "fail_sample": "明天下雨怎么办？"
+    },
+    {
+      "item_id": "ifzh-0222",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"科学\"开头、以\"！\"结尾。（示例0）",
+      "check_args": {
+        "prefix": "科学",
+        "suffix": "！",
+        "max_len": 20
+      },
+      "pass_sample": "科学改变了世界！",
+      "fail_sample": "改变了世界！"
+    },
+    {
+      "item_id": "ifzh-0223",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 18 字的话，以\"我们\"开头、以\"。\"结尾。（示例0）",
+      "check_args": {
+        "prefix": "我们",
+        "suffix": "。",
+        "max_len": 18
+      },
+      "pass_sample": "我们一起努力前行。",
+      "fail_sample": "一起努力前行。"
+    },
+    {
+      "item_id": "ifzh-0224",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 22 字的话，以\"这个\"开头、以\"？\"结尾。（示例0）",
+      "check_args": {
+        "prefix": "这个",
+        "suffix": "？",
+        "max_len": 22
+      },
+      "pass_sample": "这个问题该如何解决？",
+      "fail_sample": "问题该如何解决？"
+    },
+    {
+      "item_id": "ifzh-0225",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 16 字的话，以\"未来\"开头、以\"！\"结尾。（示例0）",
+      "check_args": {
+        "prefix": "未来",
+        "suffix": "！",
+        "max_len": 16
+      },
+      "pass_sample": "未来充满了希望！",
+      "fail_sample": "充满了希望！"
+    },
+    {
+      "item_id": "ifzh-0226",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"学习\"开头、以\"。\"结尾。（示例0）",
+      "check_args": {
+        "prefix": "学习",
+        "suffix": "。",
+        "max_len": 20
+      },
+      "pass_sample": "学习需要持之以恒。",
+      "fail_sample": "需要持之以恒。"
+    },
+    {
+      "item_id": "ifzh-0227",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 24 字的话，以\"时间\"开头、以\"？\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "时间",
+        "suffix": "？",
+        "max_len": 24
+      },
+      "pass_sample": "时间都去哪儿了呢？",
+      "fail_sample": "都去哪儿了呢？"
+    },
+    {
+      "item_id": "ifzh-0228",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 15 字的话，以\"今天\"开头、以\"。\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "今天",
+        "suffix": "。",
+        "max_len": 15
+      },
+      "pass_sample": "今天天气很好。",
+      "fail_sample": "天气很好。"
+    },
+    {
+      "item_id": "ifzh-0229",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 25 字的话，以\"如果\"开头、以\"？\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "如果",
+        "suffix": "？",
+        "max_len": 25
+      },
+      "pass_sample": "如果明天下雨怎么办？",
+      "fail_sample": "明天下雨怎么办？"
+    },
+    {
+      "item_id": "ifzh-0230",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"科学\"开头、以\"！\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "科学",
+        "suffix": "！",
+        "max_len": 20
+      },
+      "pass_sample": "科学改变了世界！",
+      "fail_sample": "改变了世界！"
+    },
+    {
+      "item_id": "ifzh-0231",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 18 字的话，以\"我们\"开头、以\"。\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "我们",
+        "suffix": "。",
+        "max_len": 18
+      },
+      "pass_sample": "我们一起努力前行。",
+      "fail_sample": "一起努力前行。"
+    },
+    {
+      "item_id": "ifzh-0232",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 22 字的话，以\"这个\"开头、以\"？\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "这个",
+        "suffix": "？",
+        "max_len": 22
+      },
+      "pass_sample": "这个问题该如何解决？",
+      "fail_sample": "问题该如何解决？"
+    },
+    {
+      "item_id": "ifzh-0233",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 16 字的话，以\"未来\"开头、以\"！\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "未来",
+        "suffix": "！",
+        "max_len": 16
+      },
+      "pass_sample": "未来充满了希望！",
+      "fail_sample": "充满了希望！"
+    },
+    {
+      "item_id": "ifzh-0234",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"学习\"开头、以\"。\"结尾。（示例1）",
+      "check_args": {
+        "prefix": "学习",
+        "suffix": "。",
+        "max_len": 20
+      },
+      "pass_sample": "学习需要持之以恒。",
+      "fail_sample": "需要持之以恒。"
+    },
+    {
+      "item_id": "ifzh-0235",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 24 字的话，以\"时间\"开头、以\"？\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "时间",
+        "suffix": "？",
+        "max_len": 24
+      },
+      "pass_sample": "时间都去哪儿了呢？",
+      "fail_sample": "都去哪儿了呢？"
+    },
+    {
+      "item_id": "ifzh-0236",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 15 字的话，以\"今天\"开头、以\"。\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "今天",
+        "suffix": "。",
+        "max_len": 15
+      },
+      "pass_sample": "今天天气很好。",
+      "fail_sample": "天气很好。"
+    },
+    {
+      "item_id": "ifzh-0237",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 25 字的话，以\"如果\"开头、以\"？\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "如果",
+        "suffix": "？",
+        "max_len": 25
+      },
+      "pass_sample": "如果明天下雨怎么办？",
+      "fail_sample": "明天下雨怎么办？"
+    },
+    {
+      "item_id": "ifzh-0238",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"科学\"开头、以\"！\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "科学",
+        "suffix": "！",
+        "max_len": 20
+      },
+      "pass_sample": "科学改变了世界！",
+      "fail_sample": "改变了世界！"
+    },
+    {
+      "item_id": "ifzh-0239",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 18 字的话，以\"我们\"开头、以\"。\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "我们",
+        "suffix": "。",
+        "max_len": 18
+      },
+      "pass_sample": "我们一起努力前行。",
+      "fail_sample": "一起努力前行。"
+    },
+    {
+      "item_id": "ifzh-0240",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 22 字的话，以\"这个\"开头、以\"？\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "这个",
+        "suffix": "？",
+        "max_len": 22
+      },
+      "pass_sample": "这个问题该如何解决？",
+      "fail_sample": "问题该如何解决？"
+    },
+    {
+      "item_id": "ifzh-0241",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 16 字的话，以\"未来\"开头、以\"！\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "未来",
+        "suffix": "！",
+        "max_len": 16
+      },
+      "pass_sample": "未来充满了希望！",
+      "fail_sample": "充满了希望！"
+    },
+    {
+      "item_id": "ifzh-0242",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"学习\"开头、以\"。\"结尾。（示例2）",
+      "check_args": {
+        "prefix": "学习",
+        "suffix": "。",
+        "max_len": 20
+      },
+      "pass_sample": "学习需要持之以恒。",
+      "fail_sample": "需要持之以恒。"
+    },
+    {
+      "item_id": "ifzh-0243",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 24 字的话，以\"时间\"开头、以\"？\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "时间",
+        "suffix": "？",
+        "max_len": 24
+      },
+      "pass_sample": "时间都去哪儿了呢？",
+      "fail_sample": "都去哪儿了呢？"
+    },
+    {
+      "item_id": "ifzh-0244",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 15 字的话，以\"今天\"开头、以\"。\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "今天",
+        "suffix": "。",
+        "max_len": 15
+      },
+      "pass_sample": "今天天气很好。",
+      "fail_sample": "天气很好。"
+    },
+    {
+      "item_id": "ifzh-0245",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 25 字的话，以\"如果\"开头、以\"？\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "如果",
+        "suffix": "？",
+        "max_len": 25
+      },
+      "pass_sample": "如果明天下雨怎么办？",
+      "fail_sample": "明天下雨怎么办？"
+    },
+    {
+      "item_id": "ifzh-0246",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"科学\"开头、以\"！\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "科学",
+        "suffix": "！",
+        "max_len": 20
+      },
+      "pass_sample": "科学改变了世界！",
+      "fail_sample": "改变了世界！"
+    },
+    {
+      "item_id": "ifzh-0247",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 18 字的话，以\"我们\"开头、以\"。\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "我们",
+        "suffix": "。",
+        "max_len": 18
+      },
+      "pass_sample": "我们一起努力前行。",
+      "fail_sample": "一起努力前行。"
+    },
+    {
+      "item_id": "ifzh-0248",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 22 字的话，以\"这个\"开头、以\"？\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "这个",
+        "suffix": "？",
+        "max_len": 22
+      },
+      "pass_sample": "这个问题该如何解决？",
+      "fail_sample": "问题该如何解决？"
+    },
+    {
+      "item_id": "ifzh-0249",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 16 字的话，以\"未来\"开头、以\"！\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "未来",
+        "suffix": "！",
+        "max_len": 16
+      },
+      "pass_sample": "未来充满了希望！",
+      "fail_sample": "充满了希望！"
+    },
+    {
+      "item_id": "ifzh-0250",
+      "family": "ifeval_zh_v1",
+      "check_type": "prefix_suffix_len",
+      "prompt": "输出一句不超过 20 字的话，以\"学习\"开头、以\"。\"结尾。（示例3）",
+      "check_args": {
+        "prefix": "学习",
+        "suffix": "。",
+        "max_len": 20
+      },
+      "pass_sample": "学习需要持之以恒。",
+      "fail_sample": "需要持之以恒。"
+    }
+  ]
+}

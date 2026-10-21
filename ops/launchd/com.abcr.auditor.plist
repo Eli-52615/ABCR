@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>com.abcr.auditor</string><key>UserName</key><string>abcr-auditor</string>
+<key>ProgramArguments</key><array><string>/usr/local/libexec/abcr-launch</string><string>com.abcr.auditor</string></array>
+<key>QueueDirectories</key><array><string>/Library/Application Support/ABCR-Work/audit/ready</string></array>
+</dict></plist>

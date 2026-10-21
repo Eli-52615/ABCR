@@ -1,0 +1,52 @@
+{
+  "run_id": "20260712-130600-f9cc074895de",
+  "config": {
+    "model_key": "qwen2.5-3b-instruct",
+    "condition": "vanilla",
+    "intervention": {
+      "method": "none"
+    },
+    "data": {
+      "family": "ifeval_style",
+      "items": "data/items/ifeval_style/items.jsonl",
+      "split_file": "data/splits/ifeval_style-7d5d6426.json",
+      "split": "dev",
+      "limit": 30
+    },
+    "decoding": {
+      "temperature": 0.7,
+      "seeds": [
+        17,
+        42
+      ],
+      "max_new_tokens": 512,
+      "temp0_sanity": true
+    },
+    "activation_sampling_rate": 0.1,
+    "run_name": "mini-vanilla"
+  },
+  "config_hash": "f9cc074895de98e293357ca7376155f8928aa479cf1afdef736d1be5ada388fd",
+  "git_commit": "220e6f6de157d5b39bc7997ec3258bd39c2023a9",
+  "model": {
+    "key": "qwen2.5-3b-instruct",
+    "id": "/Users/superagent/.cache/modelscope/models/Qwen--Qwen2.5-3B-Instruct/snapshots/master",
+    "revision": "eed00b17e225",
+    "dtype": "float16",
+    "device_backend": "mps"
+  },
+  "chat_template_hash": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+  "split_hash": "6934a00d98571cc07b08db8602b12c5e2a7531ed8e3df665d7aaa3c7f0876875",
+  "arm_purity": {
+    "declared_method": "none",
+    "has_vector_ref": false,
+    "has_persona_ref": false
+  },
+  "env_lock_ref": "env.lock",
+  "protocol_ref": "docs/1Personality-Experiment-Final/ABCR-W1执行方案-V1.0.md@sha256:b4d39632560b54dac663b9ce63b0180258fbd4764f1f0d76de7bc5a50c1df332\nconfigs/protocol/ABCR-W1执行方案-V1.1补丁-资源治理门与节奏修订.md@sha256:5addf84a96365687b91b88b5324fe72993864f5d2027292a6e2202162f7b4608",
+  "started_at": "2026-07-12T13:15:56Z",
+  "finished_at": "2026-07-12T13:18:29Z",
+  "n_steps_expected": 28,
+  "n_steps_written": 28,
+  "repair_events": [],
+  "citable": false
+}

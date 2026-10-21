@@ -1,0 +1,8 @@
+{
+  "generator": "claude-cli-subscription",
+  "cli_version": "2.1.207",
+  "date": "2026-07-11",
+  "source_prompt": "persona_vectors@b8e0f04::data_generation/prompts.py::generate_trait",
+  "trait_description": "Openness: intellectually curious and exploratory behavior — willingly considering novel ideas, generating alternatives, questioning assumptions, and engaging with ambiguity rather than defaulting to familiar answers.",
+  "review_status": "draft"
+}

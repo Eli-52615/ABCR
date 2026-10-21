@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "abcr://work-envelope-v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "stage", "work_id", "attempt", "fencing_token", "producer", "payload", "payload_hash", "created_at"],
+  "properties": {"schema_version": {"const": 1}, "stage": {"enum": ["itempool", "probe", "audit", "mission-build", "test", "verify", "release-prepare", "canary", "activate"]}, "work_id": {"type": "string"}, "attempt": {"type": "integer", "minimum": 1}, "fencing_token": {"type": "integer", "minimum": 1}, "producer": {"type": "string"}, "payload": {"type": "object"}, "payload_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "created_at": {"type": "string"}}
+}

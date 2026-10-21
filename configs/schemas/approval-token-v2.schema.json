@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "abcr://approval-token-v2",
+  "type": "object", "additionalProperties": false,
+  "required": ["token_version", "alg", "key_id", "aud", "deployment_id", "protocol_ref", "token_id", "scope", "request_id", "request_version", "source_event_id", "tenant_key_hash", "chat_id_hash", "app_id_hash", "decision_nonce_hash", "goal_anchor_entry_hash", "goal_anchor_receipt_id", "batch_id", "envelope_sha256", "approver_id_hash", "issued_at", "expires_at", "signature_b64"],
+  "properties": {
+    "token_version": {"const": "2.0"}, "alg": {"const": "Ed25519"}, "scope": {"const": "batch_approve"},
+    "key_id": {"type":"string","pattern":"^[0-9a-f]{64}$"}, "token_id": {"type": "string"}, "aud": {"const":"abcr-operator"}, "deployment_id": {"type": "string"}, "protocol_ref": {"type": "string"}, "request_id": {"type": "string"}, "request_version":{"type":"integer","minimum":1}, "source_event_id":{"type":"string"},
+    "tenant_key_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"}, "chat_id_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"}, "app_id_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"}, "decision_nonce_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"}, "goal_anchor_entry_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"}, "goal_anchor_receipt_id":{"type":"string"}, "batch_id": {"type": "string"},
+    "envelope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "approver_id_hash":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "issued_at":{"type":"string","format":"date-time"}, "expires_at": {"type": "string", "format": "date-time"}, "signature_b64": {"type": "string", "pattern":"^[A-Za-z0-9+/]{86}==$"}
+  }
+}

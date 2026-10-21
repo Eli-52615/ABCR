@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"abcr://dataset-manifest-v1",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","dataset_sha256","source_commit","source_path","source_sha256","item_count","split_counts"],
+  "properties":{
+    "schema_version":{"const":1},
+    "dataset_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "source_commit":{"type":"string","pattern":"^[0-9a-f]{40,64}$"},
+    "source_path":{"type":"string","minLength":1},
+    "source_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "item_count":{"type":"integer","minimum":1},
+    "split_counts":{"type":"object","additionalProperties":false,"required":["dev","cal","holdout"],"properties":{"dev":{"type":"integer","minimum":0},"cal":{"type":"integer","minimum":0},"holdout":{"type":"integer","minimum":0}}}
+  }
+}

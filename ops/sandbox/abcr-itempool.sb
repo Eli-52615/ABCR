@@ -1,0 +1,6 @@
+(version 1)
+(deny default)
+(allow process*)
+(allow sysctl-read)
+(allow file-read* (subpath (param "RELEASE_ROOT")) (subpath (param "DATASET_ROOT")))
+(allow file-write* (subpath (param "BUNDLE_STAGING")) (subpath (param "TMPDIR")))

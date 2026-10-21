@@ -1,0 +1,418 @@
+#!/usr/bin/env python3
+"""Root-owned stable launcher for immutable ABCR releases.
+
+This file is bootstrap TCB.  It deliberately has no imports from an active
+release: a damaged release must not be able to teach the launcher how to
+validate itself.
+"""
+from __future__ import annotations
+
+import argparse
+import ast
+import hashlib
+import json
+import os
+import re
+import stat
+import sys
+from pathlib import Path, PurePosixPath
+from typing import Any, Callable, Iterable
+
+EX_CONFIG = 78
+DEFAULT_ACTIVE_FILE = Path("/Users/superagent/.abcr/active.json")
+DEFAULT_RELEASE_ROOT = Path("/Users/superagent/.abcr/releases")
+DEFAULT_RECEIPT_ROOT = Path("/Library/Application Support/ABCR-Attest/release-receipts")
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+# Frozen copy of configs/control/service-topology-v1.json.  Do not load this
+# mapping from caller-controlled cwd/PYTHONPATH or from the active release.
+FROZEN_SERVICES: tuple[dict[str, Any], ...] = (
+    {"label": "com.abcr.human-gateway", "uid": "abcr-human", "module": "abcr.control.human_gateway", "mode": "keepalive"},
+    {"label": "com.abcr.operator-reconciler", "uid": "abcr-operator", "module": "abcr.control.operator", "mode": "keepalive"},
+    {"label": "com.abcr.probe-worker", "uid": "abcr-probe", "module": "abcr.probe.service", "queue": "probe"},
+    {"label": "com.abcr.itempool", "uid": "abcr-itempool", "module": "abcr.explore.itempool_service", "queue": "itempool"},
+    {"label": "com.abcr.auditor", "uid": "abcr-auditor", "module": "abcr.audit.service", "queue": "audit"},
+    {"label": "com.abcr.mission-builder", "uid": "abcr-builder", "module": "abcr.control.mission_worker", "queue": "mission-build"},
+    {"label": "com.abcr.test-controller", "uid": "root", "module": "abcr.control.test_controller", "queue": "test", "child_uid": "abcr-candidate"},
+    {"label": "com.abcr.verifier", "uid": "abcr-verifier", "module": "abcr.control.verifier", "queue": "verify"},
+    {"label": "com.abcr.canary-controller", "uid": "abcr-canary", "module": "abcr.control.canary_controller", "queue": "canary"},
+    {"label": "com.abcr.release-activator", "uid": "abcr-activator", "module": "abcr.control.release", "queues": ["release-prepare", "activate"]},
+    {"label": "com.abcr.panel", "uid": "abcr-panel", "module": "abcr.control.panel", "mode": "keepalive"},
+    {"label": "com.abcr.seal-broker", "uid": "root", "module": "abcr.control.seal_broker", "mode": "socket"},
+)
+FROZEN_TOPOLOGY = {
+    "schema_version": 1,
+    "services": list(FROZEN_SERVICES),
+    "ephemeral_children": [{"uid": "abcr-candidate", "parent": "com.abcr.test-controller", "result_spool_access": False}],
+}
+SERVICE_MODULES = {item["label"]: item["module"] for item in FROZEN_SERVICES}
+
+
+class LauncherBlocked(RuntimeError):
+    """Fail-closed validation error safe to print without secret values."""
+
+
+def _canonical(value: Any) -> bytes:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+                      allow_nan=False).encode("utf-8")
+
+
+def _sha256(value: bytes | Any) -> str:
+    raw = value if isinstance(value, bytes) else _canonical(value)
+    return hashlib.sha256(raw).hexdigest()
+
+
+def frozen_topology_hash() -> str:
+    return _sha256(FROZEN_TOPOLOGY)
+
+
+def _pairs_no_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in out:
+            raise LauncherBlocked("duplicate JSON key")
+        out[key] = value
+    return out
+
+
+def _validate_regular(info: os.stat_result, path: Path, *, owner_uid: int,
+                      executable: bool = False) -> None:
+    mode = stat.S_IMODE(info.st_mode)
+    if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+        raise LauncherBlocked(f"unsafe regular file: {path}")
+    if info.st_uid != owner_uid:
+        raise LauncherBlocked(f"unsafe owner: {path}")
+    if mode & (stat.S_ISUID | stat.S_ISGID | stat.S_ISVTX | 0o022):
+        raise LauncherBlocked(f"unsafe mode: {path}")
+    if executable and not mode & 0o111:
+        raise LauncherBlocked(f"interpreter is not executable: {path}")
+
+
+def _read_regular(path: Path, *, owner_uid: int, executable: bool = False,
+                  max_bytes: int = 8 * 1024 * 1024) -> tuple[bytes, os.stat_result]:
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        fd = os.open(path, flags)
+    except OSError as exc:
+        raise LauncherBlocked(f"cannot open secure file: {path}") from exc
+    try:
+        before = os.fstat(fd)
+        _validate_regular(before, path, owner_uid=owner_uid, executable=executable)
+        if before.st_size > max_bytes:
+            raise LauncherBlocked(f"secure file too large: {path}")
+        chunks: list[bytes] = []
+        remaining = before.st_size + 1
+        while remaining:
+            chunk = os.read(fd, min(1024 * 1024, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        raw = b"".join(chunks)
+        after = os.fstat(fd)
+        identity = lambda x: (x.st_dev, x.st_ino, x.st_size, x.st_nlink,
+                              x.st_uid, stat.S_IMODE(x.st_mode))
+        if identity(before) != identity(after) or len(raw) != before.st_size:
+            raise LauncherBlocked(f"file changed during validation: {path}")
+        return raw, before
+    finally:
+        os.close(fd)
+
+
+def regular_secure(path: Path, *, owner_uid: int | None = None,
+                   executable: bool = False) -> os.stat_result:
+    """Compatibility helper; production always supplies the frozen root uid."""
+    _, info = _read_regular(Path(path), owner_uid=os.getuid() if owner_uid is None else owner_uid,
+                            executable=executable)
+    return info
+
+
+def _read_json(path: Path, *, owner_uid: int) -> dict[str, Any]:
+    raw, _ = _read_regular(path, owner_uid=owner_uid)
+    try:
+        value = json.loads(raw.decode("utf-8"), object_pairs_hook=_pairs_no_duplicates)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise LauncherBlocked(f"invalid JSON: {path}") from exc
+    if not isinstance(value, dict):
+        raise LauncherBlocked(f"JSON root must be an object: {path}")
+    return value
+
+
+def _secure_dir(path: Path, *, owner_uid: int, device: int | None = None) -> os.stat_result:
+    try:
+        info = path.lstat()
+    except OSError as exc:
+        raise LauncherBlocked(f"missing secure directory: {path}") from exc
+    mode = stat.S_IMODE(info.st_mode)
+    if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode):
+        raise LauncherBlocked(f"directory symlink/type forbidden: {path}")
+    if info.st_uid != owner_uid or mode & (stat.S_ISUID | stat.S_ISGID | stat.S_ISVTX | 0o022):
+        raise LauncherBlocked(f"unsafe directory owner/mode: {path}")
+    if device is not None and info.st_dev != device:
+        raise LauncherBlocked(f"release mount crossing: {path}")
+    return info
+
+
+def _safe_relpath(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not value or "\\" in value:
+        raise LauncherBlocked(f"invalid {field}")
+    pure = PurePosixPath(value)
+    if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):
+        raise LauncherBlocked(f"invalid {field}")
+    return pure.as_posix()
+
+
+def resolve_active(active_path: Path, release_root: Path, *,
+                   owner_uid: int | None = None) -> tuple[Path, dict[str, Any]]:
+    """Resolve only through real, protected filesystem objects (never ``resolve``)."""
+    uid = os.getuid() if owner_uid is None else owner_uid
+    active_path = Path(active_path)
+    # Checking only a root-owned inode is insufficient: an attacker who owns
+    # its parent can unlink it and atomically install a different root-owned
+    # hardlink.  The final containing directory is part of the trust boundary.
+    _secure_dir(active_path.parent, owner_uid=uid)
+    active = _read_json(active_path, owner_uid=uid)
+    release_id = active.get("release_id")
+    if (not isinstance(release_id, str) or not release_id.startswith("REL-")
+            or "/" in release_id or "\\" in release_id or release_id in {"REL-.", "REL-.."}):
+        raise LauncherBlocked("invalid active release id")
+    root = Path(release_root)
+    _secure_dir(root.parent, owner_uid=uid)
+    root_info = _secure_dir(root, owner_uid=uid)
+    release = root / release_id
+    _secure_dir(release, owner_uid=uid, device=root_info.st_dev)
+    manifest_path = release / "release-manifest.json"
+    manifest = _read_json(manifest_path, owner_uid=uid)
+    if manifest.get("release_id") != release_id:
+        raise LauncherBlocked("release manifest identity mismatch")
+    return release, manifest
+
+
+def _scan_tree(root: Path, *, owner_uid: int,
+               excluded: Iterable[str] = ()) -> list[dict[str, Any]]:
+    root_info = _secure_dir(root, owner_uid=owner_uid)
+    excluded_set = set(excluded)
+    entries: list[dict[str, Any]] = []
+    seen_inodes: set[tuple[int, int]] = set()
+    for dirpath, dirnames, filenames in os.walk(root, topdown=True, followlinks=False):
+        current = Path(dirpath)
+        _secure_dir(current, owner_uid=owner_uid, device=root_info.st_dev)
+        accepted: list[str] = []
+        for name in sorted(dirnames):
+            child = current / name
+            rel = child.relative_to(root).as_posix()
+            if rel in excluded_set:
+                continue
+            _secure_dir(child, owner_uid=owner_uid, device=root_info.st_dev)
+            accepted.append(name)
+        dirnames[:] = accepted
+        for name in sorted(filenames):
+            path = current / name
+            rel = path.relative_to(root).as_posix()
+            if rel in excluded_set:
+                continue
+            raw, info = _read_regular(path, owner_uid=owner_uid, max_bytes=1024 * 1024 * 1024)
+            if info.st_dev != root_info.st_dev:
+                raise LauncherBlocked(f"release mount crossing: {path}")
+            identity = (info.st_dev, info.st_ino)
+            if identity in seen_inodes:
+                raise LauncherBlocked(f"release hardlink forbidden: {path}")
+            seen_inodes.add(identity)
+            entries.append({"path": rel, "mode": stat.S_IMODE(info.st_mode),
+                            "size": len(raw), "sha256": _sha256(raw)})
+    return sorted(entries, key=lambda item: item["path"])
+
+
+def _validate_declared_tree(release: Path, manifest: dict[str, Any], *, owner_uid: int
+                            ) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
+    declared = manifest.get("tree_entries")
+    if not isinstance(declared, list) or not declared:
+        raise LauncherBlocked("release manifest lacks complete tree_entries")
+    normalized: list[dict[str, Any]] = []
+    for item in declared:
+        if not isinstance(item, dict) or set(item) != {"path", "mode", "size", "sha256"}:
+            raise LauncherBlocked("invalid tree entry")
+        rel = _safe_relpath(item["path"], "tree entry path")
+        mode, size, digest = item["mode"], item["size"], item["sha256"]
+        if (not isinstance(mode, int) or mode < 0 or mode > 0o777
+                or mode & 0o022 or not isinstance(size, int) or size < 0
+                or not isinstance(digest, str) or HEX64.fullmatch(digest) is None):
+            raise LauncherBlocked("invalid tree entry metadata")
+        normalized.append({"path": rel, "mode": mode, "size": size, "sha256": digest})
+    normalized.sort(key=lambda item: item["path"])
+    if len({item["path"] for item in normalized}) != len(normalized):
+        raise LauncherBlocked("duplicate tree entry path")
+    if any(item["path"] == "release-manifest.json" for item in normalized):
+        raise LauncherBlocked("release manifest must not be self-listed")
+    if _sha256(normalized) != manifest.get("tree_hash"):
+        raise LauncherBlocked("declared tree hash mismatch")
+
+    observed = _scan_tree(release, owner_uid=owner_uid, excluded={"release-manifest.json"})
+    observed_by_path = {item["path"]: item for item in observed}
+    if set(observed_by_path) != {item["path"] for item in normalized}:
+        raise LauncherBlocked("release tree path set mismatch")
+    for item in normalized:
+        actual = observed_by_path[item["path"]]
+        # seal-broker normalizes bytes to 0440/0550 while tree_hash keeps the
+        # pre-seal executable bit.  No other mode transformation is accepted.
+        sealed_mode = 0o550 if item["mode"] & 0o111 else 0o440
+        if (actual["size"], actual["sha256"], actual["mode"]) != (
+                item["size"], item["sha256"], sealed_mode):
+            raise LauncherBlocked(f"release tree entry drift: {item['path']}")
+    return normalized, observed_by_path
+
+
+def _validate_receipt(active: dict[str, Any], release: Path, receipt_root: Path, *,
+                      owner_uid: int) -> dict[str, Any]:
+    receipt_id = active.get("release_receipt_id")
+    if not isinstance(receipt_id, str) or HEX64.fullmatch(receipt_id) is None:
+        raise LauncherBlocked("active pointer lacks valid broker receipt")
+    receipt_root = Path(receipt_root)
+    _secure_dir(receipt_root.parent, owner_uid=owner_uid)
+    _secure_dir(receipt_root, owner_uid=owner_uid)
+    receipt = _read_json(receipt_root / f"{receipt_id}.json", owner_uid=owner_uid)
+    core = {"operation": receipt.get("operation"), "nonce": receipt.get("nonce"),
+            "tree_hash": receipt.get("tree_hash"), "object_id": receipt.get("object_id")}
+    if (_sha256(core) != receipt_id or receipt.get("receipt_id") != receipt_id
+            or receipt.get("operation") != "seal_release"
+            or receipt.get("object_id") != active.get("release_id")):
+        raise LauncherBlocked("broker receipt is corrupt or mismatched")
+    sealed_path = receipt.get("sealed_path")
+    if not isinstance(sealed_path, str) or Path(sealed_path) != release.absolute():
+        raise LauncherBlocked("broker receipt sealed path mismatch")
+    observed = _sha256(_scan_tree(release, owner_uid=owner_uid))
+    if observed != receipt.get("sealed_tree_hash"):
+        raise LauncherBlocked("broker sealed tree drift")
+    return receipt
+
+
+def _entry_map(entries: Iterable[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    return {item["path"]: item for item in entries}
+
+
+def _validate_payload(label: str, module: str, release: Path, manifest: dict[str, Any],
+                      declared: list[dict[str, Any]], *, owner_uid: int) -> tuple[Path, dict[str, Any]]:
+    hashes = ("tree_hash", "runtime_digest", "lock_hash", "service_config_hash",
+              "verification_hash")
+    if any(not isinstance(manifest.get(name), str) or HEX64.fullmatch(manifest[name]) is None
+           for name in hashes):
+        raise LauncherBlocked("release identity contains non-SHA256 fields")
+    release_core = {name: manifest[name] for name in hashes}
+    if manifest.get("release_id") != "REL-" + _sha256(release_core):
+        raise LauncherBlocked("release id is not bound to manifest identity")
+    if manifest["service_config_hash"] != frozen_topology_hash():
+        raise LauncherBlocked("service topology hash mismatch")
+
+    payloads = manifest.get("service_payloads")
+    payload = payloads.get(module) if isinstance(payloads, dict) else None
+    required = {"label", "module", "entrypoint", "python_relpath", "python_sha256",
+                "module_relpath", "module_sha256", "lock_relpath", "payload_files",
+                "payload_tree_hash"}
+    if not isinstance(payload, dict) or not required.issubset(payload):
+        raise LauncherBlocked("service absent from complete sealed payload manifest")
+    if (payload["label"], payload["module"], payload["entrypoint"]) != (label, module, "main"):
+        raise LauncherBlocked("service label/module/entrypoint binding mismatch")
+
+    by_path = _entry_map(declared)
+    python_rel = _safe_relpath(payload["python_relpath"], "python_relpath")
+    module_rel = _safe_relpath(payload["module_relpath"], "module_relpath")
+    lock_rel = _safe_relpath(payload["lock_relpath"], "lock_relpath")
+    expected_module_suffix = "/" + module.replace(".", "/") + ".py"
+    if python_rel != "env/bin/python":
+        raise LauncherBlocked("interpreter path is not the frozen release interpreter")
+    if not (module_rel == expected_module_suffix[1:] or module_rel.endswith(expected_module_suffix)):
+        raise LauncherBlocked("module path is not bound to the topology module")
+    payload_files = payload["payload_files"]
+    if (not isinstance(payload_files, list) or not payload_files
+            or any(not isinstance(item, str) for item in payload_files)):
+        raise LauncherBlocked("invalid payload_files")
+    payload_paths = [_safe_relpath(item, "payload_files entry") for item in payload_files]
+    if len(set(payload_paths)) != len(payload_paths) or not {python_rel, module_rel, lock_rel}.issubset(payload_paths):
+        raise LauncherBlocked("payload file set is incomplete or duplicated")
+    try:
+        payload_entries = sorted((by_path[path] for path in payload_paths), key=lambda item: item["path"])
+    except KeyError as exc:
+        raise LauncherBlocked("payload references file outside sealed tree") from exc
+    if _sha256(payload_entries) != payload.get("payload_tree_hash"):
+        raise LauncherBlocked("payload tree hash mismatch")
+
+    runtime_entries = [item for item in declared if item["path"].startswith("env/")]
+    if not runtime_entries or _sha256(runtime_entries) != manifest["runtime_digest"]:
+        raise LauncherBlocked("runtime digest cannot be verified")
+    if by_path[lock_rel]["sha256"] != manifest["lock_hash"]:
+        raise LauncherBlocked("lock hash mismatch")
+    if (payload.get("python_sha256") != by_path[python_rel]["sha256"]
+            or payload.get("module_sha256") != by_path[module_rel]["sha256"]):
+        raise LauncherBlocked("payload executable/module hash mismatch")
+
+    python = release / python_rel
+    python_raw, _ = _read_regular(python, owner_uid=owner_uid, executable=True)
+    if _sha256(python_raw) != payload["python_sha256"]:
+        raise LauncherBlocked("interpreter bytes drift")
+    module_raw, _ = _read_regular(release / module_rel, owner_uid=owner_uid)
+    if _sha256(module_raw) != payload["module_sha256"]:
+        raise LauncherBlocked("module bytes drift")
+    try:
+        syntax = ast.parse(module_raw.decode("utf-8"), filename=module_rel)
+    except (UnicodeDecodeError, SyntaxError) as exc:
+        raise LauncherBlocked("service module is not valid Python") from exc
+    if not any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == "main"
+               for node in syntax.body):
+        raise LauncherBlocked("service module has no static main entrypoint")
+    return python, payload
+
+
+def validate_launch(label: str, *, active_path: Path, release_root: Path,
+                    receipt_root: Path, owner_uid: int) -> tuple[Path, str, dict[str, Any]]:
+    module = SERVICE_MODULES.get(label)
+    if module is None:
+        raise LauncherBlocked("unknown service label")
+    release, manifest = resolve_active(active_path, release_root, owner_uid=owner_uid)
+    active = _read_json(active_path, owner_uid=owner_uid)
+    _validate_receipt(active, release, receipt_root, owner_uid=owner_uid)
+    if (active.get("verification_hash") != manifest.get("verification_hash")
+            or not isinstance(active.get("canary_hash"), str)
+            or HEX64.fullmatch(active["canary_hash"]) is None):
+        raise LauncherBlocked("active verification/canary binding mismatch")
+    declared, _ = _validate_declared_tree(release, manifest, owner_uid=owner_uid)
+    python, payload = _validate_payload(label, module, release, manifest, declared,
+                                        owner_uid=owner_uid)
+    return python, module, {"release_id": manifest["release_id"],
+                            "payload_tree_hash": payload["payload_tree_hash"]}
+
+
+def run(argv: list[str] | None = None, *, active_path: Path = DEFAULT_ACTIVE_FILE,
+        release_root: Path = DEFAULT_RELEASE_ROOT, receipt_root: Path = DEFAULT_RECEIPT_ROOT,
+        owner_uid: int = 0, execve: Callable[[str, list[str], dict[str, str]], Any] = os.execve
+        ) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("service_label")
+    parser.add_argument("--doctor", action="store_true")
+    args = parser.parse_args(argv)
+    try:
+        python, module, evidence = validate_launch(
+            args.service_label, active_path=Path(active_path), release_root=Path(release_root),
+            receipt_root=Path(receipt_root), owner_uid=owner_uid)
+    except Exception as exc:
+        # Do not leak JSON contents, credentials or caller environment in diagnostics.
+        print(f"ABCR launcher blocked: {exc}", file=sys.stderr)
+        return EX_CONFIG
+    if args.doctor:
+        print(json.dumps({"ok": True, "service_label": args.service_label, "module": module,
+                          **evidence}, sort_keys=True))
+        return 0
+    env = {"PATH": "/usr/bin:/bin", "ABCR_RELEASE_ID": evidence["release_id"],
+           "ABCR_SERVICE_LABEL": args.service_label, "PYTHONDONTWRITEBYTECODE": "1",
+           "PYTHONNOUSERSITE": "1", "LC_ALL": "C.UTF-8"}
+    execve(str(python), [str(python), "-I", "-m", module], env)
+    return 70
+
+
+def main() -> int:
+    # Production roots and the root trust owner are intentionally not configurable
+    # through environment variables.  Tests call ``run`` with explicit parameters.
+    return run()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

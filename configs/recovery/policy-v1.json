@@ -1,0 +1,1 @@
+{"schema_version":1,"max_retry":3,"base_backoff_seconds":5,"max_backoff_seconds":120,"integrity_action":"quarantine","unknown_action":"create_mission","scientific_action":"needs_human","delete_evidence":false,"hot_patch":false}

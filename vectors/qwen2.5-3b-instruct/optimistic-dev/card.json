@@ -1,0 +1,18 @@
+{
+  "trait": "optimistic",
+  "model_id": "/Users/superagent/.cache/modelscope/models/Qwen--Qwen2.5-3B-Instruct/snapshots/master",
+  "model_revision": "eed00b17e225",
+  "source_commit": "b8e0f044fe2410a6fad579f38324f03f13b4e917",
+  "extraction_date": "2026-07-12",
+  "grade": "dev",
+  "judge_model": "deepseek-chat",
+  "judge_lineage": "replaced(official gpt-4.1-mini-2025-04-14)",
+  "recommended": {
+    "layer": 16,
+    "coef": 2.0
+  },
+  "n_pos_effective": 199,
+  "n_neg_effective": 126,
+  "pt_sha256": "9879a0bc24b164129c15886fabede9d9f9539df5a16a0d73d92856e4df09fd1f",
+  "notes": "Mac MPS fp16, dev grade, non-citable. Direction check PASS: L*=16, coef=2.0, coherence=96.5. vanilla/prompt_persona arms: W1 ruling capture_path=None (text-arm projection collection deferred to W2 dose calibration). dtype=fp16 vs F6 float32 spec; production grade deferred to cloud day #1."
+}

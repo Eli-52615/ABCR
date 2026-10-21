@@ -1,0 +1,49 @@
+{
+  "run_id": "20260712-130600-f9cc074895de-t0",
+  "review_version": "c2.0",
+  "n_steps": 14,
+  "n_expected": 14,
+  "missing": [],
+  "duplicated": [],
+  "chain_ok": true,
+  "score_mismatches": [],
+  "manifest_checks": {
+    "config_hash_ok": true,
+    "config_hash_mismatch": false,
+    "split_hash_unverifiable": true,
+    "chat_template_hash_verified": false,
+    "arm_purity_ok": true,
+    "arm_purity_violation": false,
+    "env_lock_exists": true,
+    "protocol_ref_present": true,
+    "manifest_fields_complete": true
+  },
+  "arm_prompt_hash_check": {
+    "conditions": {
+      "vanilla": [
+        "42dad0a0c25ab3148008c4f792e04000e3aea5197cb1884b4d7cddcd517d52fa",
+        "650482862e7e36c25b58e34ef660b4b16a08fa00c9fafa699f8bf3b569635a12",
+        "6a81746e10cb294057373da6aea47370e7198ae3ee4c14695b4b2c6dbba7bf1c",
+        "7fc6b7a61b047ef2e3bf508e9b46638a9dc5facda070e4369da9c8877e7353f9",
+        "87495390111c81f3475a94830fa292e4e4343af75b9bdcf2ffb420ca0dc39807",
+        "91e581e98bf7e865e2508ef471552a061986771a250f2afb3f00cfdb35e58ec5",
+        "9661be1408d9d3d30239aed6b7fca793b52b46a6772722f9c3dcaf724e34b746",
+        "991221bce492465ff18d55ba0d3b76487b1e75220bffa79257a841f00b940493",
+        "9c2bb195717a2f52d77a38efbd92e113d78884acbab92be990bdd833a3ad4e53",
+        "b7c615db223d25987a303f709712184dfd78b64ee5729f00c2d592fc588b5c63",
+        "c2f94f371c5cd4ad7c39a4bbdd4c2238ef0c0582fd19a909e25087f2230538c8",
+        "d153dea8ab7ac7459e03d2a3523a5cf6b4da5e98705f848aef16004dfba86799",
+        "e987ff4ee602a4c1d14fcf46cbb63124ed382a1676f2ff698367ee17e80fd741",
+        "fe31c8252d181784c81e6f351d16101313bb15479a6b0a0859c231e53832ffe5"
+      ]
+    },
+    "violations": [],
+    "ok": true
+  },
+  "vector_artifact_check": {
+    "ok": true,
+    "issues": []
+  },
+  "error_codes": [],
+  "pass": true
+}

@@ -1,0 +1,7 @@
+(version 1)
+(deny default)
+(allow process*)
+(allow sysctl-read)
+(allow file-read* (subpath (param "CANDIDATE_ROOT")) (subpath (param "RUNTIME_ROOT")))
+(allow file-write* (subpath (param "TMPDIR")))
+; No result spool, canonical Git metadata, evidence, key or network mount is provided.

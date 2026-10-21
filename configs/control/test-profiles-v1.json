@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "status-card-v1": {"profile_id": "status-card-v1", "required_external_oracle_ids": ["status-card-v1"], "external_oracles": [{"oracle_id": "status-card-v1", "version": "1", "request": {"fixture": "status-card"}}], "in_candidate_diagnostics": ["tests/control/test_store_frontdoor.py"]},
+    "doc-marker-v1": {"profile_id": "doc-marker-v1", "required_external_oracle_ids": ["doc-marker-v1"], "external_oracles": [{"oracle_id": "doc-marker-v1", "version": "1", "request": {"fixture": "marked-document"}}], "in_candidate_diagnostics": ["tests/control/test_misc.py"]}
+  }
+}

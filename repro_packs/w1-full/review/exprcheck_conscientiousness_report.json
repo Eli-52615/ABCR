@@ -1,0 +1,32 @@
+{
+  "trait": "conscientiousness",
+  "n_pos": 200,
+  "n_neg": 200,
+  "n_baseline": 0,
+  "fallback": true,
+  "fallback_reason": "exprcheck_pool.csv not produced by B; using B judge_raw directly",
+  "source_pos": "pv_bridge/out/conscientiousness_3b_pos.csv.judge_raw.jsonl",
+  "source_neg": "pv_bridge/out/conscientiousness_3b_neg.csv.judge_raw.jsonl",
+  "conditions": {
+    "steered_pos": {
+      "trait_score_mean": 82.47,
+      "trait_score_median": 85.0,
+      "trait_score_stdev": 18.73,
+      "coherence_mean": 95.6
+    },
+    "steered_neg": {
+      "trait_score_mean": 75.33,
+      "trait_score_median": 75.0,
+      "trait_score_stdev": 18.46,
+      "coherence_mean": 96.58
+    }
+  },
+  "direction_clear": true,
+  "effect_size_cohens_d": 0.3845,
+  "effect_interpretation": "small-to-medium (0.2 < d < 0.5)",
+  "coherence_note": "both conditions high (>95), no apparent side effects",
+  "judge_lineage": "deepseek-chat (B scored independently; C consumes without re-calling)",
+  "w1_verdict": "direction clear + effect recorded; no significance test (W2 scope)",
+  "citable": false,
+  "annotation": "dev · non-citable · exploratory · fallback data"
+}

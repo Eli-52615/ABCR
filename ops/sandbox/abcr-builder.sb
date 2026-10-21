@@ -1,0 +1,7 @@
+(version 1)
+(deny default)
+(allow process*)
+(allow sysctl-read)
+(allow file-read* (subpath (param "RELEASE_ROOT")) (subpath (param "CANDIDATE_ROOT")))
+(allow file-write* (subpath (param "CANDIDATE_ROOT")) (subpath (param "TMPDIR")))
+; Network remains denied unless a separately reviewed egress profile is installed.
